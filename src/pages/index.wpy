@@ -1,0 +1,81 @@
+<style lang="less">
+@import '../styles/global.less';
+</style>
+
+<style lang="less">
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+.search-me {
+  margin-top: 240rpx;
+}
+</style>
+
+
+
+<template>
+  <view class="container">
+    <view class="userinfo" @tap="handleViewTap">
+      <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+      <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+    </view>
+
+    <view class="search-me">
+      <text>寻找我自己a</text>
+      <input  placeholder="你的名字" value="{{content}}" class="text" />
+    </view>
+
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+import { connect } from 'wepy-redux';
+import Panel from '@/components/panel'; // alias example
+
+@connect({})
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '万世谱'
+  };
+  components = {
+    panel: Panel
+  };
+
+  mixins = [];
+
+  data = {
+    userInfo: {
+      nickName: '加载中...'
+    }
+  };
+
+  computed = {};
+
+  methods = {};
+
+  events = {};
+
+  onLoad() {
+    let self = this;
+    this.$parent.getUserInfo(function(userInfo) {
+      if (userInfo) {
+        self.userInfo = userInfo;
+      }
+      self.$apply();
+    });
+  }
+}
+</script>
