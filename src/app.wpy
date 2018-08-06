@@ -1,12 +1,6 @@
 <style lang="less">
-.container {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: space-between;
-  box-sizing: border-box;
-}
+@import '../node_modules/weui-wxss/dist/style/weui.wxss';
+@import './styles/index.less';
 </style>
 
 <script>
@@ -21,12 +15,38 @@ setStore(store);
 
 export default class extends wepy.app {
   config = {
-    pages: ['pages/index'],
+    pages: ['pages/index', 'pages/zu'],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
+    },
+    tabBar: {
+      color: '#707070',
+      selectedColor: '#36a2e6',
+      backgroundColor: '#fff',
+      borderStyle: 'black',
+      list: [
+        {
+          pagePath: 'pages/index',
+          selectedIconPath: './images/tabbars/home.png',
+          iconPath: './images/tabbars/home.png',
+          text: '我'
+        },
+        {
+          pagePath: 'pages/zu',
+          selectedIconPath: './images/tabbars/icon-scan.png',
+          iconPath: './images/tabbars/icon-scan.png',
+          text: '搜索'
+        },
+        {
+          pagePath: 'pages/zu',
+          selectedIconPath: './images/tabbars/home.png',
+          iconPath: './images/tabbars/home.png',
+          text: '族'
+        }
+      ]
     }
   };
 

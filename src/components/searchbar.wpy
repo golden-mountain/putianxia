@@ -1,0 +1,72 @@
+<template>
+  <view class="weui-search-bar wsp-searchbox" >
+    <view class="weui-search-bar__form">
+      <view class="weui-search-bar__box  wsp-input">
+        <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+        <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{keyword}}" focus="{{inputShowed}}" />
+        <view class="weui-icon-clear" wx:if="{{keyword.length > 0}}" bindtap="clearInput">
+          <icon type="clear" size="14"></icon>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+import wepy from 'wepy';
+
+export default class SearchBar extends wepy.component {
+  props = {
+    cancelText: {
+      type: String,
+      value: '取消'
+    },
+    disabled: {
+      type: Boolean,
+      value: false
+    },
+    focus: {
+      type: Boolean,
+      value: false
+    },
+    keyword: {
+      type: String,
+      value: ''
+    },
+    show: {
+      type: Array,
+      value: ['icon', 'cancel']
+    },
+    placeholder: {
+      type: String,
+      value: '请输入查询关键字',
+      observer(newVal) {
+        this.inputWidth = `${newVal.length * 14 + 45}px`;
+      }
+    },
+    useCancel: {
+      type: Boolean
+    },
+    searchStyle: String,
+    cancelStyle: String,
+    inputStyle: String
+  };
+
+  data = {
+    inputWidth: 'auto',
+    inputShowed: true
+  };
+  events = {};
+
+  watch = {};
+
+  methods = {
+    blur() {},
+    clearInput() {},
+    cancelSearch() {},
+    focus() {},
+    inputChange(e) {},
+    search(e) {}
+  };
+}
+</script>
