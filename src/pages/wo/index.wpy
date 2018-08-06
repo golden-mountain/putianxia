@@ -1,0 +1,100 @@
+<style lang="less">
+.userinfo {
+  margin-top: 100rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 220rpx;
+  height: 220rpx;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+
+.wsp-searchbar__area {
+  margin: 200rpx 60rpx;
+}
+</style>
+
+
+
+<template>
+  <view class="page">
+    <view class="page__hd">
+      <view class="userinfo">
+        <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+        <view class="userinfo-nickname">欢迎您, {{ userInfo.nickName }}</view>
+      </view>
+    </view>
+
+    <view class="page__bd wsp-searchbar__area">
+      <view class="weui-cells__title">寻找并关联自己</view>
+      <searchbar
+        placeholder="输入名字"
+        btn="搜索"
+        :keywords="keywords"
+        :focus="focus"
+        bindchange="searchChange"
+        bindsearch="searchDone"
+      />
+    </view>
+
+  </view>
+
+</template>
+
+<script>
+import wepy from 'wepy';
+import { connect } from 'wepy-redux';
+// import Panel from '@/components/panel'; // alias example
+import SearchBar from '@/components/searchbar'; // alias example
+
+@connect({})
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '我 - 谱天下'
+  };
+  components = {
+    searchbar: SearchBar
+  };
+
+  mixins = [];
+
+  data = {
+    userInfo: {
+      nickName: '加载中...'
+    },
+    focus: true,
+    keywords: ''
+  };
+
+  computed = {};
+
+  methods = {
+    searchChange(e) {
+      console.log(e);
+      this.keywords = e.detail.value;
+    },
+
+    searchDone(e) {
+      console.log('search', e.detail.value);
+    }
+  };
+
+  events = {};
+
+  onLoad() {
+    let self = this;
+    this.$parent.getUserInfo(function(userInfo) {
+      if (userInfo) {
+        self.userInfo = userInfo;
+      }
+      self.$apply();
+    });
+  }
+}
+</script>

@@ -15,7 +15,12 @@ setStore(store);
 
 export default class extends wepy.app {
   config = {
-    pages: ['pages/index', 'pages/zu'],
+    pages: [
+      'pages/wo/index',
+      'pages/zong/index',
+      'pages/pu/index',
+      'pages/search/index'
+    ],
     window: {
       backgroundTextStyle: 'light',
       navigationBarBackgroundColor: '#fff',
@@ -29,29 +34,30 @@ export default class extends wepy.app {
       borderStyle: 'black',
       list: [
         {
-          pagePath: 'pages/index',
+          pagePath: 'pages/wo/index',
           selectedIconPath: './images/tabbars/home.png',
           iconPath: './images/tabbars/home.png',
           text: '我'
         },
         {
-          pagePath: 'pages/zu',
+          pagePath: 'pages/zong/index',
           selectedIconPath: './images/tabbars/icon-scan.png',
           iconPath: './images/tabbars/icon-scan.png',
-          text: '搜索'
+          text: '宗亲'
         },
         {
-          pagePath: 'pages/zu',
+          pagePath: 'pages/pu/index',
           selectedIconPath: './images/tabbars/home.png',
           iconPath: './images/tabbars/home.png',
-          text: '族'
+          text: '族谱'
         }
       ]
     }
   };
 
   globalData = {
-    userInfo: null
+    userInfo: null,
+    title: '谱天下'
   };
 
   constructor() {
@@ -72,6 +78,10 @@ export default class extends wepy.app {
         cb && cb(res.userInfo);
       }
     });
+  }
+
+  getNavigatorTitle(title) {
+    return `${title} - ${this.globalData.title}`;
   }
 }
 </script>
