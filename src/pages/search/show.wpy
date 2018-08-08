@@ -1,0 +1,95 @@
+<style lang="less">
+.ptx-search-bar {
+  padding: 10px;
+}
+</style>
+
+
+
+<template>
+  <view class="page">
+    <view class="page__hd">
+      <searchbar
+        placeholder="良系>作平 或 作平,作苏"
+        btn=""
+        :keywords="keywords"
+        :focus="focus"
+        bindchange="searchChange"
+        bindsearch="searchDone"
+      />
+    </view>
+
+    <view class="page__bd">
+      <view class="weui-panel weui-panel_access">
+          <view class="weui-panel__hd">基本信息</view>
+          <view class="weui-panel__bd">
+              <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                      <image class="weui-media-box__thumb" src="{{icon60}}" />
+                  </view>
+                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                      <view class="weui-media-box__title">李作平</view>
+                      <view class="weui-media-box__desc">良系次子，1982年生，大学生， 子三</view>
+                  </view>
+              </navigator>
+          </view>
+
+      </view>
+
+      <view class="weui-panel">
+          <view class="weui-panel__hd">族谱树</view>
+          <view class="weui-panel__bd">
+              <familyTree></familyTree>
+          </view>
+      </view>
+    </view>
+
+  </view>
+
+</template>
+
+<script>
+import wepy from 'wepy';
+import { connect } from 'wepy-redux';
+// import Panel from '@/components/panel'; // alias example
+import SearchBar from '@/components/searchbar'; // alias example
+import Tree from '@/components/tree'; // alias example
+
+@connect({})
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '查看 - 谱天下'
+  };
+  components = {
+    searchbar: SearchBar,
+    familyTree: Tree
+  };
+
+  mixins = [];
+
+  data = {
+    focus: true,
+    keywords: '',
+    icon60: '../../images/avatar.jpg'
+  };
+
+  computed = {};
+
+  methods = {
+    searchChange(e) {
+      console.log(e);
+      this.keywords = e.detail.value;
+    },
+
+    searchDone(e) {
+      console.log('search', e.detail.value);
+    }
+  };
+
+  events = {};
+
+  onLoad(options) {
+    console.log(options);
+  }
+}
+</script>

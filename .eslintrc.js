@@ -11,6 +11,7 @@ module.exports = {
   extends: 'standard',
   // required to lint *.wpy files
   plugins: ['html'],
+  globals: { wx: true },
   settings: {
     'html/html-extensions': ['.html', '.wpy']
   },

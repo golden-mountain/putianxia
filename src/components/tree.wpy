@@ -1,0 +1,37 @@
+<style type="less">
+.page__bd_spacing__a {
+}
+</style>
+<template>
+  <view class="page__bd page__bd_spacing">
+    <repeat for="{{treeItems}}" key="index" index="idx" item="item">
+      <treeItem :item="item" :active="active"/>
+    </repeat>
+  </view>
+</template>
+<script>
+import wepy from 'wepy';
+import TreeItem from './tree-item';
+
+export default class Tree extends wepy.component {
+  data = {
+    treeItems: [
+      { num: 1, name: '远灌', group: '至香堂' },
+      { num: 2, name: '世枢', group: '' },
+      { num: 3, name: '运炳', group: '' },
+      { num: 4, name: '统壬', group: '' },
+      { num: 5, name: '会金', group: '秉坚堂' },
+      { num: 6, name: '良系', group: '' },
+      { num: 7, name: '作平', group: '' }
+    ],
+    active: 6
+  };
+
+  components = {
+    treeItem: TreeItem
+  };
+  methods = {
+    tap() {}
+  };
+}
+</script>

@@ -1,8 +1,11 @@
+<style>
+</style>
+
 <template>
-  <view class="wsp-searchbox">
-    <view class="weui-search-bar wsp-search-bar" >
+  <view class="ptx-searchbox">
+    <view class="weui-search-bar ptx-search-bar" >
       <view class="weui-search-bar__form">
-        <view class="weui-search-bar__box  wsp-input">
+        <view class="weui-search-bar__box  ptx-input">
           <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
           <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{keywords}}" @input="inputChange" focus="{{inputShowed}}" />
           <view class="weui-icon-clear" wx:if="{{keyword.length > 0}}" bindtap="clearInput">
@@ -45,7 +48,7 @@ export default class SearchBar extends wepy.component {
   mixins = [validate];
 
   data = {
-    inputShowed: true
+    inputShowed: false
   };
   events = {};
 

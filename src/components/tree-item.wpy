@@ -1,0 +1,64 @@
+<style type="less">
+@import '../styles/variables/color.less';
+.ptx-tree-item {
+  font-size: 14px;
+  .weui-flex__item {
+    padding: 10px;
+
+    &:first-child {
+      border-right: 1px solid @weuiTextColorTips;
+    }
+  }
+  &.ptx-gen-active {
+    background-color: @weuiColorPrimary;
+
+    .weui-flex__item {
+      color: @weuiBgColorDefault;
+    }
+  }
+}
+.ptx-gen-num {
+  color: @weuiTextColorGray;
+  flex: 0.3;
+  text-align: right;
+}
+.ptx-name {
+  flex: 1;
+}
+.ptx-group {
+  flex: 1.5;
+  color: @weuiLinkColorDefault;
+}
+.ptx-icons {
+  flex: 0.5;
+}
+</style>
+<template>
+    <view class="weui-flex ptx-tree-item {{ active == item.num ? 'ptx-gen-active' : ''}} ">
+        <view class="weui-flex__item ptx-gen-num"><view class="">{{item.num}}</view></view>
+        <view class="weui-flex__item ptx-name"><view class="placeholder">{{item.name}}</view></view>
+        <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view>
+        <view class="weui-flex__item ptx-icons"><icon type="search" size="14" /></view>
+    </view>
+</template>
+<script>
+import wepy from 'wepy';
+
+export default class GroupItem extends wepy.component {
+  props = {
+    item: {},
+    active: {
+      type: Boolean,
+      value: false
+    }
+  };
+  data = {};
+  methods = {
+    tap() {}
+  };
+
+  onLoad() {
+    console.log(this.active, 'is active value', this.item);
+  }
+}
+</script>

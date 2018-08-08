@@ -17,13 +17,15 @@ export default class extends wepy.app {
   config = {
     pages: [
       'pages/wo/index',
+      'pages/search/show',
       'pages/zong/index',
       'pages/pu/index',
-      'pages/search/index'
+      'pages/search/index',
+      'pages/zong/add-people'
     ],
     window: {
       backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
+      navigationBarBackgroundColor: '#f9f9f9',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
     },

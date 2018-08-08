@@ -1,28 +1,23 @@
+
+
 <style lang="less">
 .userinfo {
-  margin-top: 100rpx;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .userinfo-avatar {
-  width: 220rpx;
-  height: 220rpx;
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: 50%;
 }
 
 .userinfo-nickname {
   color: #aaa;
 }
-
-.ptx-searchbar__area {
-  margin: 200rpx 60rpx;
-}
-
-.ptx-search-bar {
-  background: transparent;
-  border: 0;
-  padding: 0;
+.search-me {
+  margin-top: 240rpx;
 }
 </style>
 
@@ -33,20 +28,12 @@
     <view class="page__hd">
       <view class="userinfo">
         <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-        <view class="userinfo-nickname">欢迎您, {{ userInfo.nickName }}</view>
+        <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
       </view>
     </view>
 
-    <view class="page__bd ptx-searchbar__area">
-      <view class="weui-cells__title">寻找并关联自己</view>
-      <searchbar
-        placeholder="输入名字"
-        btn="搜索"
-        :keywords="keywords"
-        :focus="focus"
-        bindchange="searchChange"
-        bindsearch="searchDone"
-      />
+    <view class="page__bd">
+      add people
     </view>
 
   </view>
@@ -62,7 +49,7 @@ import SearchBar from '@/components/searchbar'; // alias example
 @connect({})
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: '我 - 谱天下'
+    navigationBarTitleText: '创建户 - 谱天下'
   };
   components = {
     searchbar: SearchBar
@@ -71,9 +58,6 @@ export default class Index extends wepy.page {
   mixins = [];
 
   data = {
-    userInfo: {
-      nickName: '加载中...'
-    },
     focus: true,
     keywords: ''
   };
@@ -93,14 +77,6 @@ export default class Index extends wepy.page {
 
   events = {};
 
-  onLoad() {
-    let self = this;
-    this.$parent.getUserInfo(function(userInfo) {
-      if (userInfo) {
-        self.userInfo = userInfo;
-      }
-      self.$apply();
-    });
-  }
+  onLoad() {}
 }
 </script>

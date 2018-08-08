@@ -1,6 +1,13 @@
 
 
 <style lang="less">
+.ptx-search-bar {
+  padding: 10px;
+}
+
+.ptx-create-btn {
+  margin: 30px 20px;
+}
 </style>
 
 
@@ -19,6 +26,19 @@
     </view>
 
     <view class="page__bd">
+        <view class="weui-cells__title">2个人同名,请选择查看</view>
+        <view class="weui-cells weui-cells_after-title">
+            <navigator url="/pages/search/show?name=a" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                <view class="weui-cell__bd">会金 > 良系 > 作平</view>
+                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+            <navigator url="/pages/search/show?name=b" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                <view class="weui-cell__bd">会钦 > 良侃 > 作平</view>
+                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+            </navigator>
+        </view>
+
+        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="create">没有找到, 创建名字</button>
 
     </view>
 
@@ -62,7 +82,9 @@ export default class Index extends wepy.page {
 
     searchDone(e) {
       console.log('search', e.detail.value);
-    }
+    },
+
+    create() {}
   };
 
   events = {};
