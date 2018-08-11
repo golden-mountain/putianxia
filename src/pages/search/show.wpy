@@ -23,7 +23,7 @@
       <view class="weui-panel weui-panel_access">
           <view class="weui-panel__hd">基本信息</view>
           <view class="weui-panel__bd">
-              <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+              <navigator url="/pages/zong/show" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
                   <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
                       <image class="weui-media-box__thumb" src="{{icon60}}" />
                   </view>
@@ -39,7 +39,14 @@
       <view class="weui-panel">
           <view class="weui-panel__hd">族谱树</view>
           <view class="weui-panel__bd">
-              <familyTree></familyTree>
+            <view class="weui-flex">
+              <view class="weui-flex__item" >
+                <familyTree1 :treeItems.sync="treeItems1" :active.sync="active1"/>
+              </view>
+              <view class="weui-flex__item" >
+                <familyTree2 :treeItems.sync="treeItems2" :active.sync="active2" style="background: #eee;"/>
+              </view>
+            </view>
           </view>
       </view>
     </view>
@@ -58,11 +65,13 @@ import Tree from '@/components/tree'; // alias example
 @connect({})
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: '查看 - 谱天下'
+    navigationBarTitleText: '查看 - 谱天下',
+    enablePullDownRefresh: true
   };
   components = {
     searchbar: SearchBar,
-    familyTree: Tree
+    familyTree1: Tree,
+    familyTree2: Tree
   };
 
   mixins = [];
@@ -70,7 +79,27 @@ export default class Index extends wepy.page {
   data = {
     focus: true,
     keywords: '',
-    icon60: '../../images/avatar.jpg'
+    icon60: '../../images/avatar.jpg',
+    active1: 6,
+    active2: 7,
+    treeItems1: [
+      { num: 1, name: '远灌', group: '至香堂' },
+      { num: 2, name: '世枢', group: '' },
+      { num: 3, name: '运炳', group: '' },
+      { num: 4, name: '统壬', group: '' },
+      { num: 5, name: '会金', group: '秉坚堂' },
+      { num: 6, name: '良系', group: '' },
+      { num: 7, name: '作平', group: '' }
+    ],
+    treeItems2: [
+      { num: 1, name: '远灌', group: '至香堂' },
+      { num: 2, name: '世枢', group: '' },
+      { num: 3, name: '运炳', group: '' },
+      { num: 4, name: '统壬', group: '' },
+      { num: 5, name: '会金', group: '秉坚堂' },
+      { num: 6, name: '良系', group: '' },
+      { num: 7, name: '作芬', group: '' }
+    ]
   };
 
   computed = {};
@@ -90,6 +119,11 @@ export default class Index extends wepy.page {
 
   onLoad(options) {
     console.log(options);
+  }
+
+  onPullDownRefresh() {
+    console.log('test. onPullDownRefreshaa');
+    wx.stopPullDownRefresh();
   }
 }
 </script>

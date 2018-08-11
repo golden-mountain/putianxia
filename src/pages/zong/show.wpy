@@ -24,7 +24,7 @@ import { connect } from 'wepy-redux';
 // import SearchBar from '@/components/searchbar'; // alias example
 
 @connect({})
-export default class Index extends wepy.page {
+export default class Show extends wepy.page {
   config = {
     navigationBarTitleText: '查看 - 谱天下'
   };

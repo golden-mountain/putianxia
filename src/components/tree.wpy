@@ -3,9 +3,9 @@
 }
 </style>
 <template>
-  <view class="page__bd page__bd_spacing">
+  <view class="page__bd page__bd_spacing" style="{{style}}">
     <repeat for="{{treeItems}}" key="index" index="idx" item="item">
-      <treeItem :item="item" :active="active"/>
+      <treeItem :item="item" :active.sync="active"/>
     </repeat>
   </view>
 </template>
@@ -14,18 +14,15 @@ import wepy from 'wepy';
 import TreeItem from './tree-item';
 
 export default class Tree extends wepy.component {
-  data = {
-    treeItems: [
-      { num: 1, name: '远灌', group: '至香堂' },
-      { num: 2, name: '世枢', group: '' },
-      { num: 3, name: '运炳', group: '' },
-      { num: 4, name: '统壬', group: '' },
-      { num: 5, name: '会金', group: '秉坚堂' },
-      { num: 6, name: '良系', group: '' },
-      { num: 7, name: '作平', group: '' }
-    ],
-    active: 6
+  props = {
+    style: {},
+    treeItems: {},
+    active: {
+      twoWay: true
+    }
   };
+
+  data = {};
 
   components = {
     treeItem: TreeItem
@@ -33,5 +30,8 @@ export default class Tree extends wepy.component {
   methods = {
     tap() {}
   };
+  onLoad() {
+    console.log(this.treeItems);
+  }
 }
 </script>

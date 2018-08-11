@@ -34,11 +34,11 @@
 }
 </style>
 <template>
-    <view class="weui-flex ptx-tree-item {{ active == item.num ? 'ptx-gen-active' : ''}} ">
-        <view class="weui-flex__item ptx-gen-num"><view class="">{{item.num}}</view></view>
-        <view class="weui-flex__item ptx-name"><view class="placeholder">{{item.name}}</view></view>
-        <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view>
-        <view class="weui-flex__item ptx-icons"><icon type="search" size="14" /></view>
+    <view class="weui-flex ptx-tree-item {{ active == item.num ? 'ptx-gen-active' : ''}} " @tap="selectItem({{item.num}})">
+      <view class="weui-flex__item ptx-gen-num"><view class="">{{item.num}}</view></view>
+      <view class="weui-flex__item ptx-name"><view class="placeholder">{{item.name}}</view></view>
+      <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view>
+      <view class="weui-flex__item ptx-icons" @tap="gotoPeople({{item.num}})"><text class="iconfont icon-browse" /></view>
     </view>
 </template>
 <script>
@@ -48,13 +48,20 @@ export default class GroupItem extends wepy.component {
   props = {
     item: {},
     active: {
-      type: Boolean,
-      value: false
+      type: Number,
+      value: 0,
+      twoWay: true
     }
   };
   data = {};
   methods = {
-    tap() {}
+    selectItem(value) {
+      console.log(typeof value);
+      this.active = value;
+    },
+    gotoPeople(value) {
+      wx.navigateTo({ url: '/pages/zong/show' });
+    }
   };
 
   onLoad() {
