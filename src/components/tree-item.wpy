@@ -34,7 +34,7 @@
 }
 </style>
 <template>
-    <view class="weui-flex ptx-tree-item {{ active == item.num ? 'ptx-gen-active' : ''}} " @tap="selectItem({{item.num}})">
+    <view class="weui-flex ptx-tree-item {{ activeID == item.num ? 'ptx-gen-active' : ''}} " @tap="activePeople({{item.num}})">
       <view class="weui-flex__item ptx-gen-num"><view class="">{{item.num}}</view></view>
       <view class="weui-flex__item ptx-name"><view class="placeholder">{{item.name}}</view></view>
       <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view>
@@ -43,29 +43,48 @@
 </template>
 <script>
 import wepy from 'wepy';
+import { connect } from 'wepy-redux';
+// import { ACTIVE_SEARCH_PEOPLE } from '../store/types/people';
+import { activePeople } from '../store/actions';
 
+@connect(
+  {
+    activeID(state) {
+      // console.log(state, 'new state');
+      return state.people.activeID;
+    }
+  },
+  {
+    activePeople
+  }
+)
 export default class GroupItem extends wepy.component {
   props = {
-    item: {},
-    active: {
-      type: Number,
-      value: 0,
-      twoWay: true
-    }
+    item: {}
+    // active: {
+    //   type: Number,
+    //   value: 0,
+    //   twoWay: true
+    // }
   };
   data = {};
   methods = {
-    selectItem(value) {
-      console.log(typeof value);
-      this.active = value;
-    },
+    // selectItem(value) {
+    //   // this.active = value;
+    //   // this.$apply();
+    //   // console.log(this.$parent.active);
+    // },
     gotoPeople(value) {
       wx.navigateTo({ url: '/pages/zong/show' });
     }
   };
-
+  // watch = {
+  //   active(newValue, oldValue) {
+  //     console.log(`num value: ${oldValue} -> ${newValue}`);
+  //   }
+  // };
   onLoad() {
-    console.log(this.active, 'is active value', this.item);
+    console.log(this.activeID, 'is active ID');
   }
 }
 </script>

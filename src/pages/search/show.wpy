@@ -41,10 +41,10 @@
           <view class="weui-panel__bd">
             <view class="weui-flex">
               <view class="weui-flex__item" >
-                <familyTree1 :treeItems.sync="treeItems1" :active.sync="active1"/>
+                <familyTree1 :treeItems.sync="people1" />
               </view>
               <view class="weui-flex__item" >
-                <familyTree2 :treeItems.sync="treeItems2" :active.sync="active2" style="background: #eee;"/>
+                <familyTree2 :treeItems.sync="people2" style="background: #eee;"/>
               </view>
             </view>
           </view>
@@ -62,7 +62,24 @@ import { connect } from 'wepy-redux';
 import SearchBar from '@/components/searchbar'; // alias example
 import Tree from '@/components/tree'; // alias example
 
-@connect({})
+import { activePeople, searchPeople } from '@/store/actions/people';
+
+@connect(
+  {
+    people1(state) {
+      // console.log(state.people.keyword1, 'new state');
+      return state.people.keyword1;
+    },
+    people2(state) {
+      // console.log(state, 'new state');
+      return state.people.keyword2;
+    }
+  },
+  {
+    activePeople,
+    searchPeople
+  }
+)
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: '查看 - 谱天下',
@@ -79,50 +96,32 @@ export default class Index extends wepy.page {
   data = {
     focus: true,
     keywords: '',
-    icon60: '../../images/avatar.jpg',
-    active1: 6,
-    active2: 7,
-    treeItems1: [
-      { num: 1, name: '远灌', group: '至香堂' },
-      { num: 2, name: '世枢', group: '' },
-      { num: 3, name: '运炳', group: '' },
-      { num: 4, name: '统壬', group: '' },
-      { num: 5, name: '会金', group: '秉坚堂' },
-      { num: 6, name: '良系', group: '' },
-      { num: 7, name: '作平', group: '' }
-    ],
-    treeItems2: [
-      { num: 1, name: '远灌', group: '至香堂' },
-      { num: 2, name: '世枢', group: '' },
-      { num: 3, name: '运炳', group: '' },
-      { num: 4, name: '统壬', group: '' },
-      { num: 5, name: '会金', group: '秉坚堂' },
-      { num: 6, name: '良系', group: '' },
-      { num: 7, name: '作芬', group: '' }
-    ]
+    icon60: '../../images/avatar.jpg'
   };
 
   computed = {};
 
   methods = {
     searchChange(e) {
-      console.log(e);
       this.keywords = e.detail.value;
-    },
-
-    searchDone(e) {
-      console.log('search', e.detail.value);
     }
+
+    // searchDone(e) {
+    //   console.log('search', e.detail.value);
+    // }
   };
 
   events = {};
 
   onLoad(options) {
-    console.log(options);
+    // console.log(this);
+    // console.log(activePeople, 'thos');
+    // activePeople(this.active);
+    this.methods.searchPeople(['作芬', '作平']);
   }
 
   onPullDownRefresh() {
-    console.log('test. onPullDownRefreshaa');
+    // console.log('test. onPullDownRefreshaa');
     wx.stopPullDownRefresh();
   }
 }

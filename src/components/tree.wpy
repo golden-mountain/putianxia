@@ -5,25 +5,31 @@
 <template>
   <view class="page__bd page__bd_spacing" style="{{style}}">
     <repeat for="{{treeItems}}" key="index" index="idx" item="item">
-      <treeItem :item="item" :active.sync="active"/>
+      <treeItem :item="item" />
     </repeat>
   </view>
 </template>
 <script>
 import wepy from 'wepy';
-import TreeItem from './tree-item';
+import TreeItem from '@/components/tree-item'; // alias example
 
 export default class Tree extends wepy.component {
   props = {
     style: {},
-    treeItems: {},
-    active: {
-      twoWay: true
-    }
+    treeItems: {}
+    // active: {
+    //   type: Number,
+    //   value: 0,
+    //   twoWay: true
+    // }
   };
 
   data = {};
-
+  // watch = {
+  //   active(newValue, oldValue) {
+  //     console.log(`num value: ${oldValue} -> ${newValue}`);
+  //   }
+  // };
   components = {
     treeItem: TreeItem
   };
@@ -31,7 +37,7 @@ export default class Tree extends wepy.component {
     tap() {}
   };
   onLoad() {
-    console.log(this.treeItems);
+    // console.log(this.treeItems);
   }
 }
 </script>
