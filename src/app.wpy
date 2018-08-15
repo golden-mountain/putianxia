@@ -16,7 +16,7 @@ setStore(store);
 export default class extends wepy.app {
   config = {
     pages: [
-      // 'pages/zong/show',
+      // 'pages/zong/add-people',
       'pages/wo/index',
       'pages/search/show',
       'pages/zong/index',
@@ -30,33 +30,34 @@ export default class extends wepy.app {
       navigationBarBackgroundColor: '#f9f9f9',
       navigationBarTitleText: 'WeChat',
       navigationBarTextStyle: 'black'
-    },
-    tabBar: {
-      color: '#707070',
-      selectedColor: '#36a2e6',
-      backgroundColor: '#fff',
-      borderStyle: 'black',
-      list: [
-        {
-          pagePath: 'pages/wo/index',
-          selectedIconPath: './images/tabbars/home.png',
-          iconPath: './images/tabbars/home.png',
-          text: '我'
-        },
-        {
-          pagePath: 'pages/zong/index',
-          selectedIconPath: './images/tabbars/icon-scan.png',
-          iconPath: './images/tabbars/icon-scan.png',
-          text: '宗亲'
-        },
-        {
-          pagePath: 'pages/pu/index',
-          selectedIconPath: './images/tabbars/home.png',
-          iconPath: './images/tabbars/home.png',
-          text: '族谱'
-        }
-      ]
     }
+
+    // tabBar: {
+    //   color: '#707070',
+    //   selectedColor: '#36a2e6',
+    //   backgroundColor: '#fff',
+    //   borderStyle: 'black',
+    //   list: [
+    //     {
+    //       pagePath: 'pages/wo/index',
+    //       selectedIconPath: './images/tabbars/home.png',
+    //       iconPath: './images/tabbars/home.png',
+    //       text: '我'
+    //     },
+    //     {
+    //       pagePath: 'pages/zong/index',
+    //       selectedIconPath: './images/tabbars/icon-scan.png',
+    //       iconPath: './images/tabbars/icon-scan.png',
+    //       text: '宗亲'
+    //     },
+    //     {
+    //       pagePath: 'pages/pu/index',
+    //       selectedIconPath: './images/tabbars/home.png',
+    //       iconPath: './images/tabbars/home.png',
+    //       text: '族谱'
+    //     }
+    //   ]
+    // }
   };
 
   globalData = {

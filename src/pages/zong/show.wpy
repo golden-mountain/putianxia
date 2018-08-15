@@ -1,10 +1,104 @@
 
 
 <style lang="less">
+@import '../../styles/variables/color.less';
+.ptx-user-group {
+  padding: 20rpx;
+}
+
+.ptx-user {
+  text-align: center;
+}
+
+.ptx-current {
+  padding: 10rpx 32rpx;
+}
+
+.ptx-current-hasband {
+  text-align: center;
+  .user-avatar {
+    width: 250rpx;
+    height: 250rpx;
+  }
+}
+
+.ptx-current-wife {
+  text-align: center;
+
+  .userinfo {
+    font-size: 26rpx;
+  }
+}
+
+.ptx-current-userinfo {
+  font-size: 26rpx;
+  padding: 20rpx 32rpx;
+  view {
+    text {
+      background: @weuiLineColorLight;
+      width: 100rpx;
+      margin-right: 32rpx;
+      font-weight: bolder;
+    }
+  }
+}
+
+.ptx-progress {
+  flex: 0.5;
+  padding-top: 32rpx;
+}
+
+.ptx-location {
+  text-align: right;
+  color: @weuiTextColorGray;
+  .iconfont {
+    color: @weuiColorPrimary;
+  }
+}
+
+.ptx-actions {
+  .icon-like {
+    color: @weuiColorWarn;
+  }
+}
+
+.ptx-load-more {
+  color: @weuiLinkColorDefault;
+}
+
+.ptx-link {
+  color: @weuiLinkColorDefault;
+  cursor: pointer;
+  &:hover,
+  &:active {
+    color: @weuiColorPrimary;
+  }
+}
+
 .userinfo {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  font-size: 32rpx;
+}
+
+@keyframes zoomuser {
+  from {
+    width: 10rpx;
+    height: 10rpx;
+  }
+  to {
+    width: 150rpx;
+    height: 150rpx;
+  }
+}
+
+.refresh-user {
+  animation: 800ms zoomuser 1;
+  animation-fill-mode: forwards;
+}
+
+.user-avatar {
+  width: 150rpx;
+  height: 150rpx;
+  border-radius: 50%;
 }
 </style>
 
@@ -12,9 +106,93 @@
 
 <template>
   <view class="page">
-    hello
-  </view>
+    <view class="page__hd">
+      <view class="weui-flex ptx-user-group">
+        <view class="weui-flex__item ptx-user">
+          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
+          <view class="userinfo">({{parents[0].role}}){{ parents[0].name}}</view>
+        </view>
+        <view class="weui-flex__item ptx-user">
+          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[1].avatar }}" background-size="cover"/>
+          <view class="userinfo">({{parents[1].role}}){{ parents[1].name}}</view>
+        </view>
+      </view>
 
+    </view>
+
+    <view class="page__bd ">
+        <view class="weui-panel weui-panel_access  ptx-current">
+          <view class="weui-panel__bd">
+            <view class="weui-flex ptx-actions">
+              <view class="weui-flex__item ">
+                <text class="font_26 ptx-link">第11世 <text class="iconfont icon-mine font-26" />这个是我</text>
+              </view>
+              <view class="weui-flex__item ptx-location">
+                <text class="iconfont icon-like" />
+                <text class="iconfont icon-share" />
+              </view>
+            </view>
+          </view>
+
+          <view class="weui-panel__bd">
+            <view class="weui-flex ptx-me">
+              <view class="weui-flex__item ptx-current-hasband">
+                <image class="user-avatar" src="{{ current[0].avatar }}" background-size="cover"/>
+                <view class="userinfo">({{current[0].role}}){{ current[0].name}} </view>
+              </view>
+              <view class="weui-flex__item ptx-current-wife">
+                <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ current[1].avatar }}" background-size="cover"/>
+                <view class="userinfo">({{current[1].role}}){{ current[1].name}}</view>
+              </view>
+            </view>
+
+            </view>
+            <view class="weui-panel__ft">
+              <view class="weui-flex">
+                <view class="weui-flex__item ptx-progress">
+                  <view class="weui-progress">
+                    <view class="weui-progress__bar">
+                        <progress percent="30" stroke-width="5" />
+                    </view>
+                  </view>
+                </view>
+                <view class="weui-flex__item ptx-location">
+                  <text class="font_26">北京市海淀区西二旗铭科苑 <text class="iconfont icon-coordinates_fill" /></text>
+                </view>
+
+              </view>
+            </view>
+        </view>
+
+        <view class="weui-panel">
+          <view class="weui-panel__hd">基本资料</view>
+          <view class="weui-panel__bd ptx-current-userinfo">
+            <view><text>名</text>{{current[0].name}}</view>
+            <view><text>字</text>文明</view>
+            <view><text>生</text>1982/2/7</view>
+            <view><text>传</text>如果你无法简洁的表达你的想法，那只说明你还不够了解它。</view>
+          </view>
+      </view>
+    </view>
+
+    <view class="page__ft">
+      <view class="weui-flex ptx-user-group">
+        <view class="weui-flex__item ptx-user">
+          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[0].avatar }}" background-size="cover"/>
+          <view class="userinfo">({{children[0].role}}){{ children[0].name}}</view>
+        </view>
+        <view class="weui-flex__item ptx-user">
+          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[1].avatar }}" background-size="cover"/>
+          <view class="userinfo">({{children[1].role}}){{ children[1].name}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="weui-loadmore">
+        <view wx:if="{{this.loading}}" class="weui-loading"></view>
+        <view class="weui-loadmore__tips ptx-load-more">向下拖动看更多</view>
+    </view>
+  </view>
 </template>
 
 <script>
@@ -26,19 +204,144 @@ import { connect } from 'wepy-redux';
 @connect({})
 export default class Show extends wepy.page {
   config = {
-    navigationBarTitleText: '查看 - 谱天下'
+    navigationBarTitleText: '个人资料 - 谱天下',
+    enablePullDownRefresh: true,
+    onReachBottomDistance: 50
   };
   components = {};
 
   mixins = [];
 
-  data = {};
+  data = {
+    parents: [
+      {
+        role: '父',
+        name: '良系',
+        avatar: '../../images/man.jpg'
+      },
+      {
+        role: '母',
+        name: '春秀',
+        avatar: '../../images/lady.jpg'
+      }
+    ],
+    current: [
+      {
+        role: '夫',
+        name: '作平',
+        avatar: '../../images/hasband.jpg'
+      },
+      {
+        role: '妻',
+        name: '范氏',
+        avatar: '../../images/wife.jpg'
+      }
+    ],
+    children: [
+      {
+        role: '子',
+        name: '善凯',
+        avatar: '../../images/boy.jpg'
+      },
+      {
+        role: '子',
+        name: '善策',
+        avatar: '../../images/man.jpg'
+      }
+    ],
+    loading: false
+  };
 
   computed = {};
 
   methods = {};
 
   events = {};
+
+  onPullDownRefresh() {
+    // console.log('test. onPullDownRefreshaa');
+    wx.stopPullDownRefresh();
+    this.loading = false;
+    this.parents = [
+      {
+        role: '父',
+        name: '会金',
+        avatar: '../../images/man.jpg'
+      },
+      {
+        role: '母',
+        name: '吴氏',
+        avatar: '../../images/lady.jpg'
+      }
+    ];
+    this.current = [
+      {
+        role: '父',
+        name: '良系',
+        avatar: '../../images/man.jpg'
+      },
+      {
+        role: '母',
+        name: '春秀',
+        avatar: '../../images/lady.jpg'
+      }
+    ];
+    this.children = [
+      {
+        role: '夫',
+        name: '作平',
+
+        avatar: '../../images/hasband.jpg'
+      },
+      {
+        role: '妻',
+        name: '范氏',
+        avatar: '../../images/wife.jpg'
+      }
+    ];
+  }
+
+  onReachBottom() {
+    console.log('reach bottom');
+    this.parents = [
+      {
+        role: '父',
+        name: '良系',
+        avatar: '../../images/man.jpg'
+      },
+      {
+        role: '母',
+        name: '春秀',
+        avatar: '../../images/lady.jpg'
+      }
+    ];
+    this.current = [
+      {
+        role: '夫',
+        name: '作平',
+
+        avatar: '../../images/hasband.jpg'
+      },
+      {
+        role: '妻',
+        name: '范氏',
+        avatar: '../../images/wife.jpg'
+      }
+    ];
+    this.children = [
+      {
+        role: '子',
+        name: '善凯',
+        avatar: '../../images/boy.jpg'
+      },
+      {
+        role: '子',
+        name: '善策',
+        avatar: '../../images/man.jpg'
+      }
+    ];
+    this.loading = false;
+  }
 
   onLoad() {
     console.log('zone index');
@@ -49,6 +352,7 @@ export default class Show extends wepy.page {
     //   }
     //   self.$apply();
     // });
+    this.loading = false;
   }
 }
 </script>

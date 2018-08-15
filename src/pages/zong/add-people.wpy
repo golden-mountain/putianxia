@@ -6,37 +6,181 @@
   flex-direction: column;
   align-items: center;
 }
-
-.userinfo-avatar {
-  width: 120rpx;
-  height: 120rpx;
-  border-radius: 50%;
-}
-
-.userinfo-nickname {
-  color: #aaa;
-}
-.search-me {
-  margin-top: 240rpx;
-}
 </style>
 
 
 
 <template>
   <view class="page">
-    <view class="page__hd">
-      <view class="userinfo">
-        <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-        <view class="userinfo-nickname">{{ userInfo.nickName }}</view>
+
+
+    <view class="page__bd">
+      <view class="weui-cells__title">搜索父亲</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-search-bar">
+            <view class="weui-search-bar__form">
+                <view class="weui-search-bar__box">
+                    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+                    <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
+                    <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
+                        <icon type="clear" size="14"></icon>
+                    </view>
+                </view>
+                <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
+                    <icon class="weui-icon-search" type="search" size="14"></icon>
+                    <view class="weui-search-bar__text">父亲名、字或号</view>
+                </label>
+            </view>
+            <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+        </view>
+      </view>
+
+      <view class="weui-cells__title">照片资料</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__bd" style="padding-top:20rpx">
+              <view class="weui-uploader__files" id="uploaderFiles">
+                  <block wx:for="{{files}}" wx:key="*this">
+                      <view class="weui-uploader__file" bindtap="previewImage" id="{{item}}">
+                          <image class="weui-uploader__img" src="{{item}}" mode="aspectFill" />
+                      </view>
+                  </block>
+                  <view class="weui-uploader__file weui-uploader__file_status">
+                      <image class="weui-uploader__img" src="../images/pic_160.png" mode="aspectFill" />
+                      <view class="weui-uploader__file-content">50%</view>
+                  </view>
+              </view>
+              <view class="weui-uploader__input-box">
+                  <view class="weui-uploader__input" bindtap="chooseImage"></view>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <view class="weui-cells__title">基本资料</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">名</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="名"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">字</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="字"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">号</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="号"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">讳</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="讳"/>
+              </view>
+          </view>
+        </view>
+
+        <view class="weui-cells__title">出生信息</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">生</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="1982/2/7 13:40"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_select">
+              <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                  <view class="weui-label">祖籍</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <picker bindchange="bindCountryChange" value="{{placeIndex}}" range="{{places}}">
+                      <view class="weui-select weui-select_in-select-after">{{places[placeIndex]}}</view>
+                  </picker>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">殁</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="2000/1/1 13:00"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">坟</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="八宝山"/>
+              </view>
+          </view>
+
+         <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">传记</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <textarea class="weui-textarea" placeholder="请输入文本" style="height: 3.3em" />
+                  <view class="weui-textarea-counter">0/200</view>
+              </view>
+          </view>
+        </view>
+
+        <view class="weui-cells__title">资历信息</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">学历</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="bindCountryChange" value="{{placeIndex}}" range="{{places}}">
+                        <view class="weui-select weui-select_in-select-after">{{places[placeIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+        </view>
+
+
+        <checkbox-group bindchange="bindAgreeChange">
+            <label class="weui-agree" for="weuiAgree">
+                <view class="weui-agree__text">
+                    <checkbox class="weui-agree__checkbox" id="weuiAgree" value="agree" checked="{{isAgree}}" />
+                    <view class="weui-agree__checkbox-icon">
+                        <icon class="weui-agree__checkbox-icon-check" type="success_no_circle" size="9" wx:if="{{isAgree}}"></icon>
+                    </view>
+                    保密敏感资料
+                </view>
+            </label>
+        </checkbox-group>
+
+        <view class="weui-btn-area">
+            <button class="weui-btn" type="primary" bindtap="showTopTips">保存资料</button>
+        </view>
+
       </view>
     </view>
 
-    <view class="page__bd">
-      add people
-    </view>
-
-  </view>
 
 </template>
 
@@ -49,7 +193,7 @@ import SearchBar from '@/components/searchbar'; // alias example
 @connect({})
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: '创建户 - 谱天下'
+    navigationBarTitleText: '添加族人 - 谱天下'
   };
   components = {
     searchbar: SearchBar
@@ -59,7 +203,11 @@ export default class Index extends wepy.page {
 
   data = {
     focus: true,
-    keywords: ''
+    keywords: '',
+    files: [],
+    places: ['中国', '美国', '英国'],
+    placeIndex: 0,
+    isAgree: false
   };
 
   computed = {};
@@ -72,6 +220,33 @@ export default class Index extends wepy.page {
 
     searchDone(e) {
       console.log('search', e.detail.value);
+    },
+
+    chooseImage: function(e) {
+      var that = this;
+      wx.chooseImage({
+        sizeType: ['original', 'compressed'], // 可以指定是原图还是压缩图，默认二者都有
+        sourceType: ['album', 'camera'], // 可以指定来源是相册还是相机，默认二者都有
+        success: function(res) {
+          // 返回选定照片的本地文件路径列表，tempFilePath可以作为img标签的src属性显示图片
+          that.setData({
+            files: that.data.files.concat(res.tempFilePaths)
+          });
+        }
+      });
+    },
+    previewImage: function(e) {
+      wx.previewImage({
+        current: e.currentTarget.id, // 当前显示图片的http链接
+        urls: this.data.files // 需要预览的图片http链接列表
+      });
+    },
+    bindCountryChange: function(e) {
+      console.log('picker country 发生选择改变，携带值为', e.detail.value);
+
+      this.setData({
+        placeIndex: e.detail.value
+      });
     }
   };
 
