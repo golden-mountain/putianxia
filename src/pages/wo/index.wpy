@@ -1,4 +1,7 @@
 <style lang="less">
+@import '../../styles/variables/font.less';
+@import '../../styles/variables/color.less';
+
 .userinfo {
   margin-top: 100rpx;
   display: flex;
@@ -24,31 +27,145 @@
   border: 0;
   padding: 0;
 }
+
+.ptx-search-bar-top {
+  padding: 10rpx 30rpx;
+  background: transparent;
+  border: 0;
+}
+
+// current user
+.ptx-user-profile {
+  font-size: @ptxFont26;
+  padding: 30rpx;
+  .ptx-avatar {
+    flex: 0.5;
+    .ptx-name {
+      font-size: @ptxFont32;
+      text-align: center;
+      .iconfont {
+        font-size: @ptxFont26;
+        color: @weuiColorPrimary;
+      }
+    }
+    image {
+      width: 250rpx;
+      height: 300rpx;
+      padding-right: 30rpx;
+    }
+  }
+  .ptx-user-info {
+    .title {
+      font-size: @ptxFont32;
+      font-weight: bold;
+    }
+    .descritpion {
+      color: @weuiTextColorGray;
+    }
+  }
+}
+
+.ptx-ancestors {
+  font-size: @ptxFont26;
+}
 </style>
 
 
 
 <template>
-  <view class="page">
-    <view class="page__hd">
-      <view class="userinfo">
-        <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-        <view class="userinfo-nickname">欢迎您, {{ userInfo.nickName }}</view>
+    <view class="page">
+      <block wx:if="{{!bindedMyInfo}}">
+        <view class="page__hd">
+          <view class="userinfo">
+            <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
+            <view class="userinfo-nickname">欢迎您, {{ userInfo.nickName }}</view>
+          </view>
+        </view>
+
+        <view class="page__bd ptx-searchbar__area">
+          <view class="weui-cells__title">寻找并关联自己</view>
+          <searchbarInBody
+            placeholder="输入名字"
+            btn="搜索"
+            :keywords="keywords"
+            :focus="focus"
+            bindchange="searchChange"
+            bindsearch="searchDone"
+          />
+        </view>
+
+    </block>
+
+    <block wx:else>
+      <view class="page__hd">
+        <view class="page__hd ptx-search-bar-top">
+          <searchbarAsHead
+            placeholder="良系>作平 或 作平,作苏"
+            btn=""
+            :keywords="keywords"
+            :focus="focus"
+            bindchange="searchChange"
+            bindsearch="searchDone"
+          />
+        </view>
       </view>
-    </view>
 
-    <view class="page__bd ptx-searchbar__area">
-      <view class="weui-cells__title">寻找并关联自己</view>
-      <searchbar
-        placeholder="输入名字"
-        btn="搜索"
-        :keywords="keywords"
-        :focus="focus"
-        bindchange="searchChange"
-        bindsearch="searchDone"
-      />
-    </view>
+      <view class="page__bd">
+        <view class="weui-panel weui-panel_access">
+          <view class="weui-panel__bd weui-flex ptx-user-profile">
+            <view class="weui-flex__item ptx-avatar">
+              <image src="../../images/boy.jpg"/>
+              <view class="ptx-name">作平 <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
+            </view>
+            <view class="weui-flex__item ptx-user-info">
+              <view class="title">我的资料</view>
+              <view>名：李xxx</view>
+              <view>字：xx</view>
+              <view>生：1948/3/1 (民国癸末大概十二年二月初四)</view>
+              <view class="descritpion">传：如果你无法简洁的表达你的想法，那只说明你还不够了解它。
+    -- 阿尔伯特·爱因斯坦</view>
+            </view>
+          </view>
+        </view>
 
+
+        <view class="weui-panel weui-panel_access">
+          <view class="weui-panel__hd">我的父辈</view>
+          <view class="weui-panel__bd">
+              <view class="weui-media-box">
+                <navigator url="/pages/zong/show">
+                  <view class="ptx-ancestors">远灌 > 世枢 > 运煌 > 统培 > 会金 > 良系</view>
+                </navigator>
+              </view>
+          </view>
+        </view>
+
+        <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__hd">我关注的人</view>
+            <view class="weui-panel__bd">
+              <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                      <image class="weui-media-box__thumb" src="../../images/man.jpg" />
+                  </view>
+                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                      <view class="weui-media-box__title">远灌</view>
+                      <view class="weui-media-box__desc">忌日：12月13日 </view>
+                  </view>
+              </navigator>
+
+              <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                      <image class="weui-media-box__thumb" src="../../images/man.jpg" />
+                  </view>
+                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                      <view class="weui-media-box__title">世枢</view>
+                      <view class="weui-media-box__desc">生日：2月3 日</view>
+                  </view>
+              </navigator>
+            </view>
+        </view>
+      </view>
+    </block>
   </view>
 
 </template>
@@ -65,7 +182,8 @@ export default class Index extends wepy.page {
     navigationBarTitleText: '我 - 谱天下'
   };
   components = {
-    searchbar: SearchBar
+    searchbarAsHead: SearchBar,
+    searchbarInBody: SearchBar
   };
 
   mixins = [];
@@ -75,7 +193,8 @@ export default class Index extends wepy.page {
       nickName: '加载中...'
     },
     focus: true,
-    keywords: ''
+    keywords: '',
+    bindedMyInfo: false
   };
 
   computed = {};
@@ -88,6 +207,11 @@ export default class Index extends wepy.page {
 
     searchDone(e) {
       console.log('search', e.detail.value);
+    },
+
+    onProfileChange() {
+      console.log('profile changed');
+      wx.navigateTo({ url: '/pages/zong/add-people' });
     }
   };
 

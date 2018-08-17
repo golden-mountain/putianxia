@@ -109,11 +109,11 @@
     <view class="page__hd">
       <view class="weui-flex ptx-user-group">
         <view class="weui-flex__item ptx-user">
-          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
+          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
           <view class="userinfo">({{parents[0].role}}){{ parents[0].name}}</view>
         </view>
         <view class="weui-flex__item ptx-user">
-          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[1].avatar }}" background-size="cover"/>
+          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[1].avatar }}" background-size="cover"/>
           <view class="userinfo">({{parents[1].role}}){{ parents[1].name}}</view>
         </view>
       </view>
@@ -121,68 +121,68 @@
     </view>
 
     <view class="page__bd ">
-        <view class="weui-panel weui-panel_access  ptx-current">
-          <view class="weui-panel__bd">
-            <view class="weui-flex ptx-actions">
-              <view class="weui-flex__item ">
-                <text class="font_26 ptx-link">第11世 <text class="iconfont icon-mine font-26" />这个是我</text>
-              </view>
-              <view class="weui-flex__item ptx-location">
-                <text class="iconfont icon-like" />
-                <text class="iconfont icon-share" />
-              </view>
+      <view class="weui-panel weui-panel_access  ptx-current">
+        <view class="weui-panel__bd">
+          <view class="weui-flex ptx-actions">
+            <view class="weui-flex__item ">
+              <text class="font_26 ptx-link">第11世 <text class="iconfont icon-mine font-26" />这个是我</text>
+            </view>
+            <view class="weui-flex__item ptx-location">
+              <text class="iconfont icon-like" />
+              <text class="iconfont icon-share" />
             </view>
           </view>
-
-          <view class="weui-panel__bd">
-            <view class="weui-flex ptx-me">
-              <view class="weui-flex__item ptx-current-hasband">
-                <image class="user-avatar" src="{{ current[0].avatar }}" background-size="cover"/>
-                <view class="userinfo">({{current[0].role}}){{ current[0].name}} </view>
-              </view>
-              <view class="weui-flex__item ptx-current-wife">
-                <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ current[1].avatar }}" background-size="cover"/>
-                <view class="userinfo">({{current[1].role}}){{ current[1].name}}</view>
-              </view>
-            </view>
-
-            </view>
-            <view class="weui-panel__ft">
-              <view class="weui-flex">
-                <view class="weui-flex__item ptx-progress">
-                  <view class="weui-progress">
-                    <view class="weui-progress__bar">
-                        <progress percent="30" stroke-width="5" />
-                    </view>
-                  </view>
-                </view>
-                <view class="weui-flex__item ptx-location">
-                  <text class="font_26">北京市海淀区西二旗铭科苑 <text class="iconfont icon-coordinates_fill" /></text>
-                </view>
-
-              </view>
-            </view>
         </view>
 
-        <view class="weui-panel">
-          <view class="weui-panel__hd">基本资料</view>
-          <view class="weui-panel__bd ptx-current-userinfo">
-            <view><text>名</text>{{current[0].name}}</view>
-            <view><text>字</text>文明</view>
-            <view><text>生</text>1982/2/7</view>
-            <view><text>传</text>如果你无法简洁的表达你的想法，那只说明你还不够了解它。</view>
+        <view class="weui-panel__bd">
+          <view class="weui-flex ptx-me">
+            <view class="weui-flex__item ptx-current-hasband">
+              <image @tap="gotoUser" class="user-avatar" src="{{ current[0].avatar }}" background-size="cover"/>
+              <view class="userinfo">({{current[0].role}}){{ current[0].name}} </view>
+            </view>
+            <view class="weui-flex__item ptx-current-wife">
+              <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ current[1].avatar }}" background-size="cover"/>
+              <view class="userinfo">({{current[1].role}}){{ current[1].name}}</view>
+            </view>
           </view>
+
+          </view>
+          <view class="weui-panel__ft">
+            <view class="weui-flex">
+              <view class="weui-flex__item ptx-progress">
+                <view class="weui-progress">
+                  <view class="weui-progress__bar">
+                      <progress percent="30" stroke-width="5" />
+                  </view>
+                </view>
+              </view>
+              <view class="weui-flex__item ptx-location">
+                <text class="font_26">北京市海淀区西二旗铭科苑 <text class="iconfont icon-coordinates_fill" /></text>
+              </view>
+
+            </view>
+          </view>
+      </view>
+
+      <view class="weui-panel">
+        <view class="weui-panel__hd">基本资料</view>
+        <view class="weui-panel__bd ptx-current-userinfo">
+          <view><text>名</text>{{current[0].name}}</view>
+          <view><text>字</text>文明</view>
+          <view><text>生</text>1982/2/7</view>
+          <view><text>传</text>如果你无法简洁的表达你的想法，那只说明你还不够了解它。</view>
+        </view>
       </view>
     </view>
 
     <view class="page__ft">
       <view class="weui-flex ptx-user-group">
         <view class="weui-flex__item ptx-user">
-          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[0].avatar }}" background-size="cover"/>
+          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[0].avatar }}" background-size="cover"/>
           <view class="userinfo">({{children[0].role}}){{ children[0].name}}</view>
         </view>
         <view class="weui-flex__item ptx-user">
-          <image class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[1].avatar }}" background-size="cover"/>
+          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[1].avatar }}" background-size="cover"/>
           <view class="userinfo">({{children[1].role}}){{ children[1].name}}</view>
         </view>
       </view>
@@ -254,7 +254,12 @@ export default class Show extends wepy.page {
 
   computed = {};
 
-  methods = {};
+  methods = {
+    gotoUser() {
+      console.log('goto user');
+      wx.navigateTo({ url: '/pages/wo/index' });
+    }
+  };
 
   events = {};
 
