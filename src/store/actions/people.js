@@ -1,5 +1,6 @@
 import { ACTIVE_SEARCH_PEOPLE, SEARCH_PEOPLE } from '../types/people';
 import { createAction } from 'redux-actions';
+import { searchByName } from '../../services/people';
 
 export const activePeople = createAction(ACTIVE_SEARCH_PEOPLE, activeID => {
   // console.log('active id', activeID);
@@ -10,6 +11,8 @@ export const activePeople = createAction(ACTIVE_SEARCH_PEOPLE, activeID => {
 
 export const searchPeople = createAction(SEARCH_PEOPLE, keywords => {
   // console.log('active id', activeID);
+  const result = searchByName('any');
+  console.log(result);
   return {
     people: {
       keyword1: [
