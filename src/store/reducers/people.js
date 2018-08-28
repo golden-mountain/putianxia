@@ -10,6 +10,7 @@ export default handleActions(
       };
     },
     [SEARCH_PEOPLE](state, action) {
+      console.log(state, action);
       return {
         ...state,
         ...action.payload.people

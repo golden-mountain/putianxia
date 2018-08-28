@@ -2,13 +2,15 @@ import wepy from 'wepy';
 
 export default {
   apiHost: 'https://api.lizuoping.xyz',
-  request(url, query = {}, method = 'GET') {
+  request({ method, url, query, params }) {
+    url = url || '/db/data/cypher';
     return wepy.request({
       url: this.apiHost + url,
       method,
       data: {
         query,
-        resultDataContents: ['row', 'graph']
+        resultDataContents: ['row', 'graph'],
+        params
       },
       header: {
         'content-type': 'application/json',
@@ -16,13 +18,16 @@ export default {
       }
     });
   },
-  post(url, query = {}) {
-    return this.request(url, query, 'POST');
+  post(opts) {
+    opts.method = 'POST';
+    return this.request(opts);
   },
-  get(url, query = {}) {
-    return this.request(url, query, 'GET');
+  get(opts) {
+    opts.method = 'GET';
+    return this.request(opts);
   },
-  delete(url, query = {}) {
-    return this.request(url, query, 'DELETE');
+  delete(opts) {
+    opts.method = 'DELETE';
+    return this.request(opts);
   }
 };
