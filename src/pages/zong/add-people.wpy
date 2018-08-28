@@ -205,16 +205,13 @@
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
-import SearchBar from '@/components/searchbar'; // alias example
 
 @connect({})
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: '添加族人 - 谱天下'
   };
-  components = {
-    searchbar: SearchBar
-  };
+  components = {};
 
   mixins = [];
 
@@ -237,15 +234,6 @@ export default class Index extends wepy.page {
   computed = {};
 
   methods = {
-    searchChange(e) {
-      console.log(e);
-      this.keywords = e.detail.value;
-    },
-
-    searchDone(e) {
-      console.log('search', e.detail.value);
-    },
-
     chooseImage: function(e) {
       var that = this;
       wx.chooseImage({

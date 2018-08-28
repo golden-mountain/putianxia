@@ -36,10 +36,6 @@
       <view class="weui-cells__title">寻找我自己</view>
       <searchbar
         placeholder="输入名字"
-        :keyword="keywords"
-        :focus="focus"
-        bindchange="searchChange"
-        bindsearch="searchDone"
       />
     </view>
 
@@ -68,22 +64,12 @@ export default class Index extends wepy.page {
     userInfo: {
       nickName: '加载中...'
     },
-    focus: true,
-    keywords: ''
+    focus: true
   };
 
   computed = {};
 
-  methods = {
-    searchChange(e) {
-      console.log(e);
-      this.keywords = e.detail.value;
-    },
-
-    searchDone(e) {
-      console.log('search', e.detail.value);
-    }
-  };
+  methods = {};
 
   events = {};
 

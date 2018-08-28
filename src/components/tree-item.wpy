@@ -34,11 +34,11 @@
 }
 </style>
 <template>
-    <view class="weui-flex ptx-tree-item {{ activeID == item.num ? 'ptx-gen-active' : ''}} " @tap="activePeople({{item.num}})">
-      <view class="weui-flex__item ptx-gen-num"><view class="">{{item.num}}</view></view>
-      <view class="weui-flex__item ptx-name"><view class="placeholder">{{item.name}}</view></view>
+    <view class="weui-flex ptx-tree-item {{ activeID == item.id ? 'ptx-gen-active' : ''}} " @tap="activePeople({{item.id}})">
+      <view class="weui-flex__item ptx-gen-num"><view class="">{{item.id}}</view></view>
+      <view class="weui-flex__item ptx-name"><view class="placeholder">{{item['名']}}</view></view>
       <!-- <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view> -->
-      <view class="weui-flex__item ptx-icons" @tap="gotoPeople({{item.num}})"><text class="iconfont icon-browse" /></view>
+      <view class="weui-flex__item ptx-icons" @tap="gotoPeople({{item.id}})"><text class="iconfont icon-browse" /></view>
     </view>
 </template>
 <script>

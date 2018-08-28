@@ -26,7 +26,7 @@
     </view>
 
     <view class="page__bd">
-        <view class="weui-cells__title">{{ searchedPeople.length }}个人同名,请选择查看</view>
+        <view class="weui-cells__title">搜索到{{ searchedPeople.length }}个人,请选择查看</view>
         <view class="weui-cells weui-cells_after-title">
             <block wx:for-items="{{searchedPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id">
               <navigator url="/pages/search/show" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
@@ -94,10 +94,9 @@ export default class Index extends wepy.page {
   events = {};
 
   onLoad() {
-    if (this.searchedKeywords.length) {
-      this.methods.searchPeople(this.searchedKeywords);
-    }
-
+    // if (this.searchedKeywords.length) {
+    //   this.methods.searchPeople(this.searchedKeywords);
+    // }
     // if (this.searchedPeople.length <= 2) {
     //   wx.navigateTo({ url: '/pages/search/show' });
     // }

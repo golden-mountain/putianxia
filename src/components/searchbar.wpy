@@ -9,7 +9,7 @@
           <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
           <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{searchedKeywords}}" bindconfirm="search" @input="inputChange" focus="{{inputShowed}}" confirm-type="搜索" />
           <view class="weui-icon-clear" wx:if="{{keywords.length > 0}}" bindtap="clearInput">
-            <icon type="clear" size="14"></icon>
+            <icon type="clear" size="14" @tap="clearInput"></icon>
           </view>
         </view>
       </view>
@@ -22,7 +22,7 @@
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 import validate from '../mixins/validate';
-import { setSearchKeywords } from '@/store/actions/people';
+import { setSearchKeywords, searchPeople } from '@/store/actions/people';
 
 @connect(
   {
@@ -31,7 +31,8 @@ import { setSearchKeywords } from '@/store/actions/people';
     }
   },
   {
-    setSearchKeywords
+    setSearchKeywords,
+    searchPeople
   }
 )
 export default class SearchBar extends wepy.component {
@@ -65,12 +66,14 @@ export default class SearchBar extends wepy.component {
     blur() {},
     clearInput() {
       this.keywords = '';
+      this.methods.setSearchKeywords([]);
     },
     cancelSearch() {},
     focus() {},
     inputChange(e) {
       // console.log('changed', e);
       this.keywords = e.detail.value;
+      this.methods.setSearchKeywords(this.keywords.split(','));
     },
     search() {
       const msgs = this.validateKeywords(this.keywords);
@@ -79,16 +82,15 @@ export default class SearchBar extends wepy.component {
         wx.showModal(msgs);
         return false;
       }
-      const keywords = this.keywords.split(',');
-      this.methods.setSearchKeywords(keywords);
-      // if (this.searchedKeywords.length) {
-      //   this.methods.searchPeople(keywords);
-      // }
-      wx.navigateTo({ url: '/pages/search/index?keywords=' + this.keywords });
+      if (this.keywords.length) {
+        this.methods.searchPeople(this.keywords.split(','));
+        wx.navigateTo({ url: '/pages/search/show' });
+      }
     }
   };
 
   onLoad() {
+    if (this.searchedKeywords) this.keywords = this.searchedKeywords;
     this.methods.search.bind(this);
     // console.log(this.btn, 'button value');
     // console.log(this);

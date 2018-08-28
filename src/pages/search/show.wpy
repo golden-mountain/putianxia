@@ -12,10 +12,6 @@
       <searchbar
         placeholder="良系>作平 或 作平,作苏"
         btn=""
-        :keywords="keywords"
-        :focus="focus"
-        bindchange="searchChange"
-        bindsearch="searchDone"
       />
     </view>
 
@@ -43,7 +39,7 @@
               <view class="weui-flex__item" >
                 <familyTree1 :treeItems.sync="people1" />
               </view>
-              <view class="weui-flex__item" >
+              <view class="weui-flex__item" wx:if="{{ people2 }}" >
                 <familyTree2 :treeItems.sync="people2" style="background: #eee;"/>
               </view>
             </view>
@@ -62,22 +58,31 @@ import { connect } from 'wepy-redux';
 import SearchBar from '@/components/searchbar'; // alias example
 import Tree from '@/components/tree'; // alias example
 
-import { activePeople, searchPeople } from '@/store/actions/people';
+import { activePeople } from '@/store/actions/people';
 
 @connect(
   {
     people1(state) {
-      // console.log(state.people.keyword1, 'new state');
-      return state.people.keyword1;
+      const values = Object.values(state.people.searchedPeople);
+      if (values.length) {
+        return values[0];
+      } else {
+        return [];
+      }
     },
     people2(state) {
       // console.log(state, 'new state');
-      return state.people.keyword2;
+      const values = Object.values(state.people.searchedPeople);
+      if (values.length > 0) {
+        return values[1];
+      } else {
+        return [];
+      }
     }
   },
   {
-    activePeople,
-    searchPeople
+    activePeople
+    // searchPeople
   }
 )
 export default class Index extends wepy.page {
@@ -95,21 +100,12 @@ export default class Index extends wepy.page {
 
   data = {
     focus: true,
-    keywords: '',
     icon60: '../../images/avatar.jpg'
   };
 
   computed = {};
 
-  methods = {
-    searchChange(e) {
-      this.keywords = e.detail.value;
-    }
-
-    // searchDone(e) {
-    //   console.log('search', e.detail.value);
-    // }
-  };
+  methods = {};
 
   events = {};
 
@@ -117,7 +113,7 @@ export default class Index extends wepy.page {
     // console.log(this);
     // console.log(activePeople, 'thos');
     // activePeople(this.active);
-    this.methods.searchPeople(['作芬', '作平']);
+    // this.methods.searchPeople(['作芬', '作平']);
   }
 
   onPullDownRefresh() {

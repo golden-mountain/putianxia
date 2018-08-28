@@ -87,10 +87,6 @@
           <searchbarInBody
             placeholder="输入名字"
             btn="搜索"
-            :keywords="keywords"
-            :focus="focus"
-            bindchange="searchChange"
-            bindsearch="searchDone"
           />
         </view>
 
@@ -193,22 +189,12 @@ export default class Index extends wepy.page {
       nickName: '加载中...'
     },
     focus: true,
-    keywords: '',
     bindedMyInfo: false
   };
 
   computed = {};
 
   methods = {
-    searchChange(e) {
-      console.log(e);
-      this.keywords = e.detail.value;
-    },
-
-    searchDone(e) {
-      console.log('search', e.detail.value);
-    },
-
     onProfileChange() {
       console.log('profile changed');
       wx.navigateTo({ url: '/pages/zong/add-people' });
