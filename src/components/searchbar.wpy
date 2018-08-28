@@ -7,7 +7,7 @@
       <view class="weui-search-bar__form">
         <view class="weui-search-bar__box  ptx-input">
           <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-          <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{keywords}}" bindconfirm="search" @input="inputChange" focus="{{inputShowed}}" confirm-type="搜索" />
+          <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{searchedKeywords}}" bindconfirm="search" @input="inputChange" focus="{{inputShowed}}" confirm-type="搜索" />
           <view class="weui-icon-clear" wx:if="{{keywords.length > 0}}" bindtap="clearInput">
             <icon type="clear" size="14"></icon>
           </view>
@@ -20,9 +20,20 @@
 
 <script>
 import wepy from 'wepy';
+import { connect } from 'wepy-redux';
 import validate from '../mixins/validate';
-// import { connect } from 'wepy-redux'
+import { setSearchKeywords } from '@/store/actions/people';
 
+@connect(
+  {
+    searchedKeywords(state) {
+      return state.people.keywords ? state.people.keywords.join(',') : '';
+    }
+  },
+  {
+    setSearchKeywords
+  }
+)
 export default class SearchBar extends wepy.component {
   props = {
     btn: {
@@ -32,11 +43,6 @@ export default class SearchBar extends wepy.component {
     focus: {
       type: Boolean,
       value: false
-    },
-    keywords: {
-      type: String,
-      value: '',
-      twoWay: true
     },
 
     placeholder: {
@@ -48,7 +54,8 @@ export default class SearchBar extends wepy.component {
   mixins = [validate];
 
   data = {
-    inputShowed: false
+    inputShowed: false,
+    keywords: ''
   };
   events = {};
 
@@ -65,19 +72,26 @@ export default class SearchBar extends wepy.component {
       // console.log('changed', e);
       this.keywords = e.detail.value;
     },
-    search(e) {
+    search() {
       const msgs = this.validateKeywords(this.keywords);
-      console.log(msgs);
+      // console.log(this.methods);
       if (msgs) {
         wx.showModal(msgs);
         return false;
       }
-      wx.navigateTo({ url: '/pages/search/index' });
+      const keywords = this.keywords.split(',');
+      this.methods.setSearchKeywords(keywords);
+      // if (this.searchedKeywords.length) {
+      //   this.methods.searchPeople(keywords);
+      // }
+      wx.navigateTo({ url: '/pages/search/index?keywords=' + this.keywords });
     }
   };
 
   onLoad() {
-    console.log(this.btn, 'button value');
+    this.methods.search.bind(this);
+    // console.log(this.btn, 'button value');
+    // console.log(this);
   }
 }
 </script>

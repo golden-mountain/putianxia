@@ -56,7 +56,7 @@ import SearchBar from '@/components/searchbar'; // alias example
 @connect({})
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: '万世谱'
+    navigationBarTitleText: '谱天下'
   };
   components = {
     searchbar: SearchBar

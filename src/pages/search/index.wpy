@@ -26,19 +26,17 @@
     </view>
 
     <view class="page__bd">
-        <view class="weui-cells__title">2个人同名,请选择查看</view>
+        <view class="weui-cells__title">{{ searchedPeople.length }}个人同名,请选择查看</view>
         <view class="weui-cells weui-cells_after-title">
-            <navigator url="/pages/search/show?name=a" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-                <view class="weui-cell__bd "><text class="font_26">会金 > 良系 > 作平</text> </view>
-                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-            </navigator>
-            <navigator url="/pages/search/show?name=b" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-                <view class="weui-cell__bd "><text class="font_26">会钦 > 良侃 > 作平</text></view>
-                <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-            </navigator>
+            <block wx:for-items="{{searchedPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+              <navigator url="/pages/search/show" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                  <view class="weui-cell__bd "><text class="font_26">{{ item[0] }}</text> </view>
+                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+              </navigator>
+            </block>
         </view>
 
-        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="create">没有找到, 创建名字</button>
+        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="create" wx:if="{{ !searchedPeople.length }}">没有找到, 创建名字</button>
 
     </view>
 
@@ -51,8 +49,25 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 import SearchBar from '@/components/searchbar'; // alias example
+import { searchPeople } from '@/store/actions/people';
 
-@connect({})
+@connect(
+  {
+    searchedKeywords(state) {
+      return state.people.keywords;
+    },
+    searchedPeople(state) {
+      if (state.people.searchedPeople) {
+        return Object.entries(state.people.searchedPeople);
+      } else {
+        return [];
+      }
+    }
+  },
+  {
+    searchPeople
+  }
+)
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: '搜索 - 谱天下'
@@ -64,9 +79,6 @@ export default class Index extends wepy.page {
   mixins = [];
 
   data = {
-    userInfo: {
-      nickName: '加载中...'
-    },
     focus: true,
     keywords: ''
   };
@@ -74,15 +86,6 @@ export default class Index extends wepy.page {
   computed = {};
 
   methods = {
-    searchChange(e) {
-      console.log(e);
-      this.keywords = e.detail.value;
-    },
-
-    searchDone(e) {
-      console.log('search', e.detail.value);
-    },
-
     create() {
       wx.navigateTo({ url: '/pages/zong/add-people' });
     }
@@ -91,13 +94,13 @@ export default class Index extends wepy.page {
   events = {};
 
   onLoad() {
-    let self = this;
-    this.$parent.getUserInfo(function(userInfo) {
-      if (userInfo) {
-        self.userInfo = userInfo;
-      }
-      self.$apply();
-    });
+    if (this.searchedKeywords.length) {
+      this.methods.searchPeople(this.searchedKeywords);
+    }
+
+    // if (this.searchedPeople.length <= 2) {
+    //   wx.navigateTo({ url: '/pages/search/show' });
+    // }
   }
 }
 </script>
