@@ -98,10 +98,7 @@
           <searchbarAsHead
             placeholder="良系>作平 或 作平,作苏"
             btn=""
-            :keywords="keywords"
-            :focus="focus"
-            bindchange="searchChange"
-            bindsearch="searchDone"
+
           />
         </view>
       </view>

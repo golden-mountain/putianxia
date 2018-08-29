@@ -10,7 +10,6 @@
   <view class="page">
     <view class="page__hd">
       <searchbar
-        placeholder="良系>作平 或 作平,作苏"
         btn=""
       />
     </view>
@@ -63,20 +62,23 @@ import { activePeople } from '@/store/actions/people';
 @connect(
   {
     people1(state) {
-      if (state.people.searchedPeople) {
-        const values = Object.values(state.people.searchedPeople);
+      if (state.people.compareingPeople) {
+        const values = Object.values(state.people.compareingPeople);
+        // console.log('values', values);
         if (values.length) {
-          return values[0];
+          return values[0][1];
         } else {
           return [];
         }
       }
     },
     people2(state) {
-      if (state.people.searchedPeople) {
-        const values = Object.values(state.people.searchedPeople);
-        if (values.length > 0) {
-          return values[1];
+      if (state.people.compareingPeople) {
+        const values = Object.values(state.people.compareingPeople);
+        // console.log('values', values);
+
+        if (values.length > 1) {
+          return values[1][1];
         } else {
           return [];
         }
@@ -96,8 +98,8 @@ import { activePeople } from '@/store/actions/people';
 )
 export default class Index extends wepy.page {
   config = {
-    navigationBarTitleText: '查看 - 谱天下',
-    enablePullDownRefresh: true
+    navigationBarTitleText: '查看 - 谱天下'
+    // enablePullDownRefresh: true
   };
   components = {
     searchbar: SearchBar,
@@ -134,9 +136,9 @@ export default class Index extends wepy.page {
     console.log(this.selectedPeople);
   }
 
-  onPullDownRefresh() {
-    // console.log('test. onPullDownRefreshaa');
-    wx.stopPullDownRefresh();
-  }
+  // onPullDownRefresh() {
+  // console.log('test. onPullDownRefreshaa');
+  // wx.stopPullDownRefresh();
+  // }
 }
 </script>

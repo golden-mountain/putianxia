@@ -53,7 +53,7 @@ export default class SearchBar extends wepy.component {
 
     placeholder: {
       type: String,
-      value: '请输入查询关键字'
+      value: '良系>作平 或 作平,作苏'
     }
   };
 

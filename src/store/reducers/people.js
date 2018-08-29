@@ -24,14 +24,11 @@ function formatSearchedResult(data) {
         ]
       }
       */
-  let obj = {},
-    sons = {};
+  let obj = {}, sons = {};
   if (data) {
     // let parentName = '', sonName = ''; //, grandName = '';
     data.forEach((v, i) => {
-      const son = v[0].data,
-        parent = v[1].data,
-        wife = v[2].data;
+      const son = v[0].data, parent = v[1].data, wife = v[2].data;
       let name = son.名;
 
       // if (parent && !parentName && sonName != name && parentName != name) {
@@ -138,6 +135,7 @@ export default handleActions(
     [SEARCH_PEOPLE](state, action) {
       // console.log(state, action);
       // construct data like
+      if (!action.payload.data.data) return state;
       const obj = formatSearchedResult(action.payload.data.data);
 
       let selectedPeople = {};

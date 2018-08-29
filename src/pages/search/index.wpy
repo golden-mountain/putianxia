@@ -32,13 +32,13 @@
                     <view class="weui-cell__ft weui-cell__ft_in-access"></view>
                 </navigator> -->
                 <label class="weui-cell weui-check__label" @tap="show">
-                    <!-- <checkbox class="weui-check" value="{{item.value}}" checked="{{item[0]}}"/> -->
+                    <!-- <checkbox class="weui-check" value="{{item.name}}" checked="{{item.checked}}"/> -->
 
-                    <view class="weui-cell__hd weui-check__hd_in-checkbox" capture-catch:tap="choose({{item}})">
+                    <view class="weui-cell__hd weui-check__hd_in-checkbox" capture-catch:tap="choose({{item.origin}})">
                         <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
                         <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{item.checked}}"></icon>
                     </view>
-                    <view class="weui-cell__bd">{{item[0]}}</view>
+                    <view class="weui-cell__bd">{{item.name}}</view>
                     <view class="weui-cell__ft weui-cell__ft_in-access"></view>
                 </label>
               </block>
@@ -48,7 +48,7 @@
         </view>
 
         <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="create" wx:if="{{ !searchedPeople.length }}">没有找到, 创建名字</button>
-        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="compare" wx:if="{{ comparingPeople.length }}">比较</button>
+        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="compare" wx:if="{{ comparingPeople.length }}">查看</button>
 
     </view>
 
@@ -69,14 +69,28 @@ import { searchPeople, selectSearchedPeople } from '@/store/actions/people';
       return state.people.keywords;
     },
     searchedPeople(state) {
+      // console.log(state.people);
       if (state.people.searchedPeople) {
-        return Object.entries(state.people.searchedPeople);
+        const entries = Object.entries(state.people.searchedPeople);
+        const newEntries = entries.map(v => {
+          let checked = false;
+          if (state.people.compareingPeople) {
+            checked = state.people.compareingPeople.find(item => {
+              return item[0] === v[0];
+            });
+          }
+          return { name: v[0], checked, origin: v };
+        });
+        return newEntries;
       } else {
         return [];
       }
     },
     comparingPeople(state) {
       return state.people.compareingPeople;
+    },
+    searching(state) {
+      return state.people.searching;
     }
   },
   {
@@ -114,17 +128,30 @@ export default class Index extends wepy.page {
     },
     choose(item) {
       const finded = this.choices.find(v => {
-        return v.名 === item.名;
+        return v[0] === item[0];
       });
+      // console.log('this.choies', this.choices);
+      // console.log('not find and length < 2', finded);
 
-      if (!finded && this.choices.length <= 2) {
+      if (!finded && this.choices.length < 2) {
         this.choices.push(item);
-      } else if (this.choices.length > 2) {
+      } else if (this.choices.length >= 2) {
         this.choices.shift();
         this.choices.push(item);
       }
       this.methods.selectSearchedPeople(this.choices);
       // console.log('chooing...', this.choices);
+    }
+  };
+
+  watch = {
+    searching(newValue, oldValue) {
+      // console.log(`num value: ${oldValue} -> ${newValue}`);
+      if (newValue) {
+        wx.showLoading({ title: '加载中' });
+      } else {
+        wx.hideLoading();
+      }
     }
   };
 
