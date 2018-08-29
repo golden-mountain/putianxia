@@ -18,25 +18,37 @@
       <searchbar
         placeholder="良系>作平 或 作平,作苏"
         btn=""
-        :keywords="keywords"
-        :focus="focus"
-        bindchange="searchChange"
-        bindsearch="searchDone"
       />
     </view>
 
     <view class="page__bd">
-        <view class="weui-cells__title">搜索到{{ searchedPeople.length }}个人,请选择查看</view>
+        <view class="weui-cells__title">搜索到{{ searchedPeople.length }}个人,请选择查看人际关系</view>
         <view class="weui-cells weui-cells_after-title">
-            <block wx:for-items="{{searchedPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-              <navigator url="/pages/search/show" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
-                  <view class="weui-cell__bd "><text class="font_26">{{ item[0] }}</text> </view>
-                  <view class="weui-cell__ft weui-cell__ft_in-access"></view>
-              </navigator>
-            </block>
+          <view class="weui-cells weui-cells_after-title">
+            <checkbox-group bindchange="checkboxChange">
+              <block wx:for-items="{{searchedPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+                <!-- <navigator url="/pages/search/show" class="weui-cell weui-cell_access" hover-class="weui-cell_active">
+                    <view class="weui-cell__bd "><text class="font_26">{{ item[0] }}</text> </view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                </navigator> -->
+                <label class="weui-cell weui-check__label" @tap="show">
+                    <!-- <checkbox class="weui-check" value="{{item.value}}" checked="{{item[0]}}"/> -->
+
+                    <view class="weui-cell__hd weui-check__hd_in-checkbox" capture-catch:tap="choose({{item}})">
+                        <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
+                        <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{item.checked}}"></icon>
+                    </view>
+                    <view class="weui-cell__bd">{{item[0]}}</view>
+                    <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                </label>
+              </block>
+            </checkbox-group>
+          </view>
+
         </view>
 
         <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="create" wx:if="{{ !searchedPeople.length }}">没有找到, 创建名字</button>
+        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="compare" wx:if="{{ comparingPeople.length }}">比较</button>
 
     </view>
 
@@ -49,7 +61,7 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 import SearchBar from '@/components/searchbar'; // alias example
-import { searchPeople } from '@/store/actions/people';
+import { searchPeople, selectSearchedPeople } from '@/store/actions/people';
 
 @connect(
   {
@@ -62,10 +74,14 @@ import { searchPeople } from '@/store/actions/people';
       } else {
         return [];
       }
+    },
+    comparingPeople(state) {
+      return state.people.compareingPeople;
     }
   },
   {
-    searchPeople
+    searchPeople,
+    selectSearchedPeople
   }
 )
 export default class Index extends wepy.page {
@@ -80,7 +96,8 @@ export default class Index extends wepy.page {
 
   data = {
     focus: true,
-    keywords: ''
+    keywords: '',
+    choices: []
   };
 
   computed = {};
@@ -88,18 +105,33 @@ export default class Index extends wepy.page {
   methods = {
     create() {
       wx.navigateTo({ url: '/pages/zong/add-people' });
+    },
+    show() {
+      wx.navigateTo({ url: '/pages/zong/show' });
+    },
+    compare() {
+      wx.navigateTo({ url: '/pages/search/show' });
+    },
+    choose(item) {
+      const finded = this.choices.find(v => {
+        return v.名 === item.名;
+      });
+
+      if (!finded && this.choices.length <= 2) {
+        this.choices.push(item);
+      } else if (this.choices.length > 2) {
+        this.choices.shift();
+        this.choices.push(item);
+      }
+      this.methods.selectSearchedPeople(this.choices);
+      // console.log('chooing...', this.choices);
     }
   };
 
   events = {};
 
   onLoad() {
-    // if (this.searchedKeywords.length) {
-    //   this.methods.searchPeople(this.searchedKeywords);
-    // }
-    // if (this.searchedPeople.length <= 2) {
-    //   wx.navigateTo({ url: '/pages/search/show' });
-    // }
+    this.methods.choose.bind(this);
   }
 }
 </script>

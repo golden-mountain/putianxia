@@ -15,7 +15,8 @@ export function searchByNames(originNames) {
   let queries = [];
   originNames.forEach(name => {
     let newName = name.replace(' ', '');
-    let queryString = '', parentName = '';
+    let queryString = '',
+      parentName = '';
     if (newName.indexOf('>') > -1) {
       let newNames = newName.split('>');
       if (newNames.length >= 2) {
@@ -24,22 +25,25 @@ export function searchByNames(originNames) {
       }
     }
 
+    // only support 李 current
     if (newName[0] === '李') {
       newName = newName.substr(1);
     }
 
-    queryString = `(son.名='${newName}' OR son.字='${newName}' OR son.号='${newName}' OR son.又='${newName}' )`;
+    queryString = `(son.名 CONTAINS '${newName}' OR son.字 CONTAINS '${newName}' OR son.号 CONTAINS '${newName}' OR son.又 CONTAINS '${newName}' )`;
     if (parentName) {
-      queryString = `(${queryString} AND (parent.名='${parentName}' OR parent.字='${parentName}' OR parent.号='${parentName}' OR parent.又='${parentName}'))`;
+      queryString = `(${queryString} AND (parent.名 CONTAINS '${parentName}' OR parent.字 CONTAINS '${parentName}' OR parent.号 CONTAINS '${parentName}' OR parent.又 CONTAINS '${parentName}'))`;
     }
 
     queries.push(queryString);
     return newName;
   });
   const opts = {
-    query: `MATCH (son:Person)-[:RELATION*0..{role:"son"}]->(parent:Person)<-[:RELATION {role: "wife"}]-(wife:Person) WHERE ${queries.join(' OR ')} RETURN distinct son, parent, wife `
+    query: `MATCH (son:Person)-[:RELATION*0..]->(parent:Person)<-[:RELATION {role: "wife"}]-(wife:Person) WHERE ${queries.join(
+      ' OR '
+    )} RETURN distinct son, parent, wife, count(parent) as total LIMIT 10`
   };
-  console.log(opts);
+  // console.log(opts);
 
   return request.post(opts);
 }

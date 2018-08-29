@@ -24,7 +24,7 @@
                       <image class="weui-media-box__thumb" src="{{icon60}}" />
                   </view>
                   <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                      <view class="weui-media-box__title">李作平</view>
+                      <view class="weui-media-box__title">{{ selectedPeople['名'] }}</view>
                       <view class="weui-media-box__desc">良系次子，1982年生，大学生， 子三</view>
                   </view>
               </navigator>
@@ -63,21 +63,30 @@ import { activePeople } from '@/store/actions/people';
 @connect(
   {
     people1(state) {
-      const values = Object.values(state.people.searchedPeople);
-      if (values.length) {
-        return values[0];
-      } else {
-        return [];
+      if (state.people.searchedPeople) {
+        const values = Object.values(state.people.searchedPeople);
+        if (values.length) {
+          return values[0];
+        } else {
+          return [];
+        }
       }
     },
     people2(state) {
-      // console.log(state, 'new state');
-      const values = Object.values(state.people.searchedPeople);
-      if (values.length > 0) {
-        return values[1];
-      } else {
-        return [];
+      if (state.people.searchedPeople) {
+        const values = Object.values(state.people.searchedPeople);
+        if (values.length > 0) {
+          return values[1];
+        } else {
+          return [];
+        }
       }
+    },
+    searching(state) {
+      return state.people.searching;
+    },
+    selectedPeople(state) {
+      return state.people.selectedPeople;
     }
   },
   {
@@ -100,7 +109,8 @@ export default class Index extends wepy.page {
 
   data = {
     focus: true,
-    icon60: '../../images/avatar.jpg'
+    icon60: '../../images/avatar.jpg',
+    showSelecteInfo: {}
   };
 
   computed = {};
@@ -109,11 +119,19 @@ export default class Index extends wepy.page {
 
   events = {};
 
-  onLoad(options) {
-    // console.log(this);
-    // console.log(activePeople, 'thos');
-    // activePeople(this.active);
-    // this.methods.searchPeople(['作芬', '作平']);
+  watch = {
+    searching(newValue, oldValue) {
+      // console.log(`num value: ${oldValue} -> ${newValue}`);
+      if (newValue) {
+        wx.showLoading({ title: '加载中' });
+      } else {
+        wx.hideLoading();
+      }
+    }
+  };
+
+  onLoad() {
+    console.log(this.selectedPeople);
   }
 
   onPullDownRefresh() {

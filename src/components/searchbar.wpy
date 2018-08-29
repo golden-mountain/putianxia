@@ -22,7 +22,11 @@
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 import validate from '../mixins/validate';
-import { setSearchKeywords, searchPeople } from '@/store/actions/people';
+import {
+  setSearchKeywords,
+  searchPeople,
+  searchingPeople
+} from '@/store/actions/people';
 
 @connect(
   {
@@ -32,7 +36,8 @@ import { setSearchKeywords, searchPeople } from '@/store/actions/people';
   },
   {
     setSearchKeywords,
-    searchPeople
+    searchPeople,
+    searchingPeople
   }
 )
 export default class SearchBar extends wepy.component {
@@ -72,19 +77,21 @@ export default class SearchBar extends wepy.component {
     focus() {},
     inputChange(e) {
       // console.log('changed', e);
-      this.keywords = e.detail.value;
+      this.keywords = e.detail.value.replace('，', ',');
       this.methods.setSearchKeywords(this.keywords.split(','));
     },
     search() {
       const msgs = this.validateKeywords(this.keywords);
       // console.log(this.methods);
+      // console.log('searching....');
       if (msgs) {
         wx.showModal(msgs);
         return false;
       }
       if (this.keywords.length) {
+        this.methods.searchingPeople();
         this.methods.searchPeople(this.keywords.split(','));
-        wx.navigateTo({ url: '/pages/search/show' });
+        wx.navigateTo({ url: '/pages/search/index' });
       }
     }
   };
