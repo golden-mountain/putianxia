@@ -31,7 +31,7 @@
                     <view class="weui-cell__bd "><text class="font_26">{{ item[0] }}</text> </view>
                     <view class="weui-cell__ft weui-cell__ft_in-access"></view>
                 </navigator> -->
-                <label class="weui-cell weui-check__label" @tap="show">
+                <label class="weui-cell weui-check__label" @tap="show({{item.origin}})">
                     <!-- <checkbox class="weui-check" value="{{item.name}}" checked="{{item.checked}}"/> -->
 
                     <view class="weui-cell__hd weui-check__hd_in-checkbox" capture-catch:tap="choose({{item.origin}})">
@@ -61,7 +61,11 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 import SearchBar from '@/components/searchbar'; // alias example
-import { searchPeople, selectSearchedPeople } from '@/store/actions/people';
+import {
+  searchPeople,
+  selectSearchedPeople,
+  showPeopleDetail
+} from '@/store/actions/people';
 
 @connect(
   {
@@ -95,7 +99,8 @@ import { searchPeople, selectSearchedPeople } from '@/store/actions/people';
   },
   {
     searchPeople,
-    selectSearchedPeople
+    selectSearchedPeople,
+    showPeopleDetail
   }
 )
 export default class Index extends wepy.page {
@@ -120,7 +125,11 @@ export default class Index extends wepy.page {
     create() {
       wx.navigateTo({ url: '/pages/zong/add-people' });
     },
-    show() {
+    show(item) {
+      this.methods.showPeopleDetail({
+        allItems: item[1],
+        currentIndex: item.length - 1
+      });
       wx.navigateTo({ url: '/pages/zong/show' });
     },
     compare() {
@@ -148,8 +157,10 @@ export default class Index extends wepy.page {
     searching(newValue, oldValue) {
       // console.log(`num value: ${oldValue} -> ${newValue}`);
       if (newValue) {
+        // console.log(`loading old => new: ${oldValue} -> ${newValue}`);
         wx.showLoading({ title: '加载中' });
       } else {
+        // console.log(`loaded old => new: ${oldValue} -> ${newValue}`);
         wx.hideLoading();
       }
     }
@@ -159,6 +170,7 @@ export default class Index extends wepy.page {
 
   onLoad() {
     this.methods.choose.bind(this);
+    this.methods.show.bind(this);
   }
 }
 </script>

@@ -167,10 +167,8 @@
       <view class="weui-panel">
         <view class="weui-panel__hd">基本资料</view>
         <view class="weui-panel__bd ptx-current-userinfo">
-          <view><text>名</text>{{current[0].name}}</view>
-          <view><text>字</text>文明</view>
-          <view><text>生</text>1982/2/7</view>
-          <view><text>传</text>如果你无法简洁的表达你的想法，那只说明你还不够了解它。</view>
+          <view wx:for-items="{{currentPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id"><text>{{item[0]}}</text>{{item[1]}}</view>
+
         </view>
       </view>
     </view>
@@ -201,7 +199,11 @@ import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 // import SearchBar from '@/components/searchbar'; // alias example
 
-@connect({})
+@connect({
+  selectedPeopleDetail(state) {
+    return state.people.selectedPeopleDetail;
+  }
+})
 export default class Show extends wepy.page {
   config = {
     navigationBarTitleText: '个人资料 - 谱天下',
@@ -213,6 +215,8 @@ export default class Show extends wepy.page {
   mixins = [];
 
   data = {
+    currentIndex: 0,
+    currentPeople: [],
     parents: [
       {
         role: '父',
@@ -307,7 +311,7 @@ export default class Show extends wepy.page {
   }
 
   onReachBottom() {
-    console.log('reach bottom');
+    // console.log('reach bottom');
     this.parents = [
       {
         role: '父',
@@ -349,14 +353,41 @@ export default class Show extends wepy.page {
   }
 
   onLoad() {
-    console.log('zone index');
-    // let self = this;
-    // this.$parent.getUserInfo(function(userInfo) {
-    //   if (userInfo) {
-    //     self.userInfo = userInfo;
+    // const formatShow = (p, role = '夫') => {
+    //   if (role === '夫') {
+    //     return {
+    //       role,
+    //       name: p.名,
+    //       avatar: '../../images/hasband.jpg'
+    //     };
+    //   } else if (role === '妻') {
+    //     return {
+    //       role,
+    //       name: p.名,
+    //       avatar: '../../images/wife.jpg'
+    //     };
+    //   } else {
+    //     return {
+    //       role,
+    //       name: p.名,
+    //       avatar: '../../images/man.jpg'
+    //     };
     //   }
-    //   self.$apply();
-    // });
+    // };
+
+    if (this.selectedPeopleDetail) {
+      const { allItems, currentIndex } = this.selectedPeopleDetail;
+      this.currentPeople = Object.entries(allItems[currentIndex]);
+      this.currentIndex = currentIndex;
+      // this.current = [formatShow(allItems[currentIndex], '夫'), allItems[currentIndex], '夫')];
+      // if (allItems[currentIndex+1]) {
+      //   this.children = [formatShow(allItems[currentIndex+1], '子'), formatShow(allItems[currentIndex+1], '子')];
+      // }
+      // if (currentIndex) {
+      //   this.parents = [formatShow(allItems[currentIndex-1], '父'), formatShow(allItems[currentIndex-1], '父')];
+      // }
+    }
+
     this.loading = false;
   }
 }

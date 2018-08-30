@@ -4,7 +4,8 @@ import {
   SEARCH_PEOPLE,
   SET_SEARCH_KEYWORDS,
   SEARCHING_PEOPLE,
-  SELECT_SEARCHED_PEOPLE
+  SELECT_SEARCHED_PEOPLE,
+  SHOW_PEOPLE_DETAIL
 } from '../types/people';
 
 function formatSearchedResult(data) {
@@ -24,11 +25,14 @@ function formatSearchedResult(data) {
         ]
       }
       */
-  let obj = {}, sons = {};
+  let obj = {},
+    sons = {};
   if (data) {
     // let parentName = '', sonName = ''; //, grandName = '';
     data.forEach((v, i) => {
-      const son = v[0].data, parent = v[1].data, wife = []; // v[2].data;
+      const son = v[0].data,
+        parent = v[1].data,
+        wife = v[2].data;
       let name = son.名;
 
       // if (parent && !parentName && sonName != name && parentName != name) {
@@ -132,12 +136,19 @@ export default handleActions(
         selectedPeople: action.payload
       };
     },
+    [SHOW_PEOPLE_DETAIL](state, action) {
+      // console.log(state, action, '.... show people detail info changing');
+      return {
+        ...state,
+        selectedPeopleDetail: action.payload
+      };
+    },
     [SEARCH_PEOPLE](state, action) {
       // console.log(state, action);
       // construct data like
       if (!action.payload.data.data) return state;
       const obj = formatSearchedResult(action.payload.data.data);
-      console.log(obj, 'object from reducer');
+      // console.log(obj, 'object from reducer');
 
       let selectedPeople = {};
       if (obj) {

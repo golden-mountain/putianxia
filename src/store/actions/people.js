@@ -3,13 +3,19 @@ import {
   SEARCH_PEOPLE,
   SELECT_SEARCHED_PEOPLE,
   SET_SEARCH_KEYWORDS,
-  SEARCHING_PEOPLE
+  SEARCHING_PEOPLE,
+  SHOW_PEOPLE_DETAIL
 } from '../types/people';
 import { createAction } from 'redux-actions';
 import { searchByNames } from '../../services/people';
 
 export const activePeople = createAction(
   ACTIVE_SEARCH_PEOPLE,
+  selectedPeople => selectedPeople
+);
+
+export const showPeopleDetail = createAction(
+  SHOW_PEOPLE_DETAIL,
   selectedPeople => selectedPeople
 );
 

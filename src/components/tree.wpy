@@ -5,7 +5,7 @@
 <template>
   <view class="page__bd page__bd_spacing" style="{{style}}">
     <repeat for="{{treeItems}}" key="index" index="idx" item="item">
-      <treeItem :item="item" />
+      <treeItem :item="item" :treeItems="treeItems" />
     </repeat>
   </view>
 </template>

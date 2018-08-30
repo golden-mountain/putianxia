@@ -15,7 +15,8 @@ export function searchByNames(originNames) {
   let queries = [];
   originNames.forEach(name => {
     let newName = name.replace(' ', '');
-    let queryString = '', parentName = '';
+    let queryString = '',
+      parentName = '';
     if (newName.indexOf('>') > -1) {
       let newNames = newName.split('>');
       if (newNames.length >= 2) {
@@ -38,9 +39,11 @@ export function searchByNames(originNames) {
     return newName;
   });
   const opts = {
-    query: `MATCH (son:Person)-[:RELATION*0..]->(parent:Person) WHERE ${queries.join(' OR ')} RETURN distinct son, parent ORDER BY parent.level ASC LIMIT 60`
+    query: `MATCH (son:Person)-[:RELATION*0..]->(parent:Person)<-[:RELATION {role: "wife"}]-(wife:Person) WHERE ${queries.join(
+      ' OR '
+    )} RETURN distinct son, parent, wife`
   };
-  console.log(opts);
+  // console.log(opts);
 
   return request.post(opts);
 }

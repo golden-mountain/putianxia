@@ -38,14 +38,14 @@
       <view class="weui-flex__item ptx-gen-num"><view class="">{{item.id}}</view></view>
       <view class="weui-flex__item ptx-name"><view class="placeholder">{{item['名']}}</view></view>
       <!-- <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view> -->
-      <view class="weui-flex__item ptx-icons" @tap="gotoPeople({{item.id}})"><text class="iconfont icon-browse" /></view>
+      <view class="weui-flex__item ptx-icons" capture-catch:tap="gotoPeople({{treeItems}})"><text class="iconfont icon-browse" /></view>
     </view>
 </template>
 <script>
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import { ACTIVE_SEARCH_PEOPLE } from '../store/types/people';
-import { activePeople } from '../store/actions';
+import { activePeople, showPeopleDetail } from '../store/actions';
 
 @connect(
   {
@@ -54,12 +54,14 @@ import { activePeople } from '../store/actions';
     }
   },
   {
-    activePeople
+    activePeople,
+    showPeopleDetail
   }
 )
 export default class GroupItem extends wepy.component {
   props = {
-    item: {}
+    item: {},
+    treeItems: {}
     // active: {
     //   type: Number,
     //   value: 0,
@@ -73,7 +75,11 @@ export default class GroupItem extends wepy.component {
     //   // this.$apply();
     //   // console.log(this.$parent.active);
     // },
-    gotoPeople(value) {
+    gotoPeople(allItems) {
+      const currentIndex = allItems.findIndex(item => {
+        return item.名 === this.item.名;
+      });
+      this.methods.showPeopleDetail({ allItems, currentIndex });
       wx.navigateTo({ url: '/pages/zong/show' });
     }
   };
@@ -83,7 +89,8 @@ export default class GroupItem extends wepy.component {
   //   }
   // };
   onLoad() {
-    console.log(this.activeID, 'is active ID');
+    // console.log(this.activeID, 'is active ID');
+    this.methods.gotoPeople.bind(this);
   }
 }
 </script>
