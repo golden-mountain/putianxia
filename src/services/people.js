@@ -38,9 +38,9 @@ export function searchByNames(originNames) {
     return newName;
   });
   const opts = {
-    query: `MATCH (son:Person)-[:RELATION*0..]->(parent:Person)<-[:RELATION {role: "wife"}]-(wife:Person) WHERE ${queries.join(' OR ')} RETURN distinct son, parent, wife, count(parent) as total LIMIT 60`
+    query: `MATCH (son:Person)-[:RELATION*0..]->(parent:Person)<-[:RELATION {role: "wife"}]-(wife:Person) WHERE ${queries.join(' OR ')} RETURN distinct son, parent, wife, count(parent) as total ORDER BY parent.level ASC LIMIT 60`
   };
-  // console.log(opts);
+  console.log(opts);
 
   return request.post(opts);
 }
