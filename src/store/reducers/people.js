@@ -28,7 +28,7 @@ function formatSearchedResult(data) {
   if (data) {
     // let parentName = '', sonName = ''; //, grandName = '';
     data.forEach((v, i) => {
-      const son = v[0].data, parent = v[1].data, wife = v[2].data;
+      const son = v[0].data, parent = v[1].data, wife = []; // v[2].data;
       let name = son.名;
 
       // if (parent && !parentName && sonName != name && parentName != name) {
@@ -137,6 +137,7 @@ export default handleActions(
       // construct data like
       if (!action.payload.data.data) return state;
       const obj = formatSearchedResult(action.payload.data.data);
+      console.log(obj, 'object from reducer');
 
       let selectedPeople = {};
       if (obj) {

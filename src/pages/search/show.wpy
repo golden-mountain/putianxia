@@ -68,20 +68,21 @@ import { activePeople } from '@/store/actions/people';
         if (values.length) {
           return values[0][1];
         } else {
-          return [];
+          return false;
         }
       }
     },
     people2(state) {
-      if (state.people.compareingPeople) {
+      if (state.people.compareingPeople.length > 1) {
         const values = Object.values(state.people.compareingPeople);
-        // console.log('values', values);
 
-        if (values.length > 1) {
+        if (values[1].length > 1) {
           return values[1][1];
         } else {
-          return [];
+          return false;
         }
+      } else {
+        return false;
       }
     },
     searching(state) {
