@@ -4,7 +4,8 @@ import {
   SELECT_SEARCHED_PEOPLE,
   SET_SEARCH_KEYWORDS,
   SEARCHING_PEOPLE,
-  SHOW_PEOPLE_DETAIL
+  SHOW_PEOPLE_DETAIL,
+  UPDATE_CURRENT_PEOPLE_INDEX
 } from '../types/people';
 import { createAction } from 'redux-actions';
 import { searchByNames } from '../../services/people';
@@ -17,6 +18,11 @@ export const activePeople = createAction(
 export const showPeopleDetail = createAction(
   SHOW_PEOPLE_DETAIL,
   selectedPeople => selectedPeople
+);
+
+export const updateCurrentPeopleIndex = createAction(
+  UPDATE_CURRENT_PEOPLE_INDEX,
+  currentIndex => currentIndex
 );
 
 export const searchingPeople = createAction(SEARCHING_PEOPLE);

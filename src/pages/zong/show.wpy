@@ -112,9 +112,9 @@
           <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
           <view class="userinfo">({{parents[0].role}}){{ parents[0].name}}</view>
         </view>
-        <view class="weui-flex__item ptx-user">
-          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[1].avatar }}" background-size="cover"/>
-          <view class="userinfo">({{parents[1].role}}){{ parents[1].name}}</view>
+        <view class="weui-flex__item ptx-current-wife" wx:for-items="{{parents[1]}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
+          <view class="userinfo">({{item.role}}){{ item.name}}</view>
         </view>
       </view>
 
@@ -125,7 +125,7 @@
         <view class="weui-panel__bd">
           <view class="weui-flex ptx-actions">
             <view class="weui-flex__item ">
-              <text class="font_26 ptx-link">第11世 <text class="iconfont icon-mine font-26" />这个是我</text>
+              <text class="font_26 ptx-link">第{{ currentLevel }}世 <text class="iconfont icon-mine font-26" />这个是我</text>
             </view>
             <view class="weui-flex__item ptx-location">
               <text class="iconfont icon-like" />
@@ -140,9 +140,9 @@
               <image @tap="gotoUser" class="user-avatar" src="{{ current[0].avatar }}" background-size="cover"/>
               <view class="userinfo">({{current[0].role}}){{ current[0].name}} </view>
             </view>
-            <view class="weui-flex__item ptx-current-wife">
-              <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ current[1].avatar }}" background-size="cover"/>
-              <view class="userinfo">({{current[1].role}}){{ current[1].name}}</view>
+            <view class="weui-flex__item ptx-current-wife" wx:for-items="{{current[1]}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+              <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
+              <view class="userinfo">({{item.role}}){{ item.name}}</view>
             </view>
           </view>
 
@@ -173,15 +173,11 @@
       </view>
     </view>
 
-    <view class="page__ft">
+    <view class="page__ft" wx:if="{{children}}">
       <view class="weui-flex ptx-user-group">
-        <view class="weui-flex__item ptx-user">
-          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[0].avatar }}" background-size="cover"/>
-          <view class="userinfo">({{children[0].role}}){{ children[0].name}}</view>
-        </view>
-        <view class="weui-flex__item ptx-user">
-          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ children[1].avatar }}" background-size="cover"/>
-          <view class="userinfo">({{children[1].role}}){{ children[1].name}}</view>
+        <view class="weui-flex__item ptx-user" wx:for-items="{{children}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item[0].avatar }}" background-size="cover"/>
+          <view class="userinfo">({{item[0].role}}){{ item[0].name}}</view>
         </view>
       </view>
     </view>
@@ -198,12 +194,19 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 // import SearchBar from '@/components/searchbar'; // alias example
+import { updateCurrentPeopleIndex } from '@/store/actions/people';
 
-@connect({
-  selectedPeopleDetail(state) {
-    return state.people.selectedPeopleDetail;
+@connect(
+  {
+    selectedPeopleDetail(state) {
+      console.log(state.people, 'current state people');
+      return state.people.selectedPeopleDetail;
+    }
+  },
+  {
+    updateCurrentPeopleIndex
   }
-})
+)
 export default class Show extends wepy.page {
   config = {
     navigationBarTitleText: '个人资料 - 谱天下',
@@ -215,44 +218,47 @@ export default class Show extends wepy.page {
   mixins = [];
 
   data = {
+    currentLevel: 0,
     currentIndex: 0,
     currentPeople: [],
-    parents: [
-      {
-        role: '父',
-        name: '良系',
-        avatar: '../../images/man.jpg'
-      },
-      {
-        role: '母',
-        name: '春秀',
-        avatar: '../../images/lady.jpg'
-      }
-    ],
-    current: [
-      {
-        role: '夫',
-        name: '作平',
-        avatar: '../../images/hasband.jpg'
-      },
-      {
-        role: '妻',
-        name: '范氏',
-        avatar: '../../images/wife.jpg'
-      }
-    ],
-    children: [
-      {
-        role: '子',
-        name: '善凯',
-        avatar: '../../images/boy.jpg'
-      },
-      {
-        role: '子',
-        name: '善策',
-        avatar: '../../images/man.jpg'
-      }
-    ],
+    parents: [],
+    current: [],
+    children: [],
+    //   {
+    //     role: '父',
+    //     name: '良系',
+    //     avatar: '../../images/man.jpg'
+    //   },
+    //   {
+    //     role: '母',
+    //     name: '春秀',
+    //     avatar: '../../images/lady.jpg'
+    //   }
+    // ],
+    // current: [
+    //   {
+    //     role: '夫',
+    //     name: '作平',
+    //     avatar: '../../images/hasband.jpg'
+    //   },
+    //   {
+    //     role: '妻',
+    //     name: '范氏',
+    //     avatar: '../../images/wife.jpg'
+    //   }
+    // ],
+    // children: [
+    //   {
+    //     role: '子',
+    //     name: '善凯',
+    //     avatar: '../../images/boy.jpg'
+    //   },
+    //   {
+    //     role: '子',
+    //     name: '善策',
+    //     avatar: '../../images/man.jpg'
+    //   }
+    // ],
     loading: false
   };
 
@@ -268,126 +274,174 @@ export default class Show extends wepy.page {
   events = {};
 
   onPullDownRefresh() {
-    // console.log('test. onPullDownRefreshaa');
+    console.log('reached to top');
+    if (this.currentIndex > 0) {
+      this.currentIndex--;
+      // this.$apply();
+      console.log('father:', this.currentIndex);
+      this.methods.updateCurrentPeopleIndex(this.currentIndex);
+      this.loadData();
+    }
     wx.stopPullDownRefresh();
     this.loading = false;
-    this.parents = [
-      {
-        role: '父',
-        name: '会金',
-        avatar: '../../images/man.jpg'
-      },
-      {
-        role: '母',
-        name: '吴氏',
-        avatar: '../../images/lady.jpg'
-      }
-    ];
-    this.current = [
-      {
-        role: '父',
-        name: '良系',
-        avatar: '../../images/man.jpg'
-      },
-      {
-        role: '母',
-        name: '春秀',
-        avatar: '../../images/lady.jpg'
-      }
-    ];
-    this.children = [
-      {
-        role: '夫',
-        name: '作平',
+    // this.parents = [
+    //   {
+    //     role: '父',
+    //     name: '会金',
+    //     avatar: '../../images/man.jpg'
+    //   },
+    //   {
+    //     role: '母',
+    //     name: '吴氏',
+    //     avatar: '../../images/lady.jpg'
+    //   }
+    // ];
+    // this.current = [
+    //   {
+    //     role: '父',
+    //     name: '良系',
+    //     avatar: '../../images/man.jpg'
+    //   },
+    //   {
+    //     role: '母',
+    //     name: '春秀',
+    //     avatar: '../../images/lady.jpg'
+    //   }
+    // ];
+    // this.children = [
+    //   {
+    //     role: '夫',
+    //     name: '作平',
 
-        avatar: '../../images/hasband.jpg'
-      },
-      {
-        role: '妻',
-        name: '范氏',
-        avatar: '../../images/wife.jpg'
-      }
-    ];
+    //     avatar: '../../images/hasband.jpg'
+    //   },
+    //   {
+    //     role: '妻',
+    //     name: '范氏',
+    //     avatar: '../../images/wife.jpg'
+    //   }
+    // ];
   }
 
   onReachBottom() {
-    // console.log('reach bottom');
-    this.parents = [
-      {
-        role: '父',
-        name: '良系',
-        avatar: '../../images/man.jpg'
-      },
-      {
-        role: '母',
-        name: '春秀',
-        avatar: '../../images/lady.jpg'
-      }
-    ];
-    this.current = [
-      {
-        role: '夫',
-        name: '作平',
+    const index = this.currentIndex + 1;
+    console.log('reached to bottom');
 
-        avatar: '../../images/hasband.jpg'
-      },
-      {
-        role: '妻',
-        name: '范氏',
-        avatar: '../../images/wife.jpg'
-      }
-    ];
-    this.children = [
-      {
-        role: '子',
-        name: '善凯',
-        avatar: '../../images/boy.jpg'
-      },
-      {
-        role: '子',
-        name: '善策',
-        avatar: '../../images/man.jpg'
-      }
-    ];
+    if (this.selectedPeopleDetail.allItems[index]) {
+      this.currentIndex = index;
+      // this.methods.updateCurrentPeopleIndex(index);
+      // this.$apply();
+      this.loadData();
+    }
+    // console.log('reach bottom');
+    // this.parents = [
+    //   {
+    //     role: '父',
+    //     name: '良系',
+    //     avatar: '../../images/man.jpg'
+    //   },
+    //   {
+    //     role: '母',
+    //     name: '春秀',
+    //     avatar: '../../images/lady.jpg'
+    //   }
+    // ];
+    // this.current = [
+    //   {
+    //     role: '夫',
+    //     name: '作平',
+
+    //     avatar: '../../images/hasband.jpg'
+    //   },
+    //   {
+    //     role: '妻',
+    //     name: '范氏',
+    //     avatar: '../../images/wife.jpg'
+    //   }
+    // ];
+    // this.children = [
+    //   {
+    //     role: '子',
+    //     name: '善凯',
+    //     avatar: '../../images/boy.jpg'
+    //   },
+    //   {
+    //     role: '子',
+    //     name: '善策',
+    //     avatar: '../../images/man.jpg'
+    //   }
+    // ];
     this.loading = false;
   }
 
-  onLoad() {
-    // const formatShow = (p, role = '夫') => {
-    //   if (role === '夫') {
-    //     return {
-    //       role,
-    //       name: p.名,
-    //       avatar: '../../images/hasband.jpg'
-    //     };
-    //   } else if (role === '妻') {
-    //     return {
-    //       role,
-    //       name: p.名,
-    //       avatar: '../../images/wife.jpg'
-    //     };
-    //   } else {
-    //     return {
-    //       role,
-    //       name: p.名,
-    //       avatar: '../../images/man.jpg'
-    //     };
-    //   }
-    // };
+  loadData() {
+    const formatShow = (p, role = '夫') => {
+      if (role === '夫') {
+        return {
+          role,
+          name: p.名,
+          avatar: '../../images/hasband.jpg'
+        };
+      } else if (role === '妻' || role === '母') {
+        if (p.妻) {
+          return p.妻.map(v => ({
+            role,
+            name: v.名,
+            avatar: '../../images/wife.jpg'
+          }));
+        }
+      } else {
+        // TODO: GET children from api
+        // if ( role === '女') {
+
+        // } else {
+
+        // }
+        return {
+          role,
+          name: p.名,
+          avatar: '../../images/man.jpg'
+        };
+      }
+    };
 
     if (this.selectedPeopleDetail) {
       const { allItems, currentIndex } = this.selectedPeopleDetail;
       this.currentPeople = Object.entries(allItems[currentIndex]);
       this.currentIndex = currentIndex;
-      // this.current = [formatShow(allItems[currentIndex], '夫'), allItems[currentIndex], '夫')];
-      // if (allItems[currentIndex+1]) {
-      //   this.children = [formatShow(allItems[currentIndex+1], '子'), formatShow(allItems[currentIndex+1], '子')];
-      // }
-      // if (currentIndex) {
-      //   this.parents = [formatShow(allItems[currentIndex-1], '父'), formatShow(allItems[currentIndex-1], '父')];
-      // }
-    }
+      console.log(currentIndex, '<<<<< currentIndex', allItems);
 
+      this.currentLevel = allItems[currentIndex].level;
+      this.current = [
+        formatShow(allItems[currentIndex], '夫'),
+        formatShow(allItems[currentIndex], '妻')
+      ];
+
+      // get children
+      // console.log(this.current);
+      if (allItems[currentIndex + 1]) {
+        this.children = [
+          formatShow(allItems[currentIndex + 1], '子'),
+          formatShow(allItems[currentIndex + 1], '女')
+        ];
+        console.log('new children', currentIndex + 1);
+      } else {
+        this.children = null;
+      }
+
+      // get parent
+      if (currentIndex > 0) {
+        console.log('new parent', currentIndex - 1);
+        this.parents = [
+          formatShow(allItems[currentIndex - 1], '父'),
+          formatShow(allItems[currentIndex - 1], '母')
+        ];
+      }
+    }
+  }
+
+  onLoad() {
+    this.loadData();
     this.loading = false;
   }
 }

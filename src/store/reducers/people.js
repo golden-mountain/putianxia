@@ -5,7 +5,8 @@ import {
   SET_SEARCH_KEYWORDS,
   SEARCHING_PEOPLE,
   SELECT_SEARCHED_PEOPLE,
-  SHOW_PEOPLE_DETAIL
+  SHOW_PEOPLE_DETAIL,
+  UPDATE_CURRENT_PEOPLE_INDEX
 } from '../types/people';
 
 function formatSearchedResult(data) {
@@ -136,8 +137,17 @@ export default handleActions(
         selectedPeople: action.payload
       };
     },
+    [UPDATE_CURRENT_PEOPLE_INDEX](state, action) {
+      // console.log(state, action, '.... show people detail next current');
+      const currentPeople = state.selectedPeopleDetail;
+      currentPeople.currentIndex = action.payload;
+      return {
+        ...state,
+        selectedPeopleDetail: currentPeople
+      };
+    },
     [SHOW_PEOPLE_DETAIL](state, action) {
-      // console.log(state, action, '.... show people detail info changing');
+      // console.log(action, '.... show people detail info changing');
       return {
         ...state,
         selectedPeopleDetail: action.payload

@@ -126,10 +126,12 @@ export default class Index extends wepy.page {
       wx.navigateTo({ url: '/pages/zong/add-people' });
     },
     show(item) {
-      this.methods.showPeopleDetail({
+      const detail = {
         allItems: item[1],
-        currentIndex: item.length - 1
-      });
+        currentIndex: item[1].length - 1
+      };
+      // console.log(detail, '<<<<< detail');
+      this.methods.showPeopleDetail(detail);
       wx.navigateTo({ url: '/pages/zong/show' });
     },
     compare() {
