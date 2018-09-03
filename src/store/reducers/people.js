@@ -9,7 +9,8 @@ import {
   UPDATE_CURRENT_PEOPLE_INDEX
 } from '../types/people';
 
-function formatSearchedResult(data) {
+function formatSearchedResult1(data) {
+  console.log(data, 'all data');
   /*
       {
         '良係>作平': [
@@ -29,26 +30,18 @@ function formatSearchedResult(data) {
   let obj = {},
     sons = {};
   if (data) {
-    // let parentName = '', sonName = ''; //, grandName = '';
+    // find all sons
     data.forEach((v, i) => {
       const son = v[0].data,
         parent = v[1].data,
-        wife = v[2].data;
+        wife = v[2] ? v[2].data : [];
       let name = son.名;
 
-      // if (parent && !parentName && sonName != name && parentName != name) {
-      //   parentName = parent.名;
-      //   sonName = name;
-      // }
-      // else if (parent && parentName && !grandName) {
-      //   grandName = parent.名;
-      // }
-      // if (parentName) name = parentName + ' > ' + name;
-      // if (grandName) name = grandName + ' > ' + name;
       if (!obj[name]) {
         obj[name] = [];
         sons[name] = son;
       }
+      // find name from results:
       const itemInArray = obj[name].find(s => {
         return s.名 === parent.名;
       });
@@ -77,7 +70,80 @@ function formatSearchedResult(data) {
       obj[key].push(sons[key]);
     }
   }
+  // console.log(obj);
   return obj;
+}
+
+function formatSearchedResult2(data) {
+  // if promise returns new data from api
+  const result = {};
+  if (data) {
+    // group all sons
+    const sons = [];
+    let previousIndex = 0;
+    data.forEach((s, i) => {
+      // console.log(s);
+      const [son, parent] = s;
+
+      if (son.data.名 === parent.data.名 && i) {
+        sons.push(data.slice(previousIndex, i));
+        previousIndex = i;
+      }
+    });
+
+    if (!sons.length) {
+      sons.push(data);
+    }
+
+    console.log(sons);
+
+    // on each groups, need move wife and daughters and wifes under his name,
+    // refactor the data structure
+    sons.forEach(group => {
+      const son = group[0][0].data,
+        father = group[1] ? group[1][1].data : null;
+      let groupName;
+      if (father) {
+        groupName = `${father.名} > ${son.名}`;
+      } else {
+        groupName = son.名;
+      }
+      result[groupName] = [];
+      group.forEach(v => {
+        // const [son, parent, relations, relation] = v;
+        const son = v[0].data,
+          parent = v[1].data,
+          relations = v[2] ? v[2].data : {},
+          relation = v[3] ? v[3].data : {};
+        // find In parents, see if same parent exists
+        const thisInResultList = result[groupName].find(s => {
+          return s.名 === parent.名;
+        });
+
+        if (!parent.妻) parent.妻 = [];
+        if (!parent.儿) parent.儿 = [];
+        if (!parent.女) parent.女 = [];
+        // if current item relation returns wife
+        if (relation.role === 'wife') {
+          parent.妻 = relations;
+        }
+        // if current item relation returns son
+        if (relation.role === 'son') {
+          parent.儿 = relations;
+        }
+
+        // if current item relation returns daughter
+        if (relation.role === 'daughter') {
+          parent.女 = relations;
+        }
+
+        if (!thisInResultList) {
+          result[groupName].push(parent);
+        }
+      });
+    });
+    return result;
+  }
 }
 
 /**
@@ -157,7 +223,7 @@ export default handleActions(
       // console.log(state, action);
       // construct data like
       if (!action.payload.data.data) return state;
-      const obj = formatSearchedResult(action.payload.data.data);
+      const obj = formatSearchedResult2(action.payload.data.data);
       // console.log(obj, 'object from reducer');
 
       let selectedPeople = {};
