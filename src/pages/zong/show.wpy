@@ -107,7 +107,7 @@
 <template>
   <view class="page">
     <view class="page__hd">
-      <view class="weui-flex ptx-user-group">
+      <view class="weui-flex ptx-user-group" wx:if="{{parents}}">
         <view class="weui-flex__item ptx-user">
           <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
           <view class="userinfo">({{parents[0].role}}){{ parents[0].name}}</view>
@@ -152,12 +152,12 @@
               <view class="weui-flex__item ptx-progress">
                 <view class="weui-progress">
                   <view class="weui-progress__bar">
-                      <progress percent="30" stroke-width="5" />
+                      <!-- <progress percent="30" stroke-width="5" /> -->
                   </view>
                 </view>
               </view>
               <view class="weui-flex__item ptx-location">
-                <text class="font_26">北京市海淀区西二旗铭科苑 <text class="iconfont icon-coordinates_fill" /></text>
+                <!-- <text class="font_26">北京市海淀区西二旗铭科苑 <text class="iconfont icon-coordinates_fill" /></text> -->
               </view>
 
             </view>
@@ -176,8 +176,8 @@
     <view class="page__ft" wx:if="{{children}}">
       <view class="weui-flex ptx-user-group">
         <view class="weui-flex__item ptx-user" wx:for-items="{{children}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item[0].avatar }}" background-size="cover"/>
-          <view class="userinfo">({{item[0].role}}){{ item[0].name}}</view>
+          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
+          <view class="userinfo">({{item.role}}){{ item.name}}</view>
         </view>
       </view>
     </view>
@@ -199,7 +199,7 @@ import { updateCurrentPeopleIndex } from '@/store/actions/people';
 @connect(
   {
     selectedPeopleDetail(state) {
-      console.log(state.people, 'current state people');
+      // console.log(state.people, 'current state people');
       return state.people.selectedPeopleDetail;
     }
   },
@@ -224,41 +224,6 @@ export default class Show extends wepy.page {
     parents: [],
     current: [],
     children: [],
-    //   {
-    //     role: '父',
-    //     name: '良系',
-    //     avatar: '../../images/man.jpg'
-    //   },
-    //   {
-    //     role: '母',
-    //     name: '春秀',
-    //     avatar: '../../images/lady.jpg'
-    //   }
-    // ],
-    // current: [
-    //   {
-    //     role: '夫',
-    //     name: '作平',
-    //     avatar: '../../images/hasband.jpg'
-    //   },
-    //   {
-    //     role: '妻',
-    //     name: '范氏',
-    //     avatar: '../../images/wife.jpg'
-    //   }
-    // ],
-    // children: [
-    //   {
-    //     role: '子',
-    //     name: '善凯',
-    //     avatar: '../../images/boy.jpg'
-    //   },
-    //   {
-    //     role: '子',
-    //     name: '善策',
-    //     avatar: '../../images/man.jpg'
-    //   }
-    // ],
     loading: false
   };
 
@@ -266,7 +231,7 @@ export default class Show extends wepy.page {
 
   methods = {
     gotoUser() {
-      console.log('goto user');
+      // console.log('goto user');
       wx.navigateTo({ url: '/pages/wo/index' });
     }
   };
@@ -274,103 +239,28 @@ export default class Show extends wepy.page {
   events = {};
 
   onPullDownRefresh() {
-    console.log('reached to top');
+    // console.log('reached to top');
     if (this.currentIndex > 0) {
       this.currentIndex--;
-      // this.$apply();
-      console.log('father:', this.currentIndex);
+      // console.log('father:', this.currentIndex);
       this.methods.updateCurrentPeopleIndex(this.currentIndex);
       this.loadData();
     }
     wx.stopPullDownRefresh();
     this.loading = false;
-    // this.parents = [
-    //   {
-    //     role: '父',
-    //     name: '会金',
-    //     avatar: '../../images/man.jpg'
-    //   },
-    //   {
-    //     role: '母',
-    //     name: '吴氏',
-    //     avatar: '../../images/lady.jpg'
-    //   }
-    // ];
-    // this.current = [
-    //   {
-    //     role: '父',
-    //     name: '良系',
-    //     avatar: '../../images/man.jpg'
-    //   },
-    //   {
-    //     role: '母',
-    //     name: '春秀',
-    //     avatar: '../../images/lady.jpg'
-    //   }
-    // ];
-    // this.children = [
-    //   {
-    //     role: '夫',
-    //     name: '作平',
-
-    //     avatar: '../../images/hasband.jpg'
-    //   },
-    //   {
-    //     role: '妻',
-    //     name: '范氏',
-    //     avatar: '../../images/wife.jpg'
-    //   }
-    // ];
   }
 
   onReachBottom() {
     const index = this.currentIndex + 1;
-    console.log('reached to bottom');
+    // console.log('reached to bottom');
 
     if (this.selectedPeopleDetail.allItems[index]) {
+      // console.log('reaced', index);
       this.currentIndex = index;
-      // this.methods.updateCurrentPeopleIndex(index);
+      this.methods.updateCurrentPeopleIndex(index);
       // this.$apply();
       this.loadData();
     }
-    // console.log('reach bottom');
-    // this.parents = [
-    //   {
-    //     role: '父',
-    //     name: '良系',
-    //     avatar: '../../images/man.jpg'
-    //   },
-    //   {
-    //     role: '母',
-    //     name: '春秀',
-    //     avatar: '../../images/lady.jpg'
-    //   }
-    // ];
-    // this.current = [
-    //   {
-    //     role: '夫',
-    //     name: '作平',
-
-    //     avatar: '../../images/hasband.jpg'
-    //   },
-    //   {
-    //     role: '妻',
-    //     name: '范氏',
-    //     avatar: '../../images/wife.jpg'
-    //   }
-    // ];
-    // this.children = [
-    //   {
-    //     role: '子',
-    //     name: '善凯',
-    //     avatar: '../../images/boy.jpg'
-    //   },
-    //   {
-    //     role: '子',
-    //     name: '善策',
-    //     avatar: '../../images/man.jpg'
-    //   }
-    // ];
     this.loading = false;
   }
 
@@ -405,11 +295,76 @@ export default class Show extends wepy.page {
       }
     };
 
+    const formatInfo = info => {
+      const dateFormat = v => {
+        const newDate = new Date(v);
+        let date =
+          newDate.getFullYear() +
+          '年' +
+          (newDate.getMonth() + 1) +
+          '月' +
+          newDate.getDate() +
+          '日';
+        return date;
+      };
+      const orderedMap = [
+        [
+          'level',
+          '世代',
+          v => {
+            return `第${v}代`;
+          }
+        ],
+        ['祧', '兼祧'],
+        ['名', '名字'],
+        ['讳', '讳名'],
+        ['字', '字号'],
+        ['号', '名号'],
+        [
+          '生',
+          '生日',
+          v => {
+            if (info.日) {
+              return `${v}(${dateFormat(info.日)})`;
+            } else {
+              return v;
+            }
+          }
+        ],
+        [
+          '殁',
+          '过世',
+          v => {
+            console.log(info);
+            if (info.死) {
+              return `${v}(${dateFormat(info.死)})`;
+            } else {
+              return v;
+            }
+          }
+        ],
+        ['坟', '坟地'],
+        ['学', '学历'],
+        ['事', '事迹']
+      ];
+      let values = [];
+      orderedMap.forEach(([key, mappedKey, callback]) => {
+        if (info[key]) {
+          let value = info[key];
+          if (typeof callback === 'function') {
+            value = callback(value);
+          }
+          values.push([mappedKey, value]);
+        }
+      });
+      return values;
+    };
+
     if (this.selectedPeopleDetail) {
       const { allItems, currentIndex } = this.selectedPeopleDetail;
-      this.currentPeople = Object.entries(allItems[currentIndex]);
+      this.currentPeople = formatInfo(allItems[currentIndex]);
       this.currentIndex = currentIndex;
-      console.log(currentIndex, '<<<<< currentIndex', allItems);
+      // console.log(currentIndex, '<<<<< currentIndex', allItems);
 
       this.currentLevel = allItems[currentIndex].level;
       this.current = [
@@ -424,18 +379,20 @@ export default class Show extends wepy.page {
           formatShow(allItems[currentIndex + 1], '子'),
           formatShow(allItems[currentIndex + 1], '女')
         ];
-        console.log('new children', currentIndex + 1);
+        // console.log('new children', currentIndex + 1, this.children);
       } else {
-        this.children = null;
+        this.children = false;
       }
 
       // get parent
       if (currentIndex > 0) {
-        console.log('new parent', currentIndex - 1);
+        // console.log('new parent', currentIndex - 1);
         this.parents = [
           formatShow(allItems[currentIndex - 1], '父'),
           formatShow(allItems[currentIndex - 1], '母')
         ];
+      } else {
+        this.parents = null;
       }
     }
   }

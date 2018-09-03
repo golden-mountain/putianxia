@@ -159,10 +159,10 @@ export default class Index extends wepy.page {
     searching(newValue, oldValue) {
       // console.log(`num value: ${oldValue} -> ${newValue}`);
       if (newValue) {
-        // console.log(`loading old => new: ${oldValue} -> ${newValue}`);
+        console.log(`loading old => new: ${oldValue} -> ${newValue}`);
         wx.showLoading({ title: '加载中' });
       } else {
-        // console.log(`loaded old => new: ${oldValue} -> ${newValue}`);
+        console.log(`loaded old => new: ${oldValue} -> ${newValue}`);
         wx.hideLoading();
       }
     }
