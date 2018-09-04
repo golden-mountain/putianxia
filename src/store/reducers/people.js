@@ -27,11 +27,14 @@ function formatSearchedResult1(data) {
         ]
       }
       */
-  let obj = {}, sons = {};
+  let obj = {},
+    sons = {};
   if (data) {
     // find all sons
     data.forEach((v, i) => {
-      const son = v[0].data, parent = v[1].data, wife = v[2] ? v[2].data : [];
+      const son = v[0].data,
+        parent = v[1].data,
+        wife = v[2] ? v[2].data : [];
       let name = son.名;
 
       if (!obj[name]) {
@@ -97,14 +100,16 @@ function formatSearchedResult2(data) {
     // on each groups, need move wife and daughters and wifes under his name,
     // refactor the data structure
     sons.forEach(group => {
-      const son = group[0][0].data, father = group[1] ? group[1][1].data : null;
+      if (!group[0]) return false;
+      const son = group[0][0].data,
+        father = group[1] ? group[1][1].data : null;
       let groupName;
       if (father) {
         groupName = `${father.名} > ${son.名}`;
       } else {
         groupName = son.名;
       }
-      result[groupName] = [];
+      let newGroup = [];
       group.forEach(v => {
         // const [son, parent, relations, relation] = v;
         const son = v[0].data,
@@ -112,32 +117,35 @@ function formatSearchedResult2(data) {
           relations = v[2] ? v[2].data : {},
           relation = v[3] ? v[3].data : {};
         // find In parents, see if same parent exists
-        const thisInResultList = result[groupName].find(s => {
+        const thisInResultList = newGroup.find(s => {
           return s.名 === parent.名;
         });
 
         if (!parent.妻) parent.妻 = [];
-        if (!parent.儿) parent.儿 = [];
-        if (!parent.女) parent.女 = [];
+        // if (!parent.儿) parent.儿 = [];
+        // if (!parent.女) parent.女 = [];
         // if current item relation returns wife
         if (relation.role === 'wife') {
-          parent.妻 = relations;
+          parent.妻.push(relations);
         }
         // if current item relation returns son
-        if (relation.role === 'son') {
-          parent.儿 = relations;
-        }
+        // if (relation.role === 'son') {
+        //   parent.儿 = relations;
+        // }
 
-        // if current item relation returns daughter
-        if (relation.role === 'daughter') {
-          parent.女 = relations;
-        }
+        // // if current item relation returns daughter
+        // if (relation.role === 'daughter') {
+        //   parent.女 = relations;
+        // }
 
         if (!thisInResultList) {
-          result[groupName].push(parent);
+          parent.level = newGroup.length + 1;
+          newGroup.push(parent);
         }
       });
+      result[groupName] = newGroup.reverse();
     });
+
     return result;
   }
 }
@@ -217,22 +225,22 @@ export default handleActions(
       };
     },
     [SEARCH_PEOPLE](state, action) {
-      console.log('searched', action);
+      // console.log('searched', action);
       // construct data like
       if (!action.payload.data.data) return state;
       const obj = formatSearchedResult2(action.payload.data.data);
       // console.log(obj, 'object from reducer');
 
-      let selectedPeople = {};
-      if (obj) {
-        const values = Object.values(obj)[0];
-        selectedPeople = values ? values[values.length - 1] : {};
-        // console.log(selectedPeople, 'is selected obj');
-      }
+      // let selectedPeople = {};
+      // if (obj) {
+      //   const values = Object.values(obj)[0];
+      //   selectedPeople = values ? values[values.length - 1] : {};
+      //   // console.log(selectedPeople, 'is selected obj');
+      // }
       return {
         ...state,
         searching: false,
-        selectedPeople: selectedPeople,
+        // selectedPeople: selectedPeople,
         compareingPeople: [],
         searchedPeople: obj
       };

@@ -274,6 +274,7 @@ export default class Show extends wepy.page {
         };
       } else if (role === '妻' || role === '母') {
         if (p.妻) {
+          // console.log(p.妻);
           return p.妻.map(v => ({
             role,
             name: v.名,
@@ -335,7 +336,6 @@ export default class Show extends wepy.page {
           '殁',
           '过世',
           v => {
-            console.log(info);
             if (info.死) {
               return `${v}(${dateFormat(info.死)})`;
             } else {

@@ -124,7 +124,6 @@ export default class Index extends wepy.page {
 
   watch = {
     searching(newValue, oldValue) {
-      // console.log(`num value: ${oldValue} -> ${newValue}`);
       if (newValue) {
         wx.showLoading({ title: '加载中' });
       } else {
@@ -134,12 +133,14 @@ export default class Index extends wepy.page {
   };
 
   onLoad() {
-    console.log(this.selectedPeople);
+    if (this.people1 && this.people2) {
+      for (var i in this.people1) {
+        if (this.people2[i].名 !== this.people1[i].名) {
+          if (i) this.methods.activePeople(this.people1[i - 1]);
+          break;
+        }
+      }
+    }
   }
-
-  // onPullDownRefresh() {
-  // console.log('test. onPullDownRefreshaa');
-  // wx.stopPullDownRefresh();
-  // }
 }
 </script>

@@ -41,7 +41,7 @@ export function searchByNames(originNames) {
   const opts = {
     query: `MATCH (son:Person)-[relation:RELATION*0..]->(parent:Person) WHERE ${queries.join(
       ' OR '
-    )} OPTIONAL MATCH (relations:Person)-[r:RELATION]->(parent) WHERE r.role IN ['wife', 'daughter', 'son'] RETURN distinct son, parent, relations, r ORDER BY parent.level ASC`
+    )} OPTIONAL MATCH (relations:Person)-[r:RELATION]->(parent) WHERE r.role IN ['wife'] RETURN distinct son, parent, relations, r`
   };
   // console.log(opts);
 
