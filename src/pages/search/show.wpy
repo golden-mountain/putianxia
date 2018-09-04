@@ -23,8 +23,8 @@
                       <image class="weui-media-box__thumb" src="{{icon60}}" />
                   </view>
                   <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                      <view class="weui-media-box__title">{{ selectedPeople['名'] }}</view>
-                      <view class="weui-media-box__desc">良系次子，1982年生，大学生， 子三</view>
+                      <view class="weui-media-box__title">{{ info.names }}</view>
+                      <view class="weui-media-box__desc">{{info.info}}</view>
                   </view>
               </navigator>
           </view>
@@ -88,8 +88,9 @@ import { activePeople } from '@/store/actions/people';
     searching(state) {
       return state.people.searching;
     },
-    selectedPeople(state) {
-      return state.people.selectedPeople;
+    info(state) {
+      console.log(state.people.formatInfo);
+      return state.people.formatInfo;
     }
   },
   {
@@ -136,10 +137,17 @@ export default class Index extends wepy.page {
     if (this.people1 && this.people2) {
       for (var i in this.people1) {
         if (this.people2[i].名 !== this.people1[i].名) {
-          if (i) this.methods.activePeople(this.people1[i - 1]);
+          if (i) {
+            this.methods.activePeople([
+              this.people1[i - 1],
+              this.people2[i - 1]
+            ]);
+          }
           break;
         }
       }
+    } else if (this.people1) {
+      this.methods.activePeople([this.people1[this.people1.length - 1]]);
     }
   }
 }

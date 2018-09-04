@@ -34,7 +34,7 @@
 }
 </style>
 <template>
-    <view class="weui-flex ptx-tree-item {{ selectedPeople['名'] == item['名'] ? 'ptx-gen-active' : ''}} " @tap="activePeople({{item}})">
+    <view class="weui-flex ptx-tree-item {{ selectedPeople['名'] == item['名'] ? 'ptx-gen-active' : ''}} " @tap="activePeople({{[item]}})">
       <view class="weui-flex__item ptx-gen-num"><view class="">{{item.level}}</view></view>
       <view class="weui-flex__item ptx-name"><view class="placeholder">{{item['名']}}</view></view>
       <!-- <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view> -->
@@ -50,7 +50,9 @@ import { activePeople, showPeopleDetail } from '../store/actions';
 @connect(
   {
     selectedPeople(state) {
-      return state.people.selectedPeople;
+      if (state.people.selectedPeople) {
+        return state.people.selectedPeople[0];
+      }
     }
   },
   {

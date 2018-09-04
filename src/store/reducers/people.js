@@ -9,72 +9,7 @@ import {
   UPDATE_CURRENT_PEOPLE_INDEX
 } from '../types/people';
 
-function formatSearchedResult1(data) {
-  // console.log(data, 'all data');
-  /*
-      {
-        '良係>作平': [
-          {名：'作平'},
-          {名：'良系', 妻: [
-            {名: '郭氏'}
-          ]},
-          {{名：'会金', 妻: [
-            {名: '吴氏'}
-          ]}
-        ],
-        '良俊>作苏': [
-         ...
-        ]
-      }
-      */
-  let obj = {},
-    sons = {};
-  if (data) {
-    // find all sons
-    data.forEach((v, i) => {
-      const son = v[0].data,
-        parent = v[1].data,
-        wife = v[2] ? v[2].data : [];
-      let name = son.名;
-
-      if (!obj[name]) {
-        obj[name] = [];
-        sons[name] = son;
-      }
-      // find name from results:
-      const itemInArray = obj[name].find(s => {
-        return s.名 === parent.名;
-      });
-      let newItem = {};
-      if (!itemInArray) {
-        newItem = parent;
-        newItem.妻 = [wife];
-        obj[name].push(newItem);
-        newItem.id = obj[name].length;
-      } else {
-        newItem = itemInArray;
-        if (!newItem.妻) {
-          newItem['妻'] = [];
-        }
-        newItem.妻.push(wife);
-      }
-    });
-  }
-
-  for (let key in obj) {
-    const itemInArray = obj[key].find(s => {
-      return s.名 === sons[key].名;
-    });
-    if (!itemInArray) {
-      sons[key].id = obj[key].length + 1;
-      obj[key].push(sons[key]);
-    }
-  }
-  // console.log(obj);
-  return obj;
-}
-
-function formatSearchedResult2(data) {
+function formatSearchedResult(data) {
   // if promise returns new data from api
   const result = {};
   if (data) {
@@ -101,8 +36,7 @@ function formatSearchedResult2(data) {
     // refactor the data structure
     sons.forEach(group => {
       if (!group[0]) return false;
-      const son = group[0][0].data,
-        father = group[1] ? group[1][1].data : null;
+      const son = group[0][0].data, father = group[1] ? group[1][1].data : null;
       let groupName;
       if (father) {
         groupName = `${father.名} > ${son.名}`;
@@ -139,11 +73,15 @@ function formatSearchedResult2(data) {
         // }
 
         if (!thisInResultList) {
-          parent.level = newGroup.length + 1;
           newGroup.push(parent);
         }
       });
-      result[groupName] = newGroup.reverse();
+      newGroup = newGroup.reverse().map((v, i) => {
+        // console.log(v);
+        v.level = i + 1;
+        return v;
+      });
+      result[groupName] = newGroup;
     });
 
     return result;
@@ -151,33 +89,45 @@ function formatSearchedResult2(data) {
 }
 
 /**
- * 自己之父――父亲
- * 父亲之父――祖父
- * 祖父之父――曾祖
- * 曾祖之父――高祖
- * 高祖之父――天祖
- * 天祖之父――烈祖
- * 烈祖之父――太祖
- * 太祖之父――远祖
- * 远祖之父――鼻祖
-
- * 父亲之子――儿子
- * 儿子之子――孙子
- * 孙子之子――曾孙
- * 曾孙之子――玄孙
- * 玄孙之子――来孙
- * 来孙之子――晜孙
- * 晜孙之子――仍孙
- * 仍孙之子――云孙
- * 云孙之子――耳孙
- * 这就是祖宗十八代'
+ *
  * Return
  * {
  *     names: '作平，作苏',
- *     contents: '两代前你们共祖父', '你们是亲兄妹'
+ *     contents: '两代前你们共祖父', '你们是亲兄妹', '李作平', '良係次子, 1982年生,xxxx年殁, 大学生, 现在北京'
  * }
  */
-function formatSelectedPeople(selectePeople) {}
+function formatSelectedPeople(searchedPeople, selectedPeople) {
+  const [people1, people2] = selectedPeople;
+  let names = '', info = '';
+  if (people2) {
+    names = `${people1.名},${people2.名}`;
+    let upLevel = people1.level;
+    if (upLevel === 1) {
+      info = '兄弟妹关系';
+    } else if (upLevel === 2) {
+      info = '共一个爷爷';
+    } else if (upLevel === 3) {
+      info = '共一个太爷爷';
+    } else {
+      info = `往上数${upLevel}代,你们共一个祖父`;
+    }
+  } else {
+    names = `${people1.名}`;
+    if (people1.字) {
+      names += ` (字${people1.字})`;
+    }
+    if (people1.生) {
+      info = `生于${people1.生}`;
+    }
+    if (people1.殁) {
+      info += ` 殁于${people1.殁}`;
+    }
+    if (people1.祧) {
+      info += ` 兼祧${people1.祧}`;
+    }
+    return { info, names };
+  }
+}
 
 export default handleActions(
   {
@@ -202,10 +152,11 @@ export default handleActions(
       };
     },
     [ACTIVE_SEARCH_PEOPLE](state, action) {
-      // console.log(state, action, '.... state changing');
+      console.log(action, '.... state changing');
       return {
         ...state,
-        selectedPeople: action.payload
+        selectedPeople: action.payload,
+        formatInfo: formatSelectedPeople(state.searchedPeople, action.payload)
       };
     },
     [UPDATE_CURRENT_PEOPLE_INDEX](state, action) {
@@ -225,22 +176,13 @@ export default handleActions(
       };
     },
     [SEARCH_PEOPLE](state, action) {
-      // console.log('searched', action);
       // construct data like
       if (!action.payload.data.data) return state;
-      const obj = formatSearchedResult2(action.payload.data.data);
-      // console.log(obj, 'object from reducer');
+      const obj = formatSearchedResult(action.payload.data.data);
 
-      // let selectedPeople = {};
-      // if (obj) {
-      //   const values = Object.values(obj)[0];
-      //   selectedPeople = values ? values[values.length - 1] : {};
-      //   // console.log(selectedPeople, 'is selected obj');
-      // }
       return {
         ...state,
         searching: false,
-        // selectedPeople: selectedPeople,
         compareingPeople: [],
         searchedPeople: obj
       };
