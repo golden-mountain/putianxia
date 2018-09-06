@@ -9,10 +9,27 @@ import {
   UPDATE_CURRENT_PEOPLE_INDEX
 } from '../types/people';
 
+function formatSearchedResult1(data) {}
+
 function formatSearchedResult(data) {
   // if promise returns new data from api
   const result = {};
   if (data) {
+    let previousPeople = {};
+    // remove son's wife
+    data.forEach((s, i) => {
+      const [son, parent, wife] = s;
+      if (parent.data.名 === previousPeople.名) {
+        data.splice(i, 1);
+        if (!previousPeople.妻) previousPeople.妻 = [];
+        if (wife) previousPeople.妻.push(wife.data);
+      } else {
+        if (!parent.data.妻) parent.data.妻 = [];
+        if (wife) parent.data.妻.push(wife.data);
+        previousPeople = parent.data;
+      }
+    });
+
     // group all sons
     const sons = [];
     let previousIndex = 0;
@@ -20,8 +37,13 @@ function formatSearchedResult(data) {
       // console.log(s);
       const [son, parent] = s;
 
-      if (son.data.名 === parent.data.名 && i) {
-        sons.push(data.slice(previousIndex, i));
+      if ((son.data.名 === parent.data.名 && i) || i === data.length - 1) {
+        if (i === data.length - 1) {
+          sons.push(data.slice(previousIndex, i + 1));
+        } else {
+          sons.push(data.slice(previousIndex, i));
+        }
+
         previousIndex = i;
       }
     });
@@ -30,18 +52,17 @@ function formatSearchedResult(data) {
       sons.push(data);
     }
 
-    // console.log(sons);
-
     // on each groups, need move wife and daughters and wifes under his name,
     // refactor the data structure
     sons.forEach(group => {
       if (!group[0]) return false;
-      const son = group[0][0].data, father = group[1] ? group[1][1].data : null;
+      const son = group[0][0].data,
+        father = group[1] ? group[1][1].data : null;
       let groupName;
       if (father) {
         groupName = `${father.名} > ${son.名}`;
       } else {
-        groupName = son.名;
+        groupName = `${son.名}`;
       }
       let newGroup = [];
       group.forEach(v => {
@@ -55,13 +76,13 @@ function formatSearchedResult(data) {
           return s.名 === parent.名;
         });
 
-        if (!parent.妻) parent.妻 = [];
-        // if (!parent.儿) parent.儿 = [];
-        // if (!parent.女) parent.女 = [];
-        // if current item relation returns wife
-        if (relation.role === 'wife') {
-          parent.妻.push(relations);
-        }
+        // if (!parent.妻) parent.妻 = [];
+        // // if (!parent.儿) parent.儿 = [];
+        // // if (!parent.女) parent.女 = [];
+        // // if current item relation returns wife
+        // if (relation.role === 'wife') {
+        //   parent.妻.push(relations);
+        // }
         // if current item relation returns son
         // if (relation.role === 'son') {
         //   parent.儿 = relations;
@@ -98,7 +119,8 @@ function formatSearchedResult(data) {
  */
 function formatSelectedPeople(searchedPeople, selectedPeople) {
   const [people1, people2] = selectedPeople;
-  let names = '', info = '';
+  let names = '',
+    info = '';
   if (people2) {
     names = `${people1.名},${people2.名}`;
     let upLevel = people1.level;

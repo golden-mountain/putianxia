@@ -89,7 +89,7 @@ import { activePeople } from '@/store/actions/people';
       return state.people.searching;
     },
     info(state) {
-      console.log(state.people.formatInfo);
+      // console.log(state.people.formatInfo);
       return state.people.formatInfo;
     }
   },
