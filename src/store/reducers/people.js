@@ -9,104 +9,77 @@ import {
   UPDATE_CURRENT_PEOPLE_INDEX
 } from '../types/people';
 
-function formatSearchedResult1(data) {}
-
 function formatSearchedResult(data) {
-  // if promise returns new data from api
-  const result = {};
-  if (data) {
-    let previousPeople = {};
-    // remove son's wife
-    data.forEach((s, i) => {
-      const [son, parent, wife] = s;
-      if (parent.data.名 === previousPeople.名) {
-        data.splice(i, 1);
-        if (!previousPeople.妻) previousPeople.妻 = [];
-        if (wife) previousPeople.妻.push(wife.data);
-      } else {
-        if (!parent.data.妻) parent.data.妻 = [];
-        if (wife) parent.data.妻.push(wife.data);
-        previousPeople = parent.data;
-      }
-    });
-
-    // group all sons
-    const sons = [];
-    let previousIndex = 0;
-    data.forEach((s, i) => {
-      // console.log(s);
-      const [son, parent] = s;
-
-      if ((son.data.名 === parent.data.名 && i) || i === data.length - 1) {
-        if (i === data.length - 1) {
-          sons.push(data.slice(previousIndex, i + 1));
-        } else {
-          sons.push(data.slice(previousIndex, i));
-        }
-
-        previousIndex = i;
-      }
-    });
-
-    if (!sons.length) {
-      sons.push(data);
+  // build wifes
+  const buildWifes = n => {
+    if (!n[1].data.妻) {
+      n[1].data.妻 = [];
     }
-
-    // on each groups, need move wife and daughters and wifes under his name,
-    // refactor the data structure
-    sons.forEach(group => {
-      if (!group[0]) return false;
-      const son = group[0][0].data,
-        father = group[1] ? group[1][1].data : null;
-      let groupName;
-      if (father) {
-        groupName = `${father.名} > ${son.名}`;
-      } else {
-        groupName = `${son.名}`;
+    for (var i in data) {
+      const v = data[i];
+      if (v[4] && v[4].end === n[1].self && v[3].data) {
+        n[1].data.妻.push(v[3].data);
       }
-      let newGroup = [];
-      group.forEach(v => {
-        // const [son, parent, relations, relation] = v;
-        const son = v[0].data,
-          parent = v[1].data,
-          relations = v[2] ? v[2].data : {},
-          relation = v[3] ? v[3].data : {};
-        // find In parents, see if same parent exists
-        const thisInResultList = newGroup.find(s => {
-          return s.名 === parent.名;
-        });
-
-        // if (!parent.妻) parent.妻 = [];
-        // // if (!parent.儿) parent.儿 = [];
-        // // if (!parent.女) parent.女 = [];
-        // // if current item relation returns wife
-        // if (relation.role === 'wife') {
-        //   parent.妻.push(relations);
-        // }
-        // if current item relation returns son
-        // if (relation.role === 'son') {
-        //   parent.儿 = relations;
-        // }
-
-        // // if current item relation returns daughter
-        // if (relation.role === 'daughter') {
-        //   parent.女 = relations;
-        // }
-
-        if (!thisInResultList) {
-          newGroup.push(parent);
-        }
-      });
-      newGroup = newGroup.reverse().map((v, i) => {
-        // console.log(v);
-        v.level = i + 1;
-        return v;
-      });
-      result[groupName] = newGroup;
+    }
+  };
+  // console.log(data);
+  // find child nodes
+  const childNodes = [];
+  const groups = {};
+  data.forEach(n => {
+    const finded = childNodes.find(v => {
+      return v.self === n[1].self;
     });
+    if (n[2].length === 0 && !finded) {
+      childNodes.push(n[1]);
+      buildWifes(n);
+      groups[n[1].self] = [n[1].data];
+    }
+  });
+  // console.log(childNodes);
+  // find parents
+  const buildParents = (n, root) => {
+    // find relations to find it's parent
+    let parentNode = null;
+    for (var i in data) {
+      const v = data[i];
+      if (v[2].length) {
+        const node = v[2].find(p => p.start === n.self);
+        if (node) {
+          parentNode = v;
+          break;
+        }
+      }
+    }
+    // console.log(parentNode);
+    if (parentNode) {
+      groups[root.self].push(parentNode[1].data);
+      buildWifes(parentNode);
+      buildParents(parentNode[1], root);
+    }
+  };
+  childNodes.forEach(n => {
+    buildParents(n, n);
+  });
 
-    return result;
+  // reverse and set level
+  let newGroups = {};
+  for (var k in groups) {
+    let group = groups[k];
+    const [son, father] = group;
+    let groupName;
+    if (father) {
+      groupName = `${father.名} > ${son.名}`;
+    } else {
+      groupName = `${son.名}`;
+    }
+    newGroups[groupName] = group.reverse().map((v, i) => {
+      v.level = i + 1;
+      return v;
+    });
   }
+  // console.log(groups);
+  return newGroups;
 }
 
 /**
