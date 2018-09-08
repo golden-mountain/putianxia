@@ -173,9 +173,9 @@
       </view>
 
       <view class="page__ft" wx:if="{{children}}">
-        <block wx:for-items="{{children}}" >
+        <block wx:for-items="{{children}}"  wx:key="any">
           <view class="weui-flex ptx-user-group">
-            <view class="weui-flex__item ptx-user" wx:for-items="{{item}}" wx:for-item="child" >
+            <view class="weui-flex__item ptx-user" wx:for-items="{{item}}" wx:for-item="child"  wx:key="childkey">
               <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ child.avatar }}" background-size="cover"/>
               <view class="userinfo">({{child.role}}){{ child.name}}</view>
             </view>
@@ -245,7 +245,7 @@ export default class Show extends wepy.page {
   config = {
     navigationBarTitleText: '个人资料 - 谱天下',
     enablePullDownRefresh: true,
-    onReachBottomDistance: 100
+    onReachBottomDistance: 0
   };
   components = {};
 
@@ -270,7 +270,7 @@ export default class Show extends wepy.page {
       wx.navigateTo({ url: '/pages/wo/index' });
     },
     showChildren() {
-      this.methods.getChildrenByParentId(this.currentId);
+      this.reachBottom();
     }
   };
 
@@ -290,6 +290,10 @@ export default class Show extends wepy.page {
   }
 
   onReachBottom() {
+    this.reachBottom();
+  }
+
+  reachBottom() {
     const index = this.currentIndex + 1;
     // console.log('reached to bottom');
 

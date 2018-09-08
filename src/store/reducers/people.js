@@ -52,7 +52,8 @@ export default handleActions(
       currentPeople.currentIndex = action.payload;
       return {
         ...state,
-        selectedPeopleDetail: currentPeople
+        selectedPeopleDetail: currentPeople,
+        children: []
       };
     },
     [SHOW_PEOPLE_DETAIL](state, action) {
@@ -71,7 +72,8 @@ export default handleActions(
         ...state,
         searching: false,
         compareingPeople: [],
-        searchedPeople: obj
+        searchedPeople: obj,
+        children: []
       };
     },
     [GET_CHILDREN_BY_ID](state, action) {
