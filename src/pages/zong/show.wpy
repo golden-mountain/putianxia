@@ -165,26 +165,30 @@
       </view>
 
       <view class="weui-panel">
-        <view class="weui-panel__hd">基本资料</view>
+        <view class="weui-panel__hd">{{ current[0].name}}的基本资料</view>
         <view class="weui-panel__bd ptx-current-userinfo">
           <view wx:for-items="{{currentPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id"><text>{{item[0]}}</text>{{item[1]}}</view>
 
         </view>
       </view>
+
+      <view class="page__ft" wx:if="{{children}}">
+        <block wx:for-items="{{children}}" >
+          <view class="weui-flex ptx-user-group">
+            <view class="weui-flex__item ptx-user" wx:for-items="{{item}}" wx:for-item="child" >
+              <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ child.avatar }}" background-size="cover"/>
+              <view class="userinfo">({{child.role}}){{ child.name}}</view>
+            </view>
+          </view>
+        </block>
+      </view>
+
     </view>
 
-    <view class="page__ft" wx:if="{{children}}">
-      <view class="weui-flex ptx-user-group">
-        <view class="weui-flex__item ptx-user" wx:for-items="{{children}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
-          <view class="userinfo">({{item.role}}){{ item.name}}</view>
-        </view>
-      </view>
-    </view>
 
     <view class="weui-loadmore">
         <view wx:if="{{this.loading}}" class="weui-loading"></view>
-        <view class="weui-loadmore__tips ptx-load-more">向下拖动看更多</view>
+        <view class="weui-loadmore__tips ptx-load-more" @tap="showChildren">上下滑动加载</view>
     </view>
   </view>
 </template>
@@ -194,36 +198,67 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 // import SearchBar from '@/components/searchbar'; // alias example
-import { updateCurrentPeopleIndex } from '@/store/actions/people';
+import {
+  updateCurrentPeopleIndex,
+  getChildrenByParentId
+} from '@/store/actions/people';
 
 @connect(
   {
     selectedPeopleDetail(state) {
       // console.log(state.people, 'current state people');
       return state.people.selectedPeopleDetail;
+    },
+    children(state) {
+      if (state.people.children) {
+        const children = state.people.children;
+        const groupChildren = [];
+        children.forEach((v, i) => {
+          const data = {
+            role: v.role === 'son' ? '儿' : '女',
+            name: v.名,
+            avatar:
+              v.role === 'son'
+                ? '../../images/man.jpg'
+                : '../../images/lady.jpg'
+          };
+
+          if (!(i % 3)) {
+            groupChildren[groupChildren.length] = [];
+          }
+          groupChildren[groupChildren.length - 1].push(data);
+
+          // console.log(groupChildren);
+        });
+        return groupChildren;
+      } else {
+        return false;
+      }
     }
   },
   {
-    updateCurrentPeopleIndex
+    updateCurrentPeopleIndex,
+    getChildrenByParentId
   }
 )
 export default class Show extends wepy.page {
   config = {
     navigationBarTitleText: '个人资料 - 谱天下',
     enablePullDownRefresh: true,
-    onReachBottomDistance: 50
+    onReachBottomDistance: 100
   };
   components = {};
 
   mixins = [];
 
   data = {
+    currentId: 0,
     currentLevel: 0,
     currentIndex: 0,
     currentPeople: [],
     parents: [],
     current: [],
-    children: [],
+    // children: [],
     loading: false
   };
 
@@ -233,6 +268,9 @@ export default class Show extends wepy.page {
     gotoUser() {
       // console.log('goto user');
       wx.navigateTo({ url: '/pages/wo/index' });
+    },
+    showChildren() {
+      this.methods.getChildrenByParentId(this.currentId);
     }
   };
 
@@ -248,6 +286,7 @@ export default class Show extends wepy.page {
     }
     wx.stopPullDownRefresh();
     this.loading = false;
+    this.methods.getChildrenByParentId(this.currentId);
   }
 
   onReachBottom() {
@@ -258,10 +297,12 @@ export default class Show extends wepy.page {
       // console.log('reaced', index);
       this.currentIndex = index;
       this.methods.updateCurrentPeopleIndex(index);
+
       // this.$apply();
       this.loadData();
     }
     this.loading = false;
+    this.methods.getChildrenByParentId(this.currentId);
   }
 
   loadData() {
@@ -270,7 +311,7 @@ export default class Show extends wepy.page {
         return {
           role,
           name: p.名,
-          avatar: '../../images/hasband.jpg'
+          avatar: '../../images/man.jpg'
         };
       } else if (role === '妻' || role === '母') {
         if (p.妻) {
@@ -278,7 +319,7 @@ export default class Show extends wepy.page {
           return p.妻.map(v => ({
             role,
             name: v.名,
-            avatar: '../../images/wife.jpg'
+            avatar: '../../images/lady.jpg'
           }));
         }
       } else {
@@ -364,6 +405,7 @@ export default class Show extends wepy.page {
       const { allItems, currentIndex } = this.selectedPeopleDetail;
       this.currentPeople = formatInfo(allItems[currentIndex]);
       this.currentIndex = currentIndex;
+      this.currentId = allItems[currentIndex].id;
       // console.log(currentIndex, '<<<<< currentIndex', allItems);
 
       this.currentLevel = allItems[currentIndex].level;
@@ -374,15 +416,15 @@ export default class Show extends wepy.page {
 
       // get children
       // console.log(this.current);
-      if (allItems[currentIndex + 1]) {
-        this.children = [
-          formatShow(allItems[currentIndex + 1], '子'),
-          formatShow(allItems[currentIndex + 1], '女')
-        ];
-        // console.log('new children', currentIndex + 1, this.children);
-      } else {
-        this.children = false;
-      }
+      // if (allItems[currentIndex + 1]) {
+      //   this.children = [
+      //     formatShow(allItems[currentIndex + 1], '子'),
+      //     formatShow(allItems[currentIndex + 1], '女')
+      //   ];
+      //   // console.log('new children', currentIndex + 1, this.children);
+      // } else {
+      //   this.children = false;
+      // }
 
       // get parent
       if (currentIndex > 0) {
@@ -400,6 +442,7 @@ export default class Show extends wepy.page {
   onLoad() {
     this.loadData();
     this.loading = false;
+    this.methods.showChildren.bind(this);
   }
 }
 </script>

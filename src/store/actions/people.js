@@ -5,10 +5,11 @@ import {
   SET_SEARCH_KEYWORDS,
   SEARCHING_PEOPLE,
   SHOW_PEOPLE_DETAIL,
-  UPDATE_CURRENT_PEOPLE_INDEX
+  UPDATE_CURRENT_PEOPLE_INDEX,
+  GET_CHILDREN_BY_ID
 } from '../types/people';
 import { createAction } from 'redux-actions';
-import { searchByNames } from '../../services/people';
+import { searchByNames, getChildren } from '../../services/people';
 
 export const activePeople = createAction(
   ACTIVE_SEARCH_PEOPLE,
@@ -40,4 +41,8 @@ export const searchPeople = createAction(SEARCH_PEOPLE, names => {
 export const selectSearchedPeople = createAction(
   SELECT_SEARCHED_PEOPLE,
   people => people
+);
+
+export const getChildrenByParentId = createAction(GET_CHILDREN_BY_ID, id =>
+  getChildren(id)
 );

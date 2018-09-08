@@ -6,10 +6,15 @@ import {
   SEARCHING_PEOPLE,
   SELECT_SEARCHED_PEOPLE,
   SHOW_PEOPLE_DETAIL,
-  UPDATE_CURRENT_PEOPLE_INDEX
+  UPDATE_CURRENT_PEOPLE_INDEX,
+  GET_CHILDREN_BY_ID
 } from '../types/people';
 
-import { formatSearchedResult, formatSelectedPeople } from '../helpers/people';
+import {
+  formatSearchedResult,
+  formatSelectedPeople,
+  formatChildren
+} from '../helpers/people';
 
 export default handleActions(
   {
@@ -67,6 +72,16 @@ export default handleActions(
         searching: false,
         compareingPeople: [],
         searchedPeople: obj
+      };
+    },
+    [GET_CHILDREN_BY_ID](state, action) {
+      // console.log(action.payload.data);
+
+      // construct data like
+      if (!action.payload.data.data) return state;
+      return {
+        ...state,
+        children: formatChildren(action.payload.data.data)
       };
     }
   },

@@ -4,7 +4,7 @@ export function getSamples() {
   const opts = {
     query: 'MATCH (n)  RETURN n LIMIT 6'
   };
-  return request.post(opts);
+  return request.cypherPost(opts);
 }
 
 export function searchByNames(originNames) {
@@ -15,8 +15,7 @@ export function searchByNames(originNames) {
   let queries = [];
   originNames.forEach(name => {
     let newName = name.replace(' ', '');
-    let queryString = '',
-      parentName = '';
+    let queryString = '', parentName = '';
     if (newName.indexOf('>') > -1) {
       let newNames = newName.split('>');
       if (newNames.length >= 2) {
@@ -39,11 +38,16 @@ export function searchByNames(originNames) {
     return newName;
   });
   const opts = {
-    query: `MATCH (son:Person)-[sr:RELATION*0..]->(parent:Person) WHERE ${queries.join(
-      ' OR '
-    )} OPTIONAL MATCH (wife:Person)-[wr:RELATION]->(parent) WHERE wr.role IN ['wife'] RETURN distinct son, parent, sr, wife, wr`
+    query: `MATCH (son:Person)-[sr:RELATION*0..]->(parent:Person) WHERE ${queries.join(' OR ')} OPTIONAL MATCH (wife:Person)-[wr:RELATION]->(parent) WHERE wr.role IN ['wife'] RETURN distinct son, parent, sr, wife, wr`
   };
   // console.log(opts);
 
-  return request.post(opts);
+  return request.cypherPost(opts);
+}
+
+export function getChildren(id) {
+  const opts = {
+    query: `MATCH (n:Person)<-[r:RELATION]-(p:Person)  WHERE id(n)=${id} AND r.role IN ['daughter', 'son'] RETURN r, p`
+  };
+  return request.cypherPost(opts);
 }
