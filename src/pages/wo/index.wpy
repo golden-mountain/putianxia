@@ -74,90 +74,107 @@
 
 <template>
     <view class="page">
-      <block wx:if="{{!bindedMyInfo}}">
-        <view class="page__hd">
-          <view class="userinfo">
-            <image class="userinfo-avatar" src="{{ userInfo.avatarUrl }}" background-size="cover"/>
-            <view class="userinfo-nickname">欢迎您, {{ userInfo.nickName }}</view>
-          </view>
+      <view class="weui-msg" wx:if="{{!wx}}">
+        <view class="weui-msg__icon-area">
+            <icon type="success" size="93"></icon>
         </view>
-
-        <view class="page__bd ptx-searchbar__area">
-          <view class="weui-cells__title">寻找并关联自己</view>
-          <searchbarInBody
-            placeholder="输入名字"
-            btn="搜索"
-          />
+        <view class="weui-msg__text-area">
+            <view class="weui-msg__title">请求授权</view>
+            <view class="weui-msg__desc">本页操作需要获得您的用户信息以继续,只有登录的用户才可以查询本族族谱信息</view>
         </view>
-
-    </block>
-
-    <block wx:else>
-      <view class="page__hd">
-        <view class="page__hd ptx-search-bar-top">
-          <searchbarAsHead
-            placeholder="良系>作平 或 作平,作苏"
-            btn=""
-
-          />
+        <view class="weui-msg__opr-area">
+            <view class="weui-btn-area">
+                <button class="weui-btn" type="primary" open-type="getUserInfo" hover-class='none' bindgetuserinfo="getUserInfo">同意授权</button>
+                <button class="weui-btn" type="default">取消</button>
+            </view>
         </view>
       </view>
+      <block wx:else>
+        <block wx:if="{{!bindedMyInfo}}">
+          <view class="page__hd">
+            <view class="userinfo">
+              <image class="userinfo-avatar" src="{{ wx.avatarUrl }}" background-size="cover"/>
+              <view class="userinfo-nickname">欢迎您, {{ wx.nickName }}</view>
+            </view>
+          </view>
 
-      <view class="page__bd">
-        <view class="weui-panel weui-panel_access">
-          <view class="weui-panel__bd weui-flex ptx-user-profile">
-            <view class="weui-flex__item ptx-avatar">
-              <image src="../../images/boy.jpg"/>
-              <view class="ptx-name">作平 <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
-            </view>
-            <view class="weui-flex__item ptx-user-info">
-              <view class="title">我的资料</view>
-              <view>名：李xxx</view>
-              <view>字：xx</view>
-              <view>生：1948/3/1 (民国癸末大概十二年二月初四)</view>
-              <view class="descritpion">传：如果你无法简洁的表达你的想法，那只说明你还不够了解它。
-    -- 阿尔伯特·爱因斯坦</view>
-            </view>
+          <view class="page__bd ptx-searchbar__area">
+            <view class="weui-cells__title">寻找并关联自己</view>
+            <searchbarInBody
+              placeholder="输入名字"
+              btn="搜索"
+            />
+          </view>
+
+      </block>
+
+      <block wx:else>
+        <view class="page__hd">
+          <view class="page__hd ptx-search-bar-top">
+            <searchbarAsHead
+              placeholder="良系>作平 或 作平,作苏"
+              btn=""
+
+            />
           </view>
         </view>
 
+        <view class="page__bd">
+          <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__bd weui-flex ptx-user-profile">
+              <view class="weui-flex__item ptx-avatar">
+                <image src="../../images/boy.jpg"/>
+                <view class="ptx-name">作平 <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
+              </view>
+              <view class="weui-flex__item ptx-user-info">
+                <view class="title">我的资料</view>
+                <view>名：李xxx</view>
+                <view>字：xx</view>
+                <view>生：1948/3/1 (民国癸末大概十二年二月初四)</view>
+                <view class="descritpion">传：如果你无法简洁的表达你的想法，那只说明你还不够了解它。
+      -- 阿尔伯特·爱因斯坦</view>
+              </view>
+            </view>
+          </view>
 
-        <view class="weui-panel weui-panel_access">
-          <view class="weui-panel__hd">我的父辈</view>
-          <view class="weui-panel__bd">
-              <view class="weui-media-box">
-                <navigator url="/pages/zong/show">
-                  <view class="ptx-ancestors">远灌 > 世枢 > 运煌 > 统培 > 会金 > 良系</view>
+
+          <view class="weui-panel weui-panel_access">
+            <view class="weui-panel__hd">我的父辈</view>
+            <view class="weui-panel__bd">
+                <view class="weui-media-box">
+                  <navigator url="/pages/zong/show">
+                    <view class="ptx-ancestors">远灌 > 世枢 > 运煌 > 统培 > 会金 > 良系</view>
+                  </navigator>
+                </view>
+            </view>
+          </view>
+
+          <view class="weui-panel weui-panel_access">
+              <view class="weui-panel__hd">我关注的人</view>
+              <view class="weui-panel__bd">
+                <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                        <image class="weui-media-box__thumb" src="../../images/man.jpg" />
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                        <view class="weui-media-box__title">远灌</view>
+                        <view class="weui-media-box__desc">忌日：12月13日 </view>
+                    </view>
+                </navigator>
+
+                <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
+                    <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
+                        <image class="weui-media-box__thumb" src="../../images/man.jpg" />
+                    </view>
+                    <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
+                        <view class="weui-media-box__title">世枢</view>
+                        <view class="weui-media-box__desc">生日：2月3 日</view>
+                    </view>
                 </navigator>
               </view>
           </view>
         </view>
-
-        <view class="weui-panel weui-panel_access">
-            <view class="weui-panel__hd">我关注的人</view>
-            <view class="weui-panel__bd">
-              <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                      <image class="weui-media-box__thumb" src="../../images/man.jpg" />
-                  </view>
-                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                      <view class="weui-media-box__title">远灌</view>
-                      <view class="weui-media-box__desc">忌日：12月13日 </view>
-                  </view>
-              </navigator>
-
-              <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
-                  <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                      <image class="weui-media-box__thumb" src="../../images/man.jpg" />
-                  </view>
-                  <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                      <view class="weui-media-box__title">世枢</view>
-                      <view class="weui-media-box__desc">生日：2月3 日</view>
-                  </view>
-              </navigator>
-            </view>
-        </view>
-      </view>
+      </block>
     </block>
   </view>
 
@@ -168,8 +185,19 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 import SearchBar from '@/components/searchbar'; // alias example
+import { getWeixinInfo } from '@/store/actions/people';
 
-@connect({})
+@connect(
+  {
+    wx(state) {
+      // console.log(state.people, 'current state people');
+      return state.people.wx;
+    }
+  },
+  {
+    getWeixinInfo
+  }
+)
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: '我 - 谱天下'
@@ -182,9 +210,6 @@ export default class Index extends wepy.page {
   mixins = [];
 
   data = {
-    userInfo: {
-      nickName: '加载中...'
-    },
     focus: true,
     bindedMyInfo: false
   };
@@ -195,18 +220,26 @@ export default class Index extends wepy.page {
     onProfileChange() {
       console.log('profile changed');
       wx.navigateTo({ url: '/pages/zong/add-people' });
+    },
+    getUserInfo(e) {
+      console.log(e.detail);
+      this.methods.getWeixinInfo(e.detail.userInfo);
     }
   };
 
   events = {};
 
   onLoad() {
-    let self = this;
-    this.$parent.getUserInfo(function(userInfo) {
-      if (userInfo) {
-        self.userInfo = userInfo;
+    this.methods.getUserInfo.bind(this);
+    let that = this;
+    wepy.getUserInfo({
+      success(res) {
+        console.log(res);
+        that.methods.getWeixinInfo(res.userInfo);
+      },
+      fail() {
+        console.log('need auth!');
       }
-      self.$apply();
     });
   }
 }

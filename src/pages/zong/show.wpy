@@ -125,7 +125,7 @@
         <view class="weui-panel__bd">
           <view class="weui-flex ptx-actions">
             <view class="weui-flex__item ">
-              <text class="font_26 ptx-link">第{{ currentLevel }}世 <text class="iconfont icon-mine font-26" />这个是我</text>
+              <text class="font_26 ptx-link">第{{ currentLevel }}世 <text class="iconfont icon-mine font-26" bindtap="updateWeixinInfo({{current[0].id}}, '13381015323')"/>这个是我</text>
             </view>
             <view class="weui-flex__item ptx-location">
               <text class="iconfont icon-like" />
@@ -200,14 +200,17 @@ import { connect } from 'wepy-redux';
 // import SearchBar from '@/components/searchbar'; // alias example
 import {
   updateCurrentPeopleIndex,
-  getChildrenByParentId
+  getChildrenByParentId,
+  updateWeixinInfo
 } from '@/store/actions/people';
 
 @connect(
   {
     selectedPeopleDetail(state) {
-      // console.log(state.people, 'current state people');
       return state.people.selectedPeopleDetail;
+    },
+    wx(state) {
+      return state.people.wx;
     },
     children(state) {
       if (state.people.children) {
@@ -270,7 +273,8 @@ import {
   },
   {
     updateCurrentPeopleIndex,
-    getChildrenByParentId
+    getChildrenByParentId,
+    updateWeixinInfo
   }
 )
 export default class Show extends wepy.page {

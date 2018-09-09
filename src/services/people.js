@@ -38,7 +38,11 @@ export function searchByNames(originNames) {
     return newName;
   });
   const opts = {
-    query: `MATCH (son:Person)-[sr:RELATION*0..]->(parent:Person) WHERE ${queries.join(' OR ')} OPTIONAL MATCH (wife:Person)-[wr:RELATION]->(parent) WHERE wr.role IN ['wife'] RETURN distinct son, parent, sr, wife, wr`
+    query: `MATCH (son:Person)-[sr:RELATION*0..]->(parent:Person)
+              WHERE ${queries.join(' OR ')}
+            OPTIONAL MATCH (wife:Person)-[wr:RELATION]->(parent)
+              WHERE wr.role IN ['wife']
+            RETURN distinct son, parent, sr, wife, wr`
   };
   // console.log(opts);
 
@@ -49,5 +53,17 @@ export function getChildren(id) {
   const opts = {
     query: `MATCH (n:Person)<-[r:RELATION]-(p:Person)  WHERE id(n)=${id} AND r.role IN ['daughter', 'son'] RETURN r, p`
   };
+  return request.cypherPost(opts);
+}
+
+export function updateMyWeixin(id, wx) {
+  const opts = {
+    query: `
+    MATCH (o) WHERE o is not null and o.wx='${wx}'
+    MATCH (n:Person:李)-->(p:Person:李)
+    WHERE id(n)=${id}
+    SET n.wx='${wx}', o.wx='' RETURN n,p;`
+  };
+  console.log(opts);
   return request.cypherPost(opts);
 }

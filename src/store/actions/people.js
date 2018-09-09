@@ -6,10 +6,16 @@ import {
   SEARCHING_PEOPLE,
   SHOW_PEOPLE_DETAIL,
   UPDATE_CURRENT_PEOPLE_INDEX,
-  GET_CHILDREN_BY_ID
+  GET_CHILDREN_BY_ID,
+  UPDATE_WEIXIN,
+  GET_WEIXIN_INFO
 } from '../types/people';
 import { createAction } from 'redux-actions';
-import { searchByNames, getChildren } from '../../services/people';
+import {
+  searchByNames,
+  getChildren,
+  updateMyWeixin
+} from '../../services/people';
 
 export const activePeople = createAction(
   ACTIVE_SEARCH_PEOPLE,
@@ -45,4 +51,13 @@ export const selectSearchedPeople = createAction(
 
 export const getChildrenByParentId = createAction(GET_CHILDREN_BY_ID, id =>
   getChildren(id)
+);
+
+export const updateWeixinInfo = createAction(UPDATE_WEIXIN, (id, wx) =>
+  updateMyWeixin(id, wx)
+);
+
+export const getWeixinInfo = createAction(
+  GET_WEIXIN_INFO,
+  userinfo => userinfo
 );

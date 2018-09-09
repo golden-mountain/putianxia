@@ -7,7 +7,9 @@ import {
   SELECT_SEARCHED_PEOPLE,
   SHOW_PEOPLE_DETAIL,
   UPDATE_CURRENT_PEOPLE_INDEX,
-  GET_CHILDREN_BY_ID
+  GET_CHILDREN_BY_ID,
+  UPDATE_WEIXIN,
+  GET_WEIXIN_INFO
 } from '../types/people';
 
 import {
@@ -39,11 +41,11 @@ export default handleActions(
       };
     },
     [ACTIVE_SEARCH_PEOPLE](state, action) {
-      console.log(action, '.... state changing');
+      // console.log(action, '.... state changing');
       return {
         ...state,
         selectedPeople: action.payload,
-        formatInfo: formatSelectedPeople(state.searchedPeople, action.payload)
+        formatInfo: formatSelectedPeople(action.payload)
       };
     },
     [UPDATE_CURRENT_PEOPLE_INDEX](state, action) {
@@ -84,6 +86,23 @@ export default handleActions(
       return {
         ...state,
         children: formatChildren(action.payload.data.data)
+      };
+    },
+    [UPDATE_WEIXIN](state, action) {
+      // console.log(action.payload.data);
+
+      // construct data like
+      if (!action.payload.data.data) return state;
+      return {
+        ...state,
+        weixinUser: action.payload.data.data
+      };
+    },
+    [GET_WEIXIN_INFO](state, action) {
+      console.log(action.payload);
+      return {
+        ...state,
+        wx: action.payload
       };
     }
   },

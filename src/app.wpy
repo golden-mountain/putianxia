@@ -60,11 +60,6 @@ export default class extends wepy.app {
     // }
   };
 
-  globalData = {
-    userInfo: null,
-    title: '谱天下'
-  };
-
   constructor() {
     super();
     this.use('requestfix');
@@ -73,18 +68,18 @@ export default class extends wepy.app {
 
   onLaunch() {}
 
-  getUserInfo(cb) {
-    const that = this;
-    if (this.globalData.userInfo) {
-      return this.globalData.userInfo;
-    }
-    wepy.getUserInfo({
-      success(res) {
-        that.globalData.userInfo = res.userInfo;
-        cb && cb(res.userInfo);
-      }
-    });
-  }
+  // getUserInfo(cb) {
+  //   const that = this;
+  //   if (this.globalData.userInfo) {
+  //     return this.globalData.userInfo;
+  //   }
+  //   wepy.getUserInfo({
+  //     success(res) {
+  //       that.globalData.userInfo = res.userInfo;
+  //       cb && cb(res.userInfo);
+  //     }
+  //   });
+  // }
 
   getNavigatorTitle(title) {
     return `${title} - ${this.globalData.title}`;

@@ -58,6 +58,7 @@ import SearchBar from '@/components/searchbar'; // alias example
 import Tree from '@/components/tree'; // alias example
 
 import { activePeople } from '@/store/actions/people';
+// import { formatSelectedPeople } from '@/store/helpers/people';
 
 @connect(
   {
@@ -89,7 +90,7 @@ import { activePeople } from '@/store/actions/people';
       return state.people.searching;
     },
     info(state) {
-      // console.log(state.people.formatInfo);
+      // console.log(state.people.selectedPeople);
       return state.people.formatInfo;
     }
   },

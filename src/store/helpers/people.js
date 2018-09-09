@@ -87,7 +87,7 @@ export function formatSearchedResult(data) {
  *     contents: '两代前你们共祖父', '你们是亲兄妹', '李作平', '良係次子, 1982年生,xxxx年殁, 大学生, 现在北京'
  * }
  */
-export function formatSelectedPeople(searchedPeople, selectedPeople) {
+export function formatSelectedPeople(selectedPeople) {
   const [people1, people2] = selectedPeople;
   let names = '', info = '';
   if (people2) {

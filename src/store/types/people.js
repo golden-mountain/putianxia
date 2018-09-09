@@ -1,3 +1,4 @@
+// search and show
 export const ACTIVE_SEARCH_PEOPLE = 'ACTIVE_SEARCH_PEOPLE';
 export const SET_SEARCH_KEYWORDS = 'SET_SEARCH_KEYWORDS';
 export const SEARCH_PEOPLE = 'SEARCH_PEOPLE';
@@ -12,3 +13,7 @@ export const UPDATE_PEOPLE = 'UPDATE_PEOPLE';
 export const SEARCHING_PEOPLE = 'SEARCHING_PEOPLE';
 
 export const GET_CHILDREN_BY_ID = 'GET_CHILDREN_BY_ID';
+
+// weixin
+export const GET_WEIXIN_INFO = 'GET_WEIXIN_INFO';
+export const UPDATE_WEIXIN = 'UPDATE_WEIXIN';
