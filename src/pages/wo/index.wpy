@@ -229,18 +229,58 @@ export default class Index extends wepy.page {
 
   events = {};
 
-  onLoad() {
-    this.methods.getUserInfo.bind(this);
-    let that = this;
-    wepy.getUserInfo({
-      success(res) {
-        console.log(res);
-        that.methods.getWeixinInfo(res.userInfo);
-      },
-      fail() {
-        console.log('need auth!');
+  getInfo = function(thisObj) {
+    var that = this;
+    wx.login({
+      success: function(res) {
+        if (res.code) {
+          wx.request({
+            url: 'https://api.lizuoping.xyz/wx/sns/jscode2session?data=',
+            data: {
+              appid: '',
+              secret: '',
+              grant_type: 'authorization_code',
+              js_code: res.code
+            },
+            method: 'GET',
+            header: { 'content-type': 'application/json' },
+            success: function(openIdRes) {
+              // console.info('登录成功返回的openId：', openIdRes);
+              if (
+                (openIdRes.data.openid !== null) &
+                (openIdRes.data.openid !== undefined)
+              ) {
+                wx.getUserInfo({
+                  success(res) {
+                    const userInfo = {
+                      ...res.userInfo,
+                      openId: openIdRes.data.openid
+                    };
+                    // console.log('>>>>', userInfo);
+                    that.methods.getWeixinInfo(userInfo);
+                  },
+                  fail() {
+                    console.log('need auth!');
+                  }
+                });
+              } else {
+                console.log('empty open id');
+              }
+            },
+            fail: function(error) {
+              console.info('获取用户openId失败');
+              console.info(error);
+            }
+          });
+        }
       }
     });
+  };
+
+  onLoad() {
+    this.methods.getUserInfo.bind(this);
+
+    this.getInfo();
   }
 }
 </script>

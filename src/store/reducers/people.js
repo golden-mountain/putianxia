@@ -99,7 +99,7 @@ export default handleActions(
       };
     },
     [GET_WEIXIN_INFO](state, action) {
-      console.log(action.payload);
+      // console.log(action.payload);
       return {
         ...state,
         wx: action.payload
