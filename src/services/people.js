@@ -57,12 +57,9 @@ export function getChildren(id) {
 }
 
 export function updateMyWeixin(id, wx) {
+  // console.log('id:', id, 'wx:', wx);
   const opts = {
-    query: `
-    MATCH (o) WHERE o is not null and o.wx='${wx}'
-    MATCH (n:Person:李)-->(p:Person:李)
-    WHERE id(n)=${id}
-    SET n.wx='${wx}', o.wx='' RETURN n,p;`
+    query: ` MATCH (o) WHERE o is not null and o.wx='${wx}' MATCH (n:Person:李)-->(p:Person:李) WHERE id(n)=${id} SET o.wx='', n.wx='${wx}' RETURN n,p;`
   };
   console.log(opts);
   return request.cypherPost(opts);

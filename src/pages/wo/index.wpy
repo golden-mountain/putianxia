@@ -234,14 +234,9 @@ export default class Index extends wepy.page {
     wx.login({
       success: function(res) {
         if (res.code) {
+          // console.log(res.code);
           wx.request({
-            url: 'https://api.lizuoping.xyz/wx/sns/jscode2session?data=',
-            data: {
-              appid: '',
-              secret: '',
-              grant_type: 'authorization_code',
-              js_code: res.code
-            },
+            url: 'https://api.lizuoping.xyz/wx/sns/jscode2session/' + res.code,
             method: 'GET',
             header: { 'content-type': 'application/json' },
             success: function(openIdRes) {

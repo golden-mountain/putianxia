@@ -124,8 +124,9 @@
       <view class="weui-panel weui-panel_access  ptx-current">
         <view class="weui-panel__bd">
           <view class="weui-flex ptx-actions">
-            <view class="weui-flex__item ">
-              <text class="font_26 ptx-link">第{{ currentLevel }}世 <text class="iconfont icon-mine font-26" bindtap="updateWeixinInfo({{current[0].id}}, '13381015323')"/>这个是我</text>
+            <view class="weui-flex__item " >
+              <text class="font_26 ptx-link">第{{ currentLevel }}世 </text>
+              <view  bindtap="updateInfo"><text class="iconfont icon-mine font-26"/>这个是我</text></view>
             </view>
             <view class="weui-flex__item ptx-location">
               <text class="iconfont icon-like" />
@@ -307,6 +308,10 @@ export default class Show extends wepy.page {
     },
     showChildren() {
       this.reachBottom();
+    },
+    updateInfo() {
+      // console.log(this.wx);
+      this.methods.updateWeixinInfo(this.currentId, this.wx.openId);
     }
   };
 
@@ -483,6 +488,8 @@ export default class Show extends wepy.page {
     this.loadData();
     this.loading = false;
     this.methods.showChildren.bind(this);
+    this.methods.updateInfo.bind(this);
+    // console.log(this.wx, '<<<<<<<<<wx');
   }
 }
 </script>
