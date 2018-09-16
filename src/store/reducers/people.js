@@ -89,20 +89,24 @@ export default handleActions(
       };
     },
     [UPDATE_WEIXIN](state, action) {
-      // console.log(action.payload.data);
-
+      const data = action.payload.data.data;
       // construct data like
-      if (!action.payload.data.data) return state;
+      if (!data.length) return state;
+      // console.log(data[0][0].data, '<<< update weixin');
       return {
         ...state,
-        weixinUser: action.payload.data.data
+        weixinUser: data[0][0].data
       };
     },
     [GET_WEIXIN_INFO](state, action) {
-      // console.log(action.payload);
+      if (!action.payload.pu) {
+        return state;
+      }
+      console.log(action.payload, '<<< get weixin info');
       return {
         ...state,
-        wx: action.payload
+        wx: action.payload,
+        weixinUser: action.payload.pu
       };
     }
   },

@@ -56,11 +56,18 @@ export function getChildren(id) {
   return request.cypherPost(opts);
 }
 
+export function getInfoByWxId(wxID) {
+  const opts = {
+    query: `MATCH (n:Person) WHERE n.wx='${wxID}' RETURN n`
+  };
+  return request.cypherPost(opts);
+}
+
 export function updateMyWeixin(id, wx) {
   // console.log('id:', id, 'wx:', wx);
   const opts = {
     query: ` MATCH (o) WHERE o is not null and o.wx='${wx}' MATCH (n:Person:李)-->(p:Person:李) WHERE id(n)=${id} SET o.wx='', n.wx='${wx}' RETURN n,p;`
   };
-  console.log(opts);
+  // console.log(opts);
   return request.cypherPost(opts);
 }

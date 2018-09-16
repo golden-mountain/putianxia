@@ -126,11 +126,9 @@
           <view class="weui-flex ptx-actions">
             <view class="weui-flex__item " >
               <text class="font_26 ptx-link">第{{ currentLevel }}世 </text>
-              <view  bindtap="updateInfo"><text class="iconfont icon-mine font-26"/>这个是我</text></view>
             </view>
-            <view class="weui-flex__item ptx-location">
-              <text class="iconfont icon-like" />
-              <text class="iconfont icon-share" />
+            <view class="weui-flex__item ptx-location" bindtap="updateInfo" wx:if="{{!weixinUser}}">
+              <text class="iconfont icon-mine" style="font-size:14px;">这个是我</text>
             </view>
           </view>
         </view>
@@ -212,6 +210,10 @@ import {
     },
     wx(state) {
       return state.people.wx;
+    },
+    weixinUser(state) {
+      // console.log(state.people.weixinUser, '........');
+      return state.people.weixinUser;
     },
     children(state) {
       if (state.people.children) {
@@ -311,7 +313,19 @@ export default class Show extends wepy.page {
     },
     updateInfo() {
       // console.log(this.wx);
-      this.methods.updateWeixinInfo(this.currentId, this.wx.openId);
+      const that = this;
+      wx.showModal({
+        title: '关联我自己',
+        content: `这个是你自己吗,一旦确认不能更改!`,
+        confirmText: '确认关联',
+        cancelText: '取消',
+        success: function(res) {
+          // console.log(res);
+          if (res.confirm) {
+            that.methods.updateWeixinInfo(that.currentId, that.wx.openId);
+          }
+        }
+      });
     }
   };
 

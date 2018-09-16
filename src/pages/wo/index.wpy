@@ -90,7 +90,7 @@
         </view>
       </view>
       <block wx:else>
-        <block wx:if="{{!bindedMyInfo}}">
+        <block wx:if="{{!wx.pu}}">
           <view class="page__hd">
             <view class="userinfo">
               <image class="userinfo-avatar" src="{{ wx.avatarUrl }}" background-size="cover"/>
@@ -186,6 +186,7 @@ import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 import SearchBar from '@/components/searchbar'; // alias example
 import { getWeixinInfo } from '@/store/actions/people';
+import { getInfoByWxId } from '@/services/people';
 
 @connect(
   {
@@ -210,8 +211,7 @@ export default class Index extends wepy.page {
   mixins = [];
 
   data = {
-    focus: true,
-    bindedMyInfo: false
+    focus: true
   };
 
   computed = {};
@@ -222,14 +222,14 @@ export default class Index extends wepy.page {
       wx.navigateTo({ url: '/pages/zong/add-people' });
     },
     getUserInfo(e) {
-      console.log(e.detail);
-      this.methods.getWeixinInfo(e.detail.userInfo);
+      // console.log(e.detail);
+      this.getInfo();
     }
   };
 
   events = {};
 
-  getInfo = function(thisObj) {
+  getInfo = function() {
     var that = this;
     wx.login({
       success: function(res) {
@@ -251,8 +251,16 @@ export default class Index extends wepy.page {
                       ...res.userInfo,
                       openId: openIdRes.data.openid
                     };
+                    getInfoByWxId(openIdRes.data.openid).then(data => {
+                      try {
+                        userInfo.pu = data.data.data[0][0].data;
+                      } catch (e) {
+                        console.log(e);
+                      }
+                      that.methods.getWeixinInfo(userInfo);
+                    });
+
                     // console.log('>>>>', userInfo);
-                    that.methods.getWeixinInfo(userInfo);
                   },
                   fail() {
                     console.log('need auth!');
