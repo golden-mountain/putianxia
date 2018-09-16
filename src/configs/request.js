@@ -1,12 +1,12 @@
 import wepy from 'wepy';
 
 const header = {
-  'content-type': 'application/json',
-  Authorization: 'Basic YXBpOkNlOS1LY0otY3pULVBNOA=='
+  'content-type': 'application/json'
 };
 
 export default {
   apiHost: 'https://api.lizuoping.xyz',
+  // apiHost: 'https://www.putianxia.ren/api',
   request({ method, url, query, params }) {
     url = url || '/db/data/cypher';
     return wepy.request({
