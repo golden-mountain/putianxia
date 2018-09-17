@@ -124,15 +124,17 @@
             <view class="weui-panel__bd weui-flex ptx-user-profile">
               <view class="weui-flex__item ptx-avatar">
                 <image src="../../images/boy.jpg"/>
-                <view class="ptx-name">作平 <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
+                <view class="ptx-name">{{ wx.pu['名'] }} <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
               </view>
               <view class="weui-flex__item ptx-user-info">
                 <view class="title">我的资料</view>
-                <view>名：李xxx</view>
-                <view>字：xx</view>
+                <!-- <view>名：{{ wx.pu['名'] }}</view>
+                <view>字：{{ wx.pu['字'] }}</view>
                 <view>生：1948/3/1 (民国癸末大概十二年二月初四)</view>
                 <view class="descritpion">传：如果你无法简洁的表达你的想法，那只说明你还不够了解它。
-      -- 阿尔伯特·爱因斯坦</view>
+      -- 阿尔伯特·爱因斯坦</view> -->
+                <view wx:for-items="{{info}}" wx:for-index="index" wx:for-item="item" wx:key="id"><text>{{item[0]}}: </text>{{item[1]}}</view>
+
               </view>
             </view>
           </view>
@@ -187,12 +189,19 @@ import { connect } from 'wepy-redux';
 import SearchBar from '@/components/searchbar'; // alias example
 import { getWeixinInfo } from '@/store/actions/people';
 import { getInfoByWxId } from '@/services/people';
+import { formatInfo } from '@/mixins/user';
 
 @connect(
   {
     wx(state) {
       // console.log(state.people, 'current state people');
       return state.people.wx;
+    },
+    info(state) {
+      if (!state.people.wx || !state.people.wx.pu) return [];
+      const info = formatInfo(state.people.wx.pu);
+      // console.log(info);
+      return info;
     }
   },
   {
@@ -210,9 +219,7 @@ export default class Index extends wepy.page {
 
   mixins = [];
 
-  data = {
-    focus: true
-  };
+  data = {};
 
   computed = {};
 

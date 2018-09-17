@@ -109,11 +109,11 @@
     <view class="page__hd">
       <view class="weui-flex ptx-user-group" wx:if="{{parents}}">
         <view class="weui-flex__item ptx-user">
-          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
+          <image @tap="gotoUser({{ parents[0] }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
           <view class="userinfo">({{parents[0].role}}){{ parents[0].name}}</view>
         </view>
         <view class="weui-flex__item ptx-current-wife" wx:for-items="{{parents[1]}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-          <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
+          <image @tap="gotoUser({{ item }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
           <view class="userinfo">({{item.role}}){{ item.name}}</view>
         </view>
       </view>
@@ -136,11 +136,11 @@
         <view class="weui-panel__bd">
           <view class="weui-flex ptx-me">
             <view class="weui-flex__item ptx-current-hasband">
-              <image @tap="gotoUser" class="user-avatar" src="{{ current[0].avatar }}" background-size="cover"/>
+              <image @tap="gotoUser({{ current[0] }})" class="user-avatar" src="{{ current[0].avatar }}" background-size="cover"/>
               <view class="userinfo">({{current[0].role}}){{ current[0].name}} </view>
             </view>
             <view class="weui-flex__item ptx-current-wife" wx:for-items="{{current[1]}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-              <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
+              <image @tap="gotoUser({{ item }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
               <view class="userinfo">({{item.role}}){{ item.name}}</view>
             </view>
           </view>
@@ -175,7 +175,7 @@
         <block wx:for-items="{{children}}"  wx:key="any">
           <view class="weui-flex ptx-user-group">
             <view class="weui-flex__item ptx-user" wx:for-items="{{item}}" wx:for-item="child"  wx:key="childkey">
-              <image @tap="gotoUser" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ child.avatar }}" background-size="cover"/>
+              <image @tap="gotoUser({{ child }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ child.avatar }}" background-size="cover"/>
               <view class="userinfo">({{child.role}}{{child.num}}){{ child.name}}</view>
             </view>
           </view>
@@ -203,6 +203,8 @@ import {
   updateWeixinInfo
 } from '@/store/actions/people';
 
+import { formatInfo } from '@/mixins/user';
+
 @connect(
   {
     selectedPeopleDetail(state) {
@@ -224,12 +226,14 @@ import {
         children.forEach((v, i) => {
           if (v.role === 'son') {
             boys.push({
+              ...v,
               role: '儿',
               name: v.名,
               avatar: '../../images/man.jpg'
             });
           } else {
             girls.push({
+              ...v,
               role: '女',
               name: v.名,
               avatar: '../../images/lady.jpg'
@@ -304,9 +308,10 @@ export default class Show extends wepy.page {
   computed = {};
 
   methods = {
-    gotoUser() {
-      // console.log('goto user');
-      wx.navigateTo({ url: '/pages/wo/index' });
+    gotoUser(user) {
+      console.log('goto user', user);
+      // wx.navigateTo({ url: '/pages/wo/index' });
+      this.currentPeople = formatInfo(user);
     },
     showChildren() {
       this.reachBottom();
@@ -368,6 +373,7 @@ export default class Show extends wepy.page {
     const formatShow = (p, role = '夫') => {
       if (role === '夫') {
         return {
+          ...p,
           role,
           name: p.名,
           avatar: '../../images/man.jpg'
@@ -376,6 +382,7 @@ export default class Show extends wepy.page {
         if (p.妻) {
           // console.log(p.妻);
           return p.妻.map(v => ({
+            ...v,
             role,
             name: v.名,
             avatar: '../../images/lady.jpg'
@@ -389,75 +396,12 @@ export default class Show extends wepy.page {
 
         // }
         return {
+          ...p,
           role,
           name: p.名,
           avatar: '../../images/man.jpg'
         };
       }
-    };
-
-    const formatInfo = info => {
-      const dateFormat = v => {
-        const newDate = new Date(v);
-        let date =
-          newDate.getFullYear() +
-          '年' +
-          (newDate.getMonth() + 1) +
-          '月' +
-          newDate.getDate() +
-          '日';
-        return date;
-      };
-      const orderedMap = [
-        [
-          'level',
-          '世代',
-          v => {
-            return `第${v}代`;
-          }
-        ],
-        ['祧', '兼祧'],
-        ['名', '名字'],
-        ['讳', '讳名'],
-        ['字', '字号'],
-        ['号', '名号'],
-        [
-          '生',
-          '生日',
-          v => {
-            if (info.日) {
-              return `${v}(${dateFormat(info.日)})`;
-            } else {
-              return v;
-            }
-          }
-        ],
-        [
-          '殁',
-          '过世',
-          v => {
-            if (info.死) {
-              return `${v}(${dateFormat(info.死)})`;
-            } else {
-              return v;
-            }
-          }
-        ],
-        ['坟', '坟地'],
-        ['学', '学历'],
-        ['事', '事迹']
-      ];
-      let values = [];
-      orderedMap.forEach(([key, mappedKey, callback]) => {
-        if (info[key]) {
-          let value = info[key];
-          if (typeof callback === 'function') {
-            value = callback(value);
-          }
-          values.push([mappedKey, value]);
-        }
-      });
-      return values;
     };
 
     if (this.selectedPeopleDetail) {
@@ -503,6 +447,7 @@ export default class Show extends wepy.page {
     this.loading = false;
     this.methods.showChildren.bind(this);
     this.methods.updateInfo.bind(this);
+    this.methods.gotoUser.bind(this);
     // console.log(this.wx, '<<<<<<<<<wx');
   }
 }
