@@ -13,27 +13,225 @@
 <template>
   <view class="page">
 
-
     <view class="page__bd">
-      <view class="weui-cells__title">搜索亲人</view>
-      <view class="weui-cells weui-cells_after-title">
-        <view class="weui-search-bar">
-            <view class="weui-search-bar__form">
-                <view class="weui-search-bar__box">
-                    <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
-                    <input type="text" class="weui-search-bar__input" placeholder="搜索" value="{{inputVal}}" focus="{{inputShowed}}" bindinput="inputTyping" />
-                    <view class="weui-icon-clear" wx:if="{{inputVal.length > 0}}" bindtap="clearInput">
-                        <icon type="clear" size="14"></icon>
-                    </view>
-                </view>
-                <label class="weui-search-bar__label" hidden="{{inputShowed}}" bindtap="showInput">
-                    <icon class="weui-icon-search" type="search" size="14"></icon>
-                    <view class="weui-search-bar__text">名字</view>
-                </label>
+        <view class="weui-cells__title">与亲人关系资料</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input weui-cell_vcode">
+            <view class="weui-cell__hd">
+                <view class="weui-label">亲人</view>
             </view>
-            <view class="weui-search-bar__cancel-btn" hidden="{{!inputShowed}}" bindtap="hideInput">取消</view>
+            <view class="weui-cell__bd">
+                <input class="weui-input" placeholder="请输入亲人姓名" value="{{formData.relatedPeople}}" bindchange="changeKeywords"/>
+            </view>
+            <view class="weui-cell__ft">
+                <view class="weui-vcode-btn" @tap="selectRelationPeople">查询</view>
+            </view>
+          </view>
+
+          <view class="weui-cell weui-cell_select">
+            <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                <view class="weui-label">关系</view>
+            </view>
+            <view class="weui-cell__bd">
+              <picker bindchange="bindRelationChange" value="{{formData.relationIndex}}}" range="{{relations}}">
+                <view class="weui-select weui-select_in-select-after">{{relations[formData.relationIndex]}}</view>
+              </picker>
+            </view>
+          </view>
         </view>
-      </view>
+
+        <block wx:if="{{formData.relatedPeople}}">
+        <view class="weui-cells__title">基本资料</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">名</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="善策" @input="typing('名')"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">又名</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="" @input="typing('又')"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">字</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="欣可" @input="typing('字')"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">号</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="伯阳" @input="typing('号')"/>
+              </view>
+          </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">讳</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="狗蛋" @input="typing('讳')"/>
+              </view>
+          </view>
+        </view>
+
+        <view class="weui-cells__title">出生信息</view>
+        <view class="weui-cells weui-cells_after-title">
+            <checkbox-group bindchange="bindAgreeChange">
+                <label class="weui-agree" for="weuiAgree">
+                    <view class="weui-agree__text">
+                        <checkbox class="weui-agree__checkbox" id="weuiAgree" value="agree" checked="{{isOldDate}}" />
+                        <view class="weui-agree__checkbox-icon">
+                            <icon class="weui-agree__checkbox-icon-check" type="success_no_circle" size="9" wx:if="{{isOldDate}}"></icon>
+                        </view>
+                        使用甲子计年
+                    </view>
+                </label>
+            </checkbox-group>
+
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">生地</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <input class="weui-input" placeholder="出生地点"  @input="typing('地')"/>
+                </view>
+            </view>
+
+            <block wx:if="{{!isOldDate}}">
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">生日</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker mode="date" value="{{formData.birthDay}}" end="{{now}}" bindchange="typing('birthDay')">
+                        <view class="weui-input">{{formData.birthDay}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_input">
+                <view class="weui-cell__hd">
+                    <view class="weui-label">生时</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker mode="time" value="{{formData.birthTime}}" bindchange="typing('birthTime')">
+                        <view class="weui-input">{{formData.birthTime}}</view>
+                    </picker>
+                </view>
+            </view>
+
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">殁日</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <picker mode="date" value="{{formData.deadDay}}" end="{{now}}" bindchange="typing('deadDay')">
+                      <view class="weui-input">{{formData.deadDay}}</view>
+                  </picker>
+              </view>
+          </view>
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">殁时</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <picker mode="time" value="{{formData.deadTime}}" bindchange="typing('deadTime')">
+                      <view class="weui-input">{{formData.deadTime}}</view>
+                  </picker>
+              </view>
+          </view>
+          </block>
+          <block wx:else>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">生日</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="typing('oldBirthDateIndex')" value="{{formData.oldBirthDateIndex}}" range="{{oldDate}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldDate[formData.oldBirthDateIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">生时</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="typing('oldBirthTimeIndex')" value="{{formData.oldBirthTimeIndex}}" range="{{oldTime}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldTime[formData.oldBirthTimeIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">殁日</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="typing('oldDeadDateIndex')" value="{{formData.oldDeadDateIndex}}" range="{{oldDate}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldDate[formData.oldDeadDateIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">殁时</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="typing('oldDeadTimeIndex')" value="{{formData.oldDeadTimeIndex}}" range="{{oldTime}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldTime[formData.oldDeadTimeIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+          </block>
+
+           <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">坟</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="" @input="typing('坟')"/>
+              </view>
+          </view>
+
+         <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">传记</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <textarea class="weui-textarea" placeholder="请输入文本" style="height: 3.3em"  @input="typing('传')"/>
+                  <view class="weui-textarea-counter">0/200</view>
+              </view>
+          </view>
+        </view>
+
+        <view class="weui-cells__title">资历信息</view>
+        <view class="weui-cells weui-cells_after-title">
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">学历</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="bindDegreeChange" value="{{formData.degreeIndex}}" range="{{degrees}}">
+                        <view class="weui-select weui-select_in-select-after">{{degrees[formData.degreeIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+        </view>
 
       <view class="weui-cells__title">照片资料</view>
       <view class="weui-cells weui-cells_after-title">
@@ -55,148 +253,28 @@
               </view>
             </view>
           </view>
-        </view>
-
-        <view class="weui-cells__title">基本资料</view>
-        <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">与亲人关系</view>
-              </view>
-              <checkbox-group bindchange="checkboxChange">
-                  <label class="weui-cell weui-check__label" wx:for="{{relations}}" wx:key="value">
-                      <checkbox class="weui-check" value="{{item.value}}" checked="{{item.checked}}"/>
-
-                      <view class="weui-cell__hd weui-check__hd_in-checkbox">
-                          <icon class="weui-icon-checkbox_circle" type="circle" size="23" wx:if="{{!item.checked}}"></icon>
-                          <icon class="weui-icon-checkbox_success" type="success" size="23" wx:if="{{item.checked}}"></icon>
-                      </view>
-                      <view class="weui-cell__bd">{{item.name}}</view>
-                  </label>
-              </checkbox-group>
-          </view>
-
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">名</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="名"/>
-              </view>
-          </view>
-
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">字</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="字"/>
-              </view>
-          </view>
-
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">号</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="号"/>
-              </view>
-          </view>
-
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">讳</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="讳"/>
-              </view>
-          </view>
-        </view>
-
-        <view class="weui-cells__title">出生信息</view>
-        <view class="weui-cells weui-cells_after-title">
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">生</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="1982/2/7 13:40"/>
-              </view>
-          </view>
-
-          <view class="weui-cell weui-cell_select">
-              <view class="weui-cell__hd weui-cell__hd_in-select-after">
-                  <view class="weui-label">祖籍</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <picker bindchange="bindCountryChange" value="{{placeIndex}}" range="{{places}}">
-                      <view class="weui-select weui-select_in-select-after">{{places[placeIndex]}}</view>
-                  </picker>
-              </view>
-          </view>
-
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">殁</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="2000/1/1 13:00"/>
-              </view>
-          </view>
-
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">坟</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="八宝山"/>
-              </view>
-          </view>
-
-         <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">传记</view>
-              </view>
-              <view class="weui-cell__bd">
-                  <textarea class="weui-textarea" placeholder="请输入文本" style="height: 3.3em" />
-                  <view class="weui-textarea-counter">0/200</view>
-              </view>
-          </view>
-        </view>
-
-        <view class="weui-cells__title">资历信息</view>
-        <view class="weui-cells weui-cells_after-title">
-            <view class="weui-cell weui-cell_select">
-                <view class="weui-cell__hd weui-cell__hd_in-select-after">
-                    <view class="weui-label">学历</view>
-                </view>
-                <view class="weui-cell__bd">
-                    <picker bindchange="bindCountryChange" value="{{placeIndex}}" range="{{places}}">
-                        <view class="weui-select weui-select_in-select-after">{{places[placeIndex]}}</view>
-                    </picker>
-                </view>
-            </view>
-        </view>
-
-
-        <checkbox-group bindchange="bindAgreeChange">
-            <label class="weui-agree" for="weuiAgree">
-                <view class="weui-agree__text">
-                    <checkbox class="weui-agree__checkbox" id="weuiAgree" value="agree" checked="{{isAgree}}" />
-                    <view class="weui-agree__checkbox-icon">
-                        <icon class="weui-agree__checkbox-icon-check" type="success_no_circle" size="9" wx:if="{{isAgree}}"></icon>
-                    </view>
-                    保密敏感资料
-                </view>
-            </label>
-        </checkbox-group>
-
-        <view class="weui-btn-area">
-            <button class="weui-btn" type="primary" bindtap="showTopTips">保存资料</button>
-        </view>
-
       </view>
+
+      <!-- <checkbox-group bindchange="bindAgreeChange">
+          <label class="weui-agree" for="weuiAgree">
+              <view class="weui-agree__text">
+                  <checkbox class="weui-agree__checkbox" id="weuiAgree" value="agree" checked="{{isOldDate}}" />
+                  <view class="weui-agree__checkbox-icon">
+                      <icon class="weui-agree__checkbox-icon-check" type="success_no_circle" size="9" wx:if="{{isOldDate}}"></icon>
+                  </view>
+                  保密敏感资料
+              </view>
+          </label>
+      </checkbox-group> -->
+    </block>
+
+    <view class="weui-btn-area">
+        <button class="weui-btn" type="primary" bindtap="showTopTips" wx:if="{{formData.relatedPeople}}">保存资料</button>
+        <button class="weui-btn" type="cancel" bindtap="cancel">取消</button>
     </view>
+
+    </view>
+  </view>
 
 
 </template>
@@ -216,18 +294,110 @@ export default class Index extends wepy.page {
   mixins = [];
 
   data = {
+    id: null,
     focus: true,
-    keywords: '',
+    now: '',
+    formData: {
+      relatedPeople: '',
+      relationIndex: 0,
+      degreeIndex: 0
+    },
     files: [],
-    places: ['中国', '美国', '英国'],
-    placeIndex: 0,
-    isAgree: false,
+    isOldDate: true,
     genders: ['男', '女'],
-    relations: [
-      { name: '父亲', checked: true },
-      { name: '儿子', checked: false },
-      { name: '女儿', checked: false },
-      { name: '妻子', checked: false }
+    relations: ['父亲', '母亲', '儿子', '女儿', '妻子', '丈夫'],
+    degrees: [
+      '无学历',
+      '小学',
+      '初中',
+      '高中',
+      '大专',
+      '本科',
+      '研究生',
+      '博士生',
+      '博士后',
+      '监生(太学)',
+      '童生',
+      '秀才',
+      '举人',
+      '贡士',
+      '进士'
+    ],
+    oldDate: [
+      '甲子',
+      '乙丑',
+      '丙寅',
+      '丁卯',
+      '戊辰',
+      '己巳',
+      '庚午',
+      '辛未',
+      '壬申',
+      '癸酉',
+      '甲戌',
+      '乙亥',
+      '丙子',
+      '丁丑',
+      '戊寅',
+      '己卯',
+      '庚辰',
+      '辛巳',
+      '壬午',
+      '癸未',
+      '甲申',
+      '乙酉',
+      '丙戌',
+      '丁亥',
+      '戊子',
+      '己丑',
+      '庚寅',
+      '辛卯',
+      '壬辰',
+      '癸巳',
+      '甲午',
+      '乙未',
+      '丙申',
+      '丁酉',
+      '戊戌',
+      '己亥',
+      '庚子',
+      '辛丑',
+      '壬寅',
+      '癸卯',
+      '甲辰',
+      '乙巳',
+      '丙午',
+      '丁未',
+      '戊申',
+      '己酉',
+      '庚戌',
+      '辛亥',
+      '壬子',
+      '癸丑',
+      '甲寅',
+      '乙卯',
+      '丙辰',
+      '丁巳',
+      '戊午',
+      '己未',
+      '庚申',
+      '辛酉',
+      '壬戌',
+      '癸亥'
+    ],
+    oldTime: [
+      '子',
+      '丑',
+      '寅',
+      '卯',
+      '辰',
+      '巳',
+      '午',
+      '未',
+      '申',
+      '酉',
+      '戌',
+      '亥'
     ]
   };
 
@@ -253,17 +423,55 @@ export default class Index extends wepy.page {
         urls: this.data.files // 需要预览的图片http链接列表
       });
     },
-    bindCountryChange: function(e) {
-      console.log('picker country 发生选择改变，携带值为', e.detail.value);
 
-      this.setData({
-        placeIndex: e.detail.value
+    bindRelationChange: function(e) {
+      this.formData.relationIndex = e.detail.value;
+    },
+
+    bindDegreeChange: function(e) {
+      this.formData.degreeIndex = e.detail.value;
+    },
+    bindCountryChange: function(e) {
+      this.placeIndex = e.detail.value;
+    },
+    selectRelationPeople: function() {
+      const that = this;
+      const itemList = ['作平', '作金', '作明'];
+      wx.showActionSheet({
+        itemList,
+        success: function(res) {
+          if (!res.cancel) {
+            // console.log(res.tapIndex);
+            that.formData.relatedPeople = itemList[res.tapIndex];
+            that.$apply();
+          }
+        }
       });
+    },
+    changeKeywords: function() {
+      this.formData.relatedPeople = '';
+      this.$apply();
+    },
+    typing(type, e) {
+      this.formData[type] = e.detail.value;
+      // console.log(this.formData);
+    },
+    cancel() {
+      wx.navigateBack({
+        delta: 1
+      });
+    },
+    bindAgreeChange(e) {
+      this.isOldDate = !!e.detail.value.length;
     }
   };
 
   events = {};
 
-  onLoad() {}
+  onLoad() {
+    const date = new Date();
+    this.now =
+      date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+  }
 }
 </script>

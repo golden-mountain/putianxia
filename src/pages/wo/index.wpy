@@ -200,7 +200,7 @@ import { formatInfo } from '@/mixins/user';
     info(state) {
       if (!state.people.wx || !state.people.wx.pu) return [];
       const info = formatInfo(state.people.wx.pu);
-      // console.log(info);
+      console.log(info);
       return info;
     }
   },
@@ -226,7 +226,7 @@ export default class Index extends wepy.page {
   methods = {
     onProfileChange() {
       console.log('profile changed');
-      wx.navigateTo({ url: '/pages/zong/add-people' });
+      wx.navigateTo({ url: '/pages/zong/add-people?id=' });
     },
     getUserInfo(e) {
       // console.log(e.detail);
