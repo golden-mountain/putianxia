@@ -15,7 +15,8 @@ export function searchByNames(originNames) {
   let queries = [];
   originNames.forEach(name => {
     let newName = name.replace(' ', '');
-    let queryString = '', parentName = '';
+    let queryString = '',
+      parentName = '';
     if (newName.indexOf('>') > -1) {
       let newNames = newName.split('>');
       if (newNames.length >= 2) {
@@ -56,9 +57,16 @@ export function getChildren(id) {
   return request.cypherPost(opts);
 }
 
+export function getInfoById(id) {
+  const opts = {
+    query: `MATCH (n:Person) WHERE id(n)=${id} RETURN n, id(n) as id `
+  };
+  return request.cypherPost(opts);
+}
+
 export function getInfoByWxId(wxID) {
   const opts = {
-    query: `MATCH (n:Person) WHERE n.wx='${wxID}' RETURN n`
+    query: `MATCH (n:Person) WHERE n.wx='${wxID}' RETURN n, id(n) as id`
   };
   return request.cypherPost(opts);
 }

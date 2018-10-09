@@ -194,14 +194,19 @@ import { formatInfo } from '@/mixins/user';
 @connect(
   {
     wx(state) {
+      if (!state.people.wx) return {};
       // console.log(state.people, 'current state people');
       return state.people.wx;
     },
     info(state) {
       if (!state.people.wx || !state.people.wx.pu) return [];
       const info = formatInfo(state.people.wx.pu);
-      console.log(info);
+      // console.log(info);
       return info;
+    },
+    pu(state) {
+      if (!state.people.wx || !state.people.wx.pu) return [];
+      return state.people.wx.pu;
     }
   },
   {
@@ -225,8 +230,8 @@ export default class Index extends wepy.page {
 
   methods = {
     onProfileChange() {
-      console.log('profile changed');
-      wx.navigateTo({ url: '/pages/zong/add-people?id=' });
+      // console.log('profile changed', this.pu);
+      wx.navigateTo({ url: '/pages/zong/add-people?id=' + this.pu.id });
     },
     getUserInfo(e) {
       // console.log(e.detail);
@@ -241,13 +246,13 @@ export default class Index extends wepy.page {
     wx.login({
       success: function(res) {
         if (res.code) {
-          // console.log(res.code);
+          console.log(res.code);
           wx.request({
             url: 'https://api.lizuoping.xyz/wx/sns/jscode2session/' + res.code,
             method: 'GET',
             header: { 'content-type': 'application/json' },
             success: function(openIdRes) {
-              // console.info('登录成功返回的openId：', openIdRes);
+              console.info('登录成功返回的openId：', openIdRes);
               if (
                 (openIdRes.data.openid !== null) &
                 (openIdRes.data.openid !== undefined)
@@ -261,6 +266,8 @@ export default class Index extends wepy.page {
                     getInfoByWxId(openIdRes.data.openid).then(data => {
                       try {
                         userInfo.pu = data.data.data[0][0].data;
+                        userInfo.pu.id = data.data.data[0][1];
+                        console.log(userInfo, '..... returned data');
                       } catch (e) {
                         console.log(e);
                       }
@@ -283,6 +290,10 @@ export default class Index extends wepy.page {
             }
           });
         }
+      },
+      fail: function(error) {
+        console.info('login failed');
+        console.info(error);
       }
     });
   };

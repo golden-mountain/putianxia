@@ -9,7 +9,8 @@ import {
   UPDATE_CURRENT_PEOPLE_INDEX,
   GET_CHILDREN_BY_ID,
   UPDATE_WEIXIN,
-  GET_WEIXIN_INFO
+  GET_WEIXIN_INFO,
+  GET_USER_INFO_BY_ID
 } from '../types/people';
 
 import {
@@ -96,6 +97,17 @@ export default handleActions(
       return {
         ...state,
         weixinUser: data[0][0].data
+      };
+    },
+    [GET_USER_INFO_BY_ID](state, action) {
+      if (!action.payload) {
+        return state;
+      }
+      // console.log(action.payload, '<<< get info');
+      const data = action.payload.data.data[0];
+      return {
+        ...state,
+        userInfo: { id: data[1], ...data[0].data }
       };
     },
     [GET_WEIXIN_INFO](state, action) {

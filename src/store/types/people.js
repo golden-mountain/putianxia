@@ -13,6 +13,7 @@ export const UPDATE_PEOPLE = 'UPDATE_PEOPLE';
 export const SEARCHING_PEOPLE = 'SEARCHING_PEOPLE';
 
 export const GET_CHILDREN_BY_ID = 'GET_CHILDREN_BY_ID';
+export const GET_USER_INFO_BY_ID = 'GET_USER_INFO_BY_ID';
 
 // weixin
 export const GET_WEIXIN_INFO = 'GET_WEIXIN_INFO';
