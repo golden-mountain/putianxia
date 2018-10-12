@@ -79,3 +79,25 @@ export function updateMyWeixin(id, wx) {
   // console.log(opts);
   return request.cypherPost(opts);
 }
+
+export function updatePeopleInfo(info, id = 0) {
+  // console.log('id:', id, 'info:', info);
+  let segs = Object.entries(info).map(entry => {
+    let [key, value] = entry;
+    return `n.${key}='${value}'`;
+  });
+  // console.log(segs);
+  const updates = segs.join(',');
+  let opts = null;
+  if (id) {
+    opts = {
+      query: `MATCH (n) WHERE id(n)=${id} SET ${updates} RETURN n;`
+    };
+  } else {
+    opts = {
+      query: `CREATE (n:Person:李) SET ${updates}`
+    };
+  }
+  // console.log(opts);
+  return request.cypherPost(opts);
+}

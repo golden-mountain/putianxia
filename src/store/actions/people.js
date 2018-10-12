@@ -8,6 +8,7 @@ import {
   UPDATE_CURRENT_PEOPLE_INDEX,
   GET_CHILDREN_BY_ID,
   UPDATE_WEIXIN,
+  UPDATE_PEOPLE,
   GET_WEIXIN_INFO,
   GET_USER_INFO_BY_ID
 } from '../types/people';
@@ -16,6 +17,7 @@ import {
   searchByNames,
   getChildren,
   updateMyWeixin,
+  updatePeopleInfo,
   getInfoById
 } from '../../services/people';
 
@@ -57,6 +59,10 @@ export const getChildrenByParentId = createAction(GET_CHILDREN_BY_ID, id =>
 
 export const updateWeixinInfo = createAction(UPDATE_WEIXIN, (id, wx) =>
   updateMyWeixin(id, wx)
+);
+
+export const updatePeople = createAction(UPDATE_PEOPLE, (info, id = null) =>
+  updatePeopleInfo(info, id)
 );
 
 export const getUserInfoById = createAction(GET_USER_INFO_BY_ID, id =>

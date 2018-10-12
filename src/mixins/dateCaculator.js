@@ -325,7 +325,7 @@ function cacDay(date) {
 
 function cacHour(date) {
   const hour = date.slice(date.indexOf('日') + 1, date.indexOf('时'));
-  return zhi[hour] || '0:00';
+  return zhi[hour] + ':00' || '0:00';
 }
 
 function translateDateTime(date) {

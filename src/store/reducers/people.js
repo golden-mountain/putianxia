@@ -9,6 +9,7 @@ import {
   UPDATE_CURRENT_PEOPLE_INDEX,
   GET_CHILDREN_BY_ID,
   UPDATE_WEIXIN,
+  UPDATE_PEOPLE,
   GET_WEIXIN_INFO,
   GET_USER_INFO_BY_ID
 } from '../types/people';
@@ -98,6 +99,18 @@ export default handleActions(
         ...state,
         weixinUser: data[0][0].data
       };
+    },
+    [UPDATE_PEOPLE](state, action) {
+      console.log(action);
+      return state;
+      // const data = action.payload.data.data;
+      // // construct data like
+      // if (!data.length) return state;
+      // // console.log(data[0][0].data, '<<< update weixin');
+      // return {
+      //   ...state,
+      //   weixinUser: data[0][0].data
+      // };
     },
     [GET_USER_INFO_BY_ID](state, action) {
       if (!action.payload) {

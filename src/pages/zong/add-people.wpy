@@ -115,46 +115,47 @@
             </view>
 
             <block wx:if="{{!isOldDate}}">
-            <view class="weui-cell weui-cell_input">
-                <view class="weui-cell__hd">
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
                     <view class="weui-label">生日</view>
                 </view>
                 <view class="weui-cell__bd">
                     <picker mode="date" value="{{_form.birthDay}}" end="{{now}}" bindchange="tmpTyping('birthDay')">
-                        <view class="weui-input">{{_form.birthDay}}</view>
+                        <view class="weui-select weui-select_in-select-after">{{_form.birthDay}}</view>
                     </picker>
                 </view>
             </view>
-            <view class="weui-cell weui-cell_input">
-                <view class="weui-cell__hd">
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
                     <view class="weui-label">生时</view>
                 </view>
                 <view class="weui-cell__bd">
                     <picker mode="time" value="{{_form.birthTime}}" bindchange="tmpTyping('birthTime')">
-                        <view class="weui-input">{{_form.birthTime}}</view>
+                        <view class="weui-select weui-select_in-select-after">{{_form.birthTime}}</view>
                     </picker>
                 </view>
             </view>
 
 
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
-                  <view class="weui-label">殁日</view>
-              </view>
-              <view class="weui-cell__bd">
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">殁日</view>
+                </view>
+                <view class="weui-cell__bd">
                   <picker mode="date" value="{{_form.deadDay}}" end="{{now}}" bindchange="tmpTyping('deadDay')">
-                      <view class="weui-input">{{_form.deadDay}}</view>
+                      <view class="weui-select weui-select_in-select-after">{{_form.deadDay}}</view>
                   </picker>
               </view>
           </view>
-          <view class="weui-cell weui-cell_input">
-              <view class="weui-cell__hd">
+          <view class="weui-cell weui-cell_select">
+              <view class="weui-cell__hd weui-cell__hd_in-select-after">
                   <view class="weui-label">殁时</view>
               </view>
               <view class="weui-cell__bd">
-                  <picker mode="time" value="{{_form.deadTime}}" bindchange="tmpTyping('deadTime')">
-                      <view class="weui-input">{{_form.deadTime}}</view>
-                  </picker>
+
+                <picker mode="time" value="{{_form.deadTime}}" bindchange="tmpTyping('deadTime')">
+                    <view class="weui-select weui-select_in-select-after">{{_form.deadTime}}</view>
+                </picker>
               </view>
           </view>
           </block>
@@ -347,7 +348,7 @@
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
-import { getUserInfoById } from '@/store/actions/people';
+import { getUserInfoById, updatePeople } from '@/store/actions/people';
 import dateCaculator from '@/mixins/dateCaculator';
 // console.log(dateCaculator);
 const {
@@ -371,7 +372,8 @@ const {
     }
   },
   {
-    getUserInfoById
+    getUserInfoById,
+    updatePeople
   }
 )
 export default class Index extends wepy.page {
@@ -520,6 +522,7 @@ export default class Index extends wepy.page {
       if (birthTime) {
         const bt = turnTimeToOld(birthTime);
         const oldBT = this.oldTime.indexOf(bt);
+        console.log('bt:', bt, 'oldbt', oldBT);
         this._form.oldBirthTimeIndex = oldBT;
       }
 
@@ -609,7 +612,8 @@ export default class Index extends wepy.page {
         savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
       }
 
-      console.log(savingData);
+      // console.log(savingData);
+      this.methods.updatePeople(savingData, this.id);
     },
     cancel() {
       wx.navigateBack({
