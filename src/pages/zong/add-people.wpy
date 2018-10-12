@@ -91,7 +91,7 @@
           </view>
         </view>
 
-        <view class="weui-cells__title">出生信息</view>
+        <view class="weui-cells__title">生殁信息</view>
         <view class="weui-cells weui-cells_after-title">
             <checkbox-group bindchange="bindAgreeChange">
                 <label class="weui-agree" for="weuiAgree">
@@ -161,7 +161,7 @@
           <block wx:else>
             <view class="weui-cell weui-cell_select">
                 <view class="weui-cell__hd weui-cell__hd_in-select-after">
-                    <view class="weui-label">生年</view>
+                    <view class="weui-label">生朝</view>
                 </view>
                 <view class="weui-cell__bd">
                     <picker bindchange="tmpTyping('oldBirthYearIndex')" value="{{_form.oldBirthYearIndex}}" range="{{oldYears}}">
@@ -171,11 +171,31 @@
             </view>
             <view class="weui-cell weui-cell_select">
                 <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">生年</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="tmpTyping('oldBirthYearDetailIndex')" value="{{_form.oldBirthYearDetailIndex}}" range="{{oldDate}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldDate[_form.oldBirthYearDetailIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">生月</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="tmpTyping('oldBirthMonthIndex')" value="{{_form.oldBirthMonthIndex}}" range="{{oldMonths}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldMonths[_form.oldBirthMonthIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
                     <view class="weui-label">生日</view>
                 </view>
                 <view class="weui-cell__bd">
-                    <picker bindchange="tmpTyping('oldBirthDateIndex')" value="{{_form.oldBirthDateIndex}}" range="{{oldDate}}">
-                        <view class="weui-select weui-select_in-select-after">{{oldDate[_form.oldBirthDateIndex]}}</view>
+                    <picker bindchange="tmpTyping('oldBirthDateIndex')" value="{{_form.oldBirthDateIndex}}" range="{{oldDays}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldDays[_form.oldBirthDateIndex]}}</view>
                     </picker>
                 </view>
             </view>
@@ -189,9 +209,11 @@
                     </picker>
                 </view>
             </view>
+
+            <!-- dead -->
             <view class="weui-cell weui-cell_select">
                 <view class="weui-cell__hd weui-cell__hd_in-select-after">
-                    <view class="weui-label">殁年</view>
+                    <view class="weui-label">殁朝</view>
                 </view>
                 <view class="weui-cell__bd">
                     <picker bindchange="tmpTyping('oldDeadYearIndex')" value="{{_form.oldDeadYearIndex}}" range="{{oldYears}}">
@@ -201,11 +223,31 @@
             </view>
             <view class="weui-cell weui-cell_select">
                 <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">殁年</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="tmpTyping('oldDeadYearDetailIndex')" value="{{_form.oldDeadYearDetailIndex}}" range="{{oldDate}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldDate[_form.oldDeadYearDetailIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
+                    <view class="weui-label">殁月</view>
+                </view>
+                <view class="weui-cell__bd">
+                    <picker bindchange="tmpTyping('oldDeadMonthIndex')" value="{{_form.oldDeadMonthIndex}}" range="{{oldMonths}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldMonths[_form.oldDeadMonthIndex]}}</view>
+                    </picker>
+                </view>
+            </view>
+            <view class="weui-cell weui-cell_select">
+                <view class="weui-cell__hd weui-cell__hd_in-select-after">
                     <view class="weui-label">殁日</view>
                 </view>
                 <view class="weui-cell__bd">
-                    <picker bindchange="tmpTyping('oldDeadDateIndex')" value="{{_form.oldDeadDateIndex}}" range="{{oldDate}}">
-                        <view class="weui-select weui-select_in-select-after">{{oldDate[_form.oldDeadDateIndex]}}</view>
+                    <picker bindchange="tmpTyping('oldDeadDateIndex')" value="{{_form.oldDeadDateIndex}}" range="{{oldDays}}">
+                        <view class="weui-select weui-select_in-select-after">{{oldDays[_form.oldDeadDateIndex]}}</view>
                     </picker>
                 </view>
             </view>
@@ -248,7 +290,7 @@
                     <view class="weui-label">学历</view>
                 </view>
                 <view class="weui-cell__bd">
-                    <picker bindchange="bindDegreeChange" value="{{_form.degreeIndex}}" range="{{degrees}}">
+                    <picker bindchange="tmpTyping('degreeIndex')" value="{{_form.degreeIndex}}" range="{{degrees}}">
                         <view class="weui-select weui-select_in-select-after">{{degrees[_form.degreeIndex]}}</view>
                     </picker>
                 </view>
@@ -306,6 +348,20 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 import { getUserInfoById } from '@/store/actions/people';
+import dateCaculator from '@/mixins/dateCaculator';
+// console.log(dateCaculator);
+const {
+  zhi,
+  ganzhi,
+  generations,
+  years,
+  months,
+  days,
+  translateDate,
+  cacHour,
+  turnNewDateToOld,
+  turnTimeToOld
+} = dateCaculator;
 
 @connect(
   {
@@ -332,7 +388,11 @@ export default class Index extends wepy.page {
     now: '',
     _form: {
       relatedPeople: '',
-      relationIndex: 0
+      relationIndex: 0,
+      birthDay: '',
+      birthTime: '',
+      deadDay: '',
+      deadTime: ''
       // degreeIndex: 0
       // oldBirthYearIndex: 28,
       // oldDeadYearIndex: 28
@@ -359,117 +419,117 @@ export default class Index extends wepy.page {
       '贡士',
       '进士'
     ],
-    oldYears: [
-      '洪武',
-      '建文',
-      '永乐',
-      '洪熙',
-      '宣德',
-      '正统',
-      '景泰',
-      '天顺',
-      '成化',
-      '弘治',
-      '正德',
-      '嘉清',
-      '隆庆',
-      '万历',
-      '泰昌',
-      '天启',
-      '崇祯',
-      '顺治',
-      '康熙',
-      '雍正',
-      '乾隆',
-      '嘉庆',
-      '道光',
-      '咸丰',
-      '同治',
-      '光绪',
-      '宣统',
-      '民国',
-      '共和'
-    ],
-    oldDate: [
-      '甲子',
-      '乙丑',
-      '丙寅',
-      '丁卯',
-      '戊辰',
-      '己巳',
-      '庚午',
-      '辛未',
-      '壬申',
-      '癸酉',
-      '甲戌',
-      '乙亥',
-      '丙子',
-      '丁丑',
-      '戊寅',
-      '己卯',
-      '庚辰',
-      '辛巳',
-      '壬午',
-      '癸未',
-      '甲申',
-      '乙酉',
-      '丙戌',
-      '丁亥',
-      '戊子',
-      '己丑',
-      '庚寅',
-      '辛卯',
-      '壬辰',
-      '癸巳',
-      '甲午',
-      '乙未',
-      '丙申',
-      '丁酉',
-      '戊戌',
-      '己亥',
-      '庚子',
-      '辛丑',
-      '壬寅',
-      '癸卯',
-      '甲辰',
-      '乙巳',
-      '丙午',
-      '丁未',
-      '戊申',
-      '己酉',
-      '庚戌',
-      '辛亥',
-      '壬子',
-      '癸丑',
-      '甲寅',
-      '乙卯',
-      '丙辰',
-      '丁巳',
-      '戊午',
-      '己未',
-      '庚申',
-      '辛酉',
-      '壬戌',
-      '癸亥'
-    ],
-    oldTime: [
-      '子',
-      '丑',
-      '寅',
-      '卯',
-      '辰',
-      '巳',
-      '午',
-      '未',
-      '申',
-      '酉',
-      '戌',
-      '亥'
-    ]
+    oldYears: Object.keys(generations),
+    oldMonths: months,
+    oldDays: days,
+    oldYearDetails: years,
+    oldDate: ganzhi,
+    oldTime: Object.keys(zhi)
   };
 
   computed = {};
+  transDate() {
+    var that = this;
+    function combineOldDate(year, detail, month, date, time) {
+      const transYear = !isNaN(year)
+        ? that.oldYears[year] + that.oldYearDetails[detail] + '年'
+        : '';
+      const transMonth = !isNaN(month) ? that.oldMonths[month] + '月' : '';
+      const transDate = !isNaN(date) ? that.oldDays[date] + '日' : '';
+      const transTime = !isNaN(time) ? that.oldTime[time] + '时' : '';
+      return `${transYear}${transMonth}${transDate}${transTime}`;
+    }
 
+    if (this.isOldDate) {
+      const {
+        oldBirthYearIndex,
+        oldBirthYearDetailIndex,
+        oldBirthMonthIndex,
+        oldBirthDateIndex,
+        oldBirthTimeIndex
+      } = this._form;
+      const birth = combineOldDate(
+        oldBirthYearIndex,
+        oldBirthYearDetailIndex,
+        oldBirthMonthIndex,
+        oldBirthDateIndex,
+        oldBirthTimeIndex
+      );
+
+      const newDate = translateDate(birth);
+      const newTime = cacHour(birth);
+      // console.log(newDate, newTime, 'date, time>>> trans');
+      this._form.birthDay = newDate;
+      this._form.birthTime = newTime;
+      this._form.birthDateTime = birth;
+
+      const {
+        oldDeadYearIndex,
+        oldDeadYearDetailIndex,
+        oldDeadMonthIndex,
+        oldDeadDateIndex,
+        oldDeadTimeIndex
+      } = this._form;
+      const died = combineOldDate(
+        oldDeadYearIndex,
+        oldDeadYearDetailIndex,
+        oldDeadMonthIndex,
+        oldDeadDateIndex,
+        oldDeadTimeIndex
+      );
+
+      const deadDate = translateDate(died);
+      const deadTime = cacHour(died);
+      // console.log(newDate, newTime, 'date, time>>> trans');
+      this._form.deadDay = deadDate;
+      this._form.deadTime = deadTime;
+      this._form.deadDateTime = died;
+    } else {
+      const { birthDay, birthTime, deadDay, deadTime } = this._form;
+      if (birthDay) {
+        const t1 = turnNewDateToOld(birthDay);
+        // console.log(t1, 'to old day >>');
+        const [
+          oldBirthYear,
+          oldBirthYearDetail,
+          oldBirthMonth,
+          oldBirthDate
+        ] = t1;
+
+        this._form.oldBirthYearIndex = this.oldYears.indexOf(oldBirthYear);
+        this._form.oldBirthYearDetailIndex = this.oldDate.indexOf(
+          oldBirthYearDetail
+        );
+        this._form.oldBirthMonthIndex = this.oldMonths.indexOf(oldBirthMonth);
+        this._form.oldBirthDateIndex = this.oldDays.indexOf(oldBirthDate);
+      }
+
+      // dead time
+      if (deadDay) {
+        const t2 = turnNewDateToOld(deadDay);
+        const [oldDeadYear, oldDeadYearDetail, oldDeadMonth, oldDeadDate] = t2;
+
+        this._form.oldDeadYearIndex = this.oldYears.indexOf(oldDeadYear);
+        this._form.oldDeadYearDetailIndex = this.oldDate.indexOf(
+          oldDeadYearDetail
+        );
+        this._form.oldDeadMonthIndex = this.oldMonths.indexOf(oldDeadMonth);
+        this._form.oldDeadDateIndex = this.oldDays.indexOf(oldDeadDate);
+      }
+
+      if (birthTime) {
+        const bt = turnTimeToOld(birthTime);
+        const oldBT = this.oldTime.indexOf(bt);
+        this._form.oldBirthTimeIndex = oldBT;
+      }
+
+      if (deadTime) {
+        const ddt = turnTimeToOld(deadTime);
+        const oldDDT = this.oldTime.indexOf(ddt);
+        this._form.oldDeadTimeIndex = oldDDT;
+      }
+    }
+  }
   methods = {
     chooseImage: function(e) {
       var that = this;
@@ -526,43 +586,27 @@ export default class Index extends wepy.page {
     tmpTyping(type, e) {
       this._form[type] = e.detail.value;
       // console.log(this.formData);
+      // console.log(type);
+      this.transDate();
     },
+
     save() {
       // console.log('saving...', this._form, this.formData, this.info);
       const savingData = { ...this.info, ...this.formData };
       delete savingData['id'];
-      const that = this;
-      function combineOldDate(year, date, time) {
-        const transYear = !isNaN(year) ? that.oldYears[year] + '年' : '';
-        const transDate = !isNaN(date) ? that.oldDate[date] + '日' : '';
-        const transTime = !isNaN(time) ? that.oldTime[time] + '时' : '';
-        return `${transYear}${transDate}${transTime}`;
+      // degress
+      if (this._form.degreeIndex) {
+        savingData.学 = this.degrees[this._form.degreeIndex];
       }
-      const {
-        oldBirthYearIndex,
-        oldBirthDateIndex,
-        oldBirthTimeIndex
-      } = this._form;
-      const birth = combineOldDate(
-        oldBirthYearIndex,
-        oldBirthDateIndex,
-        oldBirthTimeIndex
-      );
-      if (birth) {
-        savingData.生 = birth;
+
+      if (this._form.birthDateTime) {
+        savingData.生 = this._form.birthDateTime;
+        savingData.日 = `${this._form.birthDay} ${this._form.birthTime}`;
       }
-      const {
-        oldDeadYearIndex,
-        oldDeadDateIndex,
-        oldDeadTimeIndex
-      } = this._form;
-      const died = combineOldDate(
-        oldDeadYearIndex,
-        oldDeadDateIndex,
-        oldDeadTimeIndex
-      );
-      if (died) {
-        savingData.殁 = died;
+
+      if (this._form.deadDateTime) {
+        savingData.殁 = this._form.deadDateTime;
+        savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
       }
 
       console.log(savingData);

@@ -1,7 +1,7 @@
 {
   "name": "wanshipu",
   "version": "0.0.2",
-  "description": "A WePY project",
+  "description": "家族谱",
   "main": "dist/app.js",
   "scripts": {
     "dev": "wepy build --watch",
@@ -14,9 +14,10 @@
     "module-a": false,
     "./src/components/list": "./src/components/wepy-list.wpy"
   },
-  "author": "7db_100004424909_studytime <7db_100004424909_studytime@git.cloud.tencent.com>",
+  "author": "ZuopingLi",
   "license": "MIT",
   "dependencies": {
+    "nzh": "^1.0.3",
     "redux": "^3.7.2",
     "redux-actions": "^2.2.1",
     "redux-promise": "^0.5.3",
