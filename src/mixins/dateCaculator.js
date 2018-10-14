@@ -111,20 +111,7 @@ const ganzhi = [
   '癸亥'
 ];
 
-const months = [
-  '正',
-  '二',
-  '三',
-  '四',
-  '五',
-  '六',
-  '七',
-  '八',
-  '九',
-  '十',
-  '十一',
-  '十二'
-];
+const months = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
 
 const days = [
   '初一',
@@ -262,8 +249,7 @@ const years = [
 ];
 
 function cacGanZhi(year) {
-  let g = (year % 10) - 3,
-    z = (year % 12) - 3;
+  let g = year % 10 - 3, z = year % 12 - 3;
   g = g > 0 ? g : g + 10;
   z = z > 0 ? z : z + 12;
 
@@ -274,12 +260,48 @@ function transChineseNumber(num) {
   return cn.decodeS(num.replace('初', '').replace('正', '一'));
 }
 
+function getIndex(date, items) {
+  let pos, nianHaoIndex;
+  items.forEach((entry, index) => {
+    pos = date.indexOf(entry[0]);
+    if (pos > -1) {
+      nianHaoIndex = index;
+      return true;
+    }
+  });
+  return nianHaoIndex;
+}
+
+function getGenerationIndex(date) {
+  return getIndex(date, Object.entries(generations));
+}
+
+function getYearIndex(date) {
+  return getIndex(date, ganzhi);
+}
+
+function getMonthIndex(date) {
+  return getIndex(date, months);
+}
+
+function getDayIndex(date) {
+  return getIndex(date, days);
+}
+
+function getTimeIndex(date) {
+  let pos, myIndex;
+  Object.entries(zhi).forEach((entry, index) => {
+    pos = date.indexOf(entry[0] + '时');
+    if (pos > -1) {
+      myIndex = index;
+      return true;
+    }
+  });
+  return myIndex;
+}
+
 function caculateYear(year) {
-  let yearStart = 0,
-    yearName = '',
-    originIndex = 0,
-    pos = 0,
-    nianHao = '';
+  let yearStart = 0, yearName = '', originIndex = 0, pos = 0, nianHao = '';
   Object.entries(generations).forEach(entry => {
     pos = year.indexOf(entry[0]);
     if (pos > -1) {
@@ -353,8 +375,7 @@ function turnNewDateToOld(newDate) {
   // console.log(year, month, day, valuePairs);
 
   // oldYear = 同治
-  let oldYear = '',
-    oldYearValue = 0;
+  let oldYear = '', oldYearValue = 0;
   valuePairs.forEach((pa, index) => {
     const [key, value] = pa;
     if (year >= value) {
@@ -377,7 +398,7 @@ function turnNewDateToOld(newDate) {
   });
 
   // oldYearSpace = ‘元’
-  let yearIndex = (year % 60) - 4;
+  let yearIndex = year % 60 - 4;
   if (yearIndex < 0) {
     yearIndex = 60 + yearIndex;
   }
@@ -446,5 +467,10 @@ export default {
   translateDate,
   translateDateTime,
   turnNewDateToOld,
-  turnTimeToOld
+  turnTimeToOld,
+  getGenerationIndex,
+  getYearIndex,
+  getMonthIndex,
+  getDayIndex,
+  getTimeIndex
 };

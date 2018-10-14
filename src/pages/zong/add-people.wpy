@@ -361,7 +361,12 @@ const {
   translateDate,
   cacHour,
   turnNewDateToOld,
-  turnTimeToOld
+  turnTimeToOld,
+  getGenerationIndex,
+  getYearIndex,
+  getMonthIndex,
+  getDayIndex,
+  getTimeIndex
 } = dateCaculator;
 
 @connect(
@@ -434,7 +439,7 @@ export default class Index extends wepy.page {
     var that = this;
     function combineOldDate(year, detail, month, date, time) {
       const transYear = !isNaN(year)
-        ? that.oldYears[year] + that.oldYearDetails[detail] + '年'
+        ? that.oldYears[year] + that.oldDate[detail] + '年'
         : '';
       const transMonth = !isNaN(month) ? that.oldMonths[month] + '月' : '';
       const transDate = !isNaN(date) ? that.oldDays[date] + '日' : '';
@@ -522,7 +527,7 @@ export default class Index extends wepy.page {
       if (birthTime) {
         const bt = turnTimeToOld(birthTime);
         const oldBT = this.oldTime.indexOf(bt);
-        console.log('bt:', bt, 'oldbt', oldBT);
+        // console.log('bt:', bt, 'oldbt', oldBT);
         this._form.oldBirthTimeIndex = oldBT;
       }
 
@@ -532,6 +537,7 @@ export default class Index extends wepy.page {
         this._form.oldDeadTimeIndex = oldDDT;
       }
     }
+    console.log(this._form);
   }
   methods = {
     chooseImage: function(e) {
@@ -594,26 +600,31 @@ export default class Index extends wepy.page {
     },
 
     save() {
-      // console.log('saving...', this._form, this.formData, this.info);
-      const savingData = { ...this.info, ...this.formData };
-      delete savingData['id'];
-      // degress
-      if (this._form.degreeIndex) {
-        savingData.学 = this.degrees[this._form.degreeIndex];
-      }
+      if (this.id) {
+        // console.log('saving...', this._form, this.formData, this.info);
+        const savingData = { ...this.info, ...this.formData };
+        delete savingData['id'];
+        // degress
+        if (this._form.degreeIndex) {
+          savingData.学 = this.degrees[this._form.degreeIndex];
+        }
 
-      if (this._form.birthDateTime) {
-        savingData.生 = this._form.birthDateTime;
-        savingData.日 = `${this._form.birthDay} ${this._form.birthTime}`;
-      }
+        if (this._form.birthDateTime) {
+          savingData.生 = this._form.birthDateTime;
+          savingData.日 = `${this._form.birthDay} ${this._form.birthTime}`;
+        }
 
-      if (this._form.deadDateTime) {
-        savingData.殁 = this._form.deadDateTime;
-        savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
-      }
+        if (this._form.deadDateTime) {
+          savingData.殁 = this._form.deadDateTime;
+          savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
+        }
 
-      // console.log(savingData);
-      this.methods.updatePeople(savingData, this.id);
+        console.log(savingData);
+        this.methods.updatePeople(savingData, this.id);
+        wx.navigateBack({
+          delta: 1
+        });
+      }
     },
     cancel() {
       wx.navigateBack({
@@ -626,6 +637,61 @@ export default class Index extends wepy.page {
   };
 
   events = {};
+
+  watch = {
+    info(newValue, oldValue) {
+      const info = newValue;
+      //   console.log(state.people.userInfo);
+      if (info.生) {
+        const oldBirthYearIndex = getGenerationIndex(info.生);
+        const oldBirthYearDetailIndex = getYearIndex(info.生);
+        const oldBirthMonthIndex = getMonthIndex(info.生);
+        const oldBirthDateIndex = getDayIndex(info.生);
+        const oldBirthTimeIndex = getTimeIndex(info.生);
+
+        this._form = {
+          ...this._form,
+          oldBirthYearIndex,
+          oldBirthYearDetailIndex,
+          oldBirthMonthIndex,
+          oldBirthDateIndex,
+          oldBirthTimeIndex
+        };
+      }
+
+      if (info.殁) {
+        const oldDeadYearIndex = getGenerationIndex(info.殁);
+        const oldDeadYearDetailIndex = getYearIndex(info.殁);
+        const oldDeadMonthIndex = getMonthIndex(info.殁);
+        const oldDeadDateIndex = getDayIndex(info.殁);
+        const oldDeadTimeIndex = getTimeIndex(info.殁);
+
+        this._form = {
+          ...this._form,
+          oldDeadYearIndex,
+          oldDeadYearDetailIndex,
+          oldDeadMonthIndex,
+          oldDeadDateIndex,
+          oldDeadTimeIndex
+        };
+      }
+      // new timeindex
+      if (info.日) {
+        const [birthday, birthtime] = info.日.split(' ');
+        this._form.birthDay = birthday;
+        this._form.birthTime = birthtime;
+      }
+
+      if (info.死) {
+        const [deadday, deadtime] = info.死.split(' ');
+        this._form.deadDay = deadday;
+        this._form.deadTime = deadtime;
+      }
+      // degree index
+      this._form.degreeIndex = this.degrees.indexOf(info.学);
+      this.$apply();
+    }
+  };
 
   onLoad(query) {
     // console.log(query);
