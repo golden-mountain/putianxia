@@ -373,6 +373,7 @@ const {
   {
     info(state) {
       if (!state.people.userInfo || !state.people.userInfo) return [];
+      // console.log(state.people.userInfo, ' get info.. from redux');
       return state.people.userInfo;
     }
   },
@@ -537,7 +538,7 @@ export default class Index extends wepy.page {
         this._form.oldDeadTimeIndex = oldDDT;
       }
     }
-    console.log(this._form);
+    // console.log(this._form);
   }
   methods = {
     chooseImage: function(e) {
@@ -603,7 +604,7 @@ export default class Index extends wepy.page {
       if (this.id) {
         // console.log('saving...', this._form, this.formData, this.info);
         const savingData = { ...this.info, ...this.formData };
-        delete savingData['id'];
+        // delete savingData['id'];
         // degress
         if (this._form.degreeIndex) {
           savingData.学 = this.degrees[this._form.degreeIndex];
@@ -619,7 +620,7 @@ export default class Index extends wepy.page {
           savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
         }
 
-        console.log(savingData);
+        // console.log(savingData);
         this.methods.updatePeople(savingData, this.id);
         wx.navigateBack({
           delta: 1
@@ -640,7 +641,7 @@ export default class Index extends wepy.page {
 
   watch = {
     info(newValue, oldValue) {
-      const info = newValue;
+      const info = newValue || this.info;
       //   console.log(state.people.userInfo);
       if (info.生) {
         const oldBirthYearIndex = getGenerationIndex(info.生);
@@ -688,13 +689,16 @@ export default class Index extends wepy.page {
         this._form.deadTime = deadtime;
       }
       // degree index
-      this._form.degreeIndex = this.degrees.indexOf(info.学);
+      if (info.学) {
+        this._form.degreeIndex = this.degrees.indexOf(info.学);
+      }
       this.$apply();
     }
   };
 
   onLoad(query) {
     // console.log(query);
+    // console.log(this);
     if (query && query.id) {
       this.id = query.id;
       this.methods.getUserInfoById(query.id);
@@ -702,6 +706,7 @@ export default class Index extends wepy.page {
     const date = new Date();
     this.now =
       date.getFullYear() + '-' + date.getMonth() + '-' + date.getDate();
+    this.watch.info.bind(this).call();
   }
 }
 </script>

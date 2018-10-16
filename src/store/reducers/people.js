@@ -101,16 +101,20 @@ export default handleActions(
       };
     },
     [UPDATE_PEOPLE](state, action) {
-      console.log(action);
-      return state;
+      if (!action.payload || !action.payload.data) {
+        return state;
+      }
+      // return state;
       // const data = action.payload.data.data;
       // // construct data like
       // if (!data.length) return state;
       // // console.log(data[0][0].data, '<<< update weixin');
-      // return {
-      //   ...state,
-      //   weixinUser: data[0][0].data
-      // };
+      return {
+        ...state,
+        wx: {
+          pu: action.payload.data.data[0][0].data
+        }
+      };
     },
     [GET_USER_INFO_BY_ID](state, action) {
       if (!action.payload) {
