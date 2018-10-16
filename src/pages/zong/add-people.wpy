@@ -1,5 +1,3 @@
-
-
 <style lang="less">
 .userinfo {
   display: flex;
@@ -34,7 +32,7 @@
                   <view class="weui-label">关系</view>
               </view>
               <view class="weui-cell__bd">
-                <picker bindchange="bindRelationChange" value="{{_form.relationIndex}}}" range="{{relations}}">
+                <picker bindchange="tmpTyping('relationType')" value="{{_form.relationIndex}}}" range="{{relations}}">
                   <view class="weui-select weui-select_in-select-after">{{relations[_form.relationIndex]}}</view>
                 </picker>
               </view>
@@ -42,7 +40,7 @@
           </view>
         </block>
 
-        <block wx:if="{{_form.relatedPeople || id}}">
+        <block wx:if="{{selectedSearchPeople || id}}">
         <view class="weui-cells__title">基本资料</view>
         <view class="weui-cells weui-cells_after-title">
           <view class="weui-cell weui-cell_input">
@@ -334,7 +332,7 @@
     </block>
 
     <view class="weui-btn-area">
-        <button class="weui-btn" type="primary" bindtap="save" wx:if="{{_form.relatedPeople || id!==null}}">保存资料</button>
+        <button class="weui-btn" type="primary" bindtap="save" wx:if="{{selectedSearchPeople || id!==null}}">保存资料</button>
         <button class="weui-btn" type="cancel" bindtap="cancel">取消</button>
     </view>
 
@@ -345,10 +343,17 @@
 </template>
 
 <script>
+// TODO: check the 名 whether exists ,if exists, stop saving
+
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
-import { getUserInfoById, updatePeople } from '@/store/actions/people';
+import {
+  getUserInfoById,
+  updatePeople,
+  searchPeople,
+  searchingPeople
+} from '@/store/actions/people';
 import dateCaculator from '@/mixins/dateCaculator';
 // console.log(dateCaculator);
 const {
@@ -375,11 +380,37 @@ const {
       if (!state.people.userInfo || !state.people.userInfo) return [];
       // console.log(state.people.userInfo, ' get info.. from redux');
       return state.people.userInfo;
+    },
+    searchedPeople(state) {
+      // console.log(state.people);
+      if (state.people.searchedPeople) {
+        const entries = Object.entries(state.people.searchedPeople);
+        // console.log(entries);
+        const newEntries = entries.map(v => {
+          // let checked = false;
+          // if (state.people.compareingPeople) {
+          //   checked = state.people.compareingPeople.find(item => {
+          //     return item[0] === v[0];
+          //   });
+          // }
+          const lastObj = v[1][v[1].length - 1];
+          return { name: v[0], id: lastObj.id };
+          // return { name: v[0], checked, origin: v };
+        });
+        return newEntries;
+      } else {
+        return [];
+      }
+    },
+    searching(state) {
+      return state.people.searching;
     }
   },
   {
     getUserInfoById,
-    updatePeople
+    updatePeople,
+    searchingPeople,
+    searchPeople
   }
 )
 export default class Index extends wepy.page {
@@ -405,11 +436,12 @@ export default class Index extends wepy.page {
       // oldBirthYearIndex: 28,
       // oldDeadYearIndex: 28
     },
+    selectedSearchPeople: '',
     formData: {},
     files: [],
     isOldDate: true,
     genders: ['男', '女'],
-    relations: ['父亲', '母亲', '儿子', '女儿', '妻子', '丈夫'],
+    relations: ['父亲', '儿子', '女儿', '妻子', '丈夫'],
     degrees: [
       '无学历',
       '小学',
@@ -572,21 +604,19 @@ export default class Index extends wepy.page {
       this.placeIndex = e.detail.value;
     },
     selectRelationPeople: function() {
-      const that = this;
-      const itemList = ['作平', '作金', '作明'];
-      wx.showActionSheet({
-        itemList,
-        success: function(res) {
-          if (!res.cancel) {
-            // console.log(res.tapIndex);
-            that._form.relatedPeople = itemList[res.tapIndex];
-            that.$apply();
-          }
-        }
-      });
+      if (this._form.relatedPeople) {
+        this.methods.searchingPeople();
+        this.methods.searchPeople([this._form.relatedPeople]);
+        wx.showToast({
+          title: '努力搜索中...',
+          icon: 'loading',
+          mask: true,
+          duration: 1000000
+        });
+      }
     },
-    changeKeywords: function() {
-      this._form.relatedPeople = '';
+    changeKeywords: function(e) {
+      this._form.relatedPeople = e.detail.value;
       this.$apply();
     },
     typing(type, e) {
@@ -601,30 +631,40 @@ export default class Index extends wepy.page {
     },
 
     save() {
+      // console.log('saving...', this._form, this.formData, this.info);
+      const savingData = { ...this.info, ...this.formData };
+      // delete savingData['id'];
+      // degress
+      if (this._form.degreeIndex) {
+        savingData.学 = this.degrees[this._form.degreeIndex];
+      }
+
+      if (this._form.birthDateTime) {
+        savingData.生 = this._form.birthDateTime;
+        savingData.日 = `${this._form.birthDay} ${this._form.birthTime}`;
+      }
+
+      if (this._form.deadDateTime) {
+        savingData.殁 = this._form.deadDateTime;
+        savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
+      }
+
+      // console.log(savingData);
+
       if (this.id) {
-        // console.log('saving...', this._form, this.formData, this.info);
-        const savingData = { ...this.info, ...this.formData };
-        // delete savingData['id'];
-        // degress
-        if (this._form.degreeIndex) {
-          savingData.学 = this.degrees[this._form.degreeIndex];
-        }
-
-        if (this._form.birthDateTime) {
-          savingData.生 = this._form.birthDateTime;
-          savingData.日 = `${this._form.birthDay} ${this._form.birthTime}`;
-        }
-
-        if (this._form.deadDateTime) {
-          savingData.殁 = this._form.deadDateTime;
-          savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
-        }
-
-        // console.log(savingData);
         this.methods.updatePeople(savingData, this.id);
+
         wx.navigateBack({
           delta: 1
         });
+      } else {
+        if (this._form.relationType) {
+          savingData.relationType = this._form.relationType;
+        }
+        if (this._form.selectedSearchPeople) {
+          savingData.selectedSearchPeople = this._form.selectedSearchPeople;
+        }
+        this.methods.updatePeople(savingData);
       }
     },
     cancel() {
@@ -640,6 +680,32 @@ export default class Index extends wepy.page {
   events = {};
 
   watch = {
+    searching(newValue, oldValue) {
+      // console.log(`num value: ${oldValue} -> ${newValue}`);
+      if (!newValue) {
+        // console.log(`loaded old => new: ${oldValue} -> ${newValue}`);
+        wx.hideToast();
+      }
+    },
+    searchedPeople(newValue, oldValue) {
+      // console.log(newValue, oldValue);
+      const that = this;
+      const itemList = that.searchedPeople.map(v => v.name);
+      const idList = that.searchedPeople.map(v => v.id);
+      if (itemList.length) {
+        wx.showActionSheet({
+          itemList,
+          success: function(res) {
+            if (!res.cancel) {
+              // console.log(itemList[res.tapIndex]);
+              that.selectedSearchPeople = idList[res.tapIndex];
+              that._form.relatedPeople = itemList[res.tapIndex];
+              that.$apply();
+            }
+          }
+        });
+      }
+    },
     info(newValue, oldValue) {
       const info = newValue || this.info;
       //   console.log(state.people.userInfo);
@@ -698,7 +764,7 @@ export default class Index extends wepy.page {
 
   onLoad(query) {
     // console.log(query);
-    // console.log(this);
+    wx.hideToast();
     if (query && query.id) {
       this.id = query.id;
       this.methods.getUserInfoById(query.id);

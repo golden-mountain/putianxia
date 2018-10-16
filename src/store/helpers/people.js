@@ -89,7 +89,8 @@ export function formatSearchedResult(data) {
  */
 export function formatSelectedPeople(selectedPeople) {
   const [people1, people2] = selectedPeople;
-  let names = '', info = '';
+  let names = '',
+    info = '';
   if (people2) {
     names = `${people1.名},${people2.名}`;
     let upLevel = people1.level;

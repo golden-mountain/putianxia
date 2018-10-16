@@ -82,6 +82,14 @@ export function updateMyWeixin(id, wx) {
 
 export function updatePeopleInfo(info, id = 0) {
   // console.log('id:', id, 'info:', info);
+  const { relationType, selectedSearchPeople } = info;
+  if (relationType) {
+    delete info.relationType;
+  }
+  if (selectedSearchPeople) {
+    delete info.selectedSearchPeople;
+  }
+
   let segs = Object.entries(info).map(entry => {
     let [key, value] = entry;
     return `n.${key}='${value}'`;
@@ -94,8 +102,40 @@ export function updatePeopleInfo(info, id = 0) {
       query: `MATCH (n) WHERE id(n)=${id} SET ${updates} RETURN n;`
     };
   } else {
+    // ['父亲', '儿子', '女儿', '妻子', '丈夫']
+    // only support relations are: son, wife, daughter
+    let firstNode = '';
+    let laterNode = '';
+    let relation = '';
+    switch (relationType) {
+      case '父亲':
+        firstNode = 'n';
+        relation = 'son';
+        laterNode = 'p';
+        break;
+      case '儿子':
+        firstNode = 'p';
+        relation = 'son';
+        laterNode = 'n';
+        break;
+      case '女儿':
+        firstNode = 'p';
+        relation = 'daughter';
+        laterNode = 'n';
+        break;
+      case '妻子':
+        firstNode = 'n';
+        relation = 'wife';
+        laterNode = 'p';
+        break;
+      case '丈夫':
+        firstNode = 'p';
+        relation = 'wife';
+        laterNode = 'n';
+        break;
+    }
     opts = {
-      query: `CREATE (n:Person:李) SET ${updates}`
+      query: `MATCH (p:Person) WHERE id(p)=180 CREATE (n:Person:李) SET ${updates} CREATE (${firstNode})-[:RELATION{role:'${relation}'}]->(${laterNode}) return n,p`
     };
   }
   // console.log(opts);

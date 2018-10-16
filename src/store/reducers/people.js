@@ -71,7 +71,7 @@ export default handleActions(
       // construct data like
       if (!action.payload.data.data) return state;
       const obj = formatSearchedResult(action.payload.data.data);
-
+      console.log('obj:', obj, 'searched people', action.payload.data.data);
       return {
         ...state,
         searching: false,
@@ -109,12 +109,16 @@ export default handleActions(
       // // construct data like
       // if (!data.length) return state;
       // // console.log(data[0][0].data, '<<< update weixin');
-      return {
-        ...state,
-        wx: {
-          pu: action.payload.data.data[0][0].data
-        }
-      };
+      if (action.payload.data.data[0][0].data.id) {
+        return {
+          ...state,
+          wx: {
+            pu: action.payload.data.data[0][0].data
+          }
+        };
+      } else {
+        return state;
+      }
     },
     [GET_USER_INFO_BY_ID](state, action) {
       if (!action.payload) {
