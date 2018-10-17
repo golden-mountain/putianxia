@@ -109,19 +109,19 @@ export function updatePeopleInfo(info, id = 0) {
     let relation = '';
     switch (relationType) {
       case '父亲':
+        firstNode = 'p';
+        relation = 'son';
+        laterNode = 'n';
+        break;
+      case '儿子':
         firstNode = 'n';
         relation = 'son';
         laterNode = 'p';
         break;
-      case '儿子':
-        firstNode = 'p';
-        relation = 'son';
-        laterNode = 'n';
-        break;
       case '女儿':
-        firstNode = 'p';
+        firstNode = 'n';
         relation = 'daughter';
-        laterNode = 'n';
+        laterNode = 'p';
         break;
       case '妻子':
         firstNode = 'n';
@@ -134,10 +134,11 @@ export function updatePeopleInfo(info, id = 0) {
         laterNode = 'n';
         break;
     }
+    // console.log(relationType, firstNode, relation, laterNode);
     opts = {
-      query: `MATCH (p:Person) WHERE id(p)=180 CREATE (n:Person:李) SET ${updates} CREATE (${firstNode})-[:RELATION{role:'${relation}'}]->(${laterNode}) return n,p`
+      query: `MATCH (p:Person) WHERE id(p)=${selectedSearchPeople} CREATE (n:Person:李) SET ${updates} CREATE (${firstNode})-[:RELATION{role:'${relation}'}]->(${laterNode}) return n,p`
     };
   }
-  // console.log(opts);
+  console.log(opts);
   return request.cypherPost(opts);
 }

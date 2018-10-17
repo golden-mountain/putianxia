@@ -68,6 +68,16 @@
 .ptx-ancestors {
   font-size: @ptxFont26;
 }
+
+.ptx-create-btn {
+  flex: 0.3;
+  text-align: right;
+}
+
+.ptx-delete-btn {
+  font-size: @ptxFont26;
+  color: @weuiTextColorGray;
+}
 </style>
 
 
@@ -141,7 +151,7 @@
 
 
           <view class="weui-panel weui-panel_access">
-            <view class="weui-panel__hd">我的父辈</view>
+            <view class="weui-panel__hd">我的世系图</view>
             <view class="weui-panel__bd">
                 <view class="weui-media-box">
                   <navigator url="/pages/zong/show">
@@ -152,7 +162,7 @@
           </view>
 
           <view class="weui-panel weui-panel_access">
-              <view class="weui-panel__hd">我关注的人</view>
+              <view class="weui-panel__hd weui-flex"><view class="weui-flex__item">我添加的族人</view> <view class="weui-flex__item ptx-create-btn" @tap="create">添加</view></view>
               <view class="weui-panel__bd">
                 <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active">
                     <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
@@ -161,6 +171,10 @@
                     <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
                         <view class="weui-media-box__title">远灌</view>
                         <view class="weui-media-box__desc">忌日：12月13日 </view>
+                    </view>
+                    <view class="weui-media-box__bd ">
+                        <view class="ptx-delete-btn">删除</view>
+                        <view class="ptx-delete-btn">修改</view>
                     </view>
                 </navigator>
 
@@ -175,6 +189,8 @@
                 </navigator>
               </view>
           </view>
+
+
         </view>
       </block>
     </block>
@@ -236,6 +252,9 @@ export default class Index extends wepy.page {
     getUserInfo(e) {
       // console.log(e.detail);
       this.getInfo();
+    },
+    create() {
+      wx.navigateTo({ url: '/pages/zong/add-people' });
     }
   };
 

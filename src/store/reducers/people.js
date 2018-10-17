@@ -109,12 +109,14 @@ export default handleActions(
       // // construct data like
       // if (!data.length) return state;
       // // console.log(data[0][0].data, '<<< update weixin');
-      if (action.payload.data.data[0][0].data.id) {
+      const wx = state.wx;
+      const id = wx ? wx.pu.id : '';
+      if (action.payload.data.data[0][0].data.id === id) {
+        wx.pu = action.payload.data.data[0][0].data;
         return {
           ...state,
-          wx: {
-            pu: action.payload.data.data[0][0].data
-          }
+          userInfo: {},
+          ...wx
         };
       } else {
         return state;

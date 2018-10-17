@@ -47,7 +47,7 @@
 
         </view>
 
-        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="create" wx:if="{{ !searching && !searchedPeople.length }}">没有找到, 创建名字</button>
+        <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="create" wx:if="{{ pu && !searching && !searchedPeople.length }}">没有找到, 创建名字</button>
         <button  class="weui-btn mini-btn ptx-create-btn" type="primary" @tap="compare" wx:if="{{ comparingPeople.length }}">查看</button>
 
     </view>
@@ -95,6 +95,10 @@ import {
     },
     searching(state) {
       return state.people.searching;
+    },
+    pu(state) {
+      if (!state.people.wx || !state.people.wx.pu) return [];
+      return state.people.wx.pu;
     }
   },
   {
