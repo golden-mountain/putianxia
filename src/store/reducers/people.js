@@ -10,6 +10,8 @@ import {
   GET_CHILDREN_BY_ID,
   UPDATE_WEIXIN,
   UPDATE_PEOPLE,
+  GET_MY_MAP,
+  DELETE_PEOPLE,
   GET_WEIXIN_INFO,
   GET_USER_INFO_BY_ID
 } from '../types/people';
@@ -100,6 +102,28 @@ export default handleActions(
         weixinUser: data[0][0].data
       };
     },
+    [DELETE_PEOPLE](state, action) {
+      return state;
+      // const data = action.payload.data.data;
+      // // construct data like
+      // if (!data.length) return state;
+      // // console.log(data[0][0].data, '<<< update weixin');
+      // return {
+      //   ...state,
+      //   weixinUser: data[0][0].data
+      // };
+    },
+    [GET_MY_MAP](state, action) {
+      const myRoots = action.payload.data.data;
+      // console.log(myRoots, '......');
+
+      // construct data like
+      if (!myRoots.length) return state;
+      return {
+        ...state,
+        myRoots
+      };
+    },
     [UPDATE_PEOPLE](state, action) {
       if (!action.payload || !action.payload.data) {
         return state;
@@ -137,7 +161,7 @@ export default handleActions(
       if (!action.payload.pu) {
         return state;
       }
-      console.log(action.payload, '<<< get weixin info');
+      // console.log(action.payload, '<<< get weixin info');
       return {
         ...state,
         wx: action.payload,

@@ -142,3 +142,19 @@ export function updatePeopleInfo(info, id = 0) {
   console.log(opts);
   return request.cypherPost(opts);
 }
+
+export function getMyRoots(id) {
+  // console.log(relationType, firstNode, relation, laterNode);
+  const opts = {
+    query: `MATCH  (p)-[:RELATION*0..{role:'son'}]->(n)  WHERE id(p)=${id} return n.名, id(n) as id`
+  };
+  return request.cypherPost(opts);
+}
+
+export function deletePeople(id) {
+  // console.log(relationType, firstNode, relation, laterNode);
+  const opts = {
+    query: `MATCH  (p)  WHERE id(p)=${id} delete p`
+  };
+  return request.cypherPost(opts);
+}

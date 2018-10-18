@@ -67,6 +67,8 @@
 
 .ptx-ancestors {
   font-size: @ptxFont26;
+  display: inline-block;
+  margin: 0 5rpx;
 }
 
 .ptx-create-btn {
@@ -153,10 +155,8 @@
           <view class="weui-panel weui-panel_access">
             <view class="weui-panel__hd">我的世系图</view>
             <view class="weui-panel__bd">
-                <view class="weui-media-box">
-                  <navigator url="/pages/zong/show">
-                    <view class="ptx-ancestors">远灌 > 世枢 > 运煌 > 统培 > 会金 > 良系</view>
-                  </navigator>
+                <view class="weui-media-box ">
+                  <view class="ptx-ancestors" wx:for-items="{{roots}}" wx:for-index="index" wx:for-item="item" wx:key="id">{{item[0]}}<text wx:if={{index<roots.length-1}}>></text></view>
                 </view>
             </view>
           </view>
@@ -203,7 +203,7 @@ import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
 import SearchBar from '@/components/searchbar'; // alias example
-import { getWeixinInfo } from '@/store/actions/people';
+import { getWeixinInfo, getMyAnccestors } from '@/store/actions/people';
 import { getInfoByWxId } from '@/services/people';
 import { formatInfo } from '@/mixins/user';
 
@@ -221,12 +221,18 @@ import { formatInfo } from '@/mixins/user';
       return info;
     },
     pu(state) {
-      if (!state.people.wx || !state.people.wx.pu) return [];
+      if (!state.people.wx || !state.people.wx.pu) return {};
       return state.people.wx.pu;
+    },
+    roots(state) {
+      if (!state.people.myRoots) return [];
+      // console.log(state.people, 'current state people');
+      return state.people.myRoots.reverse();
     }
   },
   {
-    getWeixinInfo
+    getWeixinInfo,
+    getMyAnccestors
   }
 )
 export default class Index extends wepy.page {
@@ -259,6 +265,13 @@ export default class Index extends wepy.page {
   };
 
   events = {};
+  watch = {
+    pu: (newValue, oldValue) => {
+      if (this.pu.id) {
+        this.methods.getMyAnccestors(this.pu.id);
+      }
+    }
+  };
 
   getInfo = function() {
     var that = this;
@@ -319,7 +332,6 @@ export default class Index extends wepy.page {
 
   onLoad() {
     this.methods.getUserInfo.bind(this);
-
     this.getInfo();
   }
 }

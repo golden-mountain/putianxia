@@ -12,12 +12,19 @@ export const formatInfo = info => {
   };
   const orderedMap = [
     [
-      'level',
-      '世代',
+      '排',
+      '排行',
       v => {
-        return `第${v}代`;
+        return v || '长';
       }
     ],
+    // [
+    //   'level',
+    //   '世代',
+    //   v => {
+    //     return `第${v}代`;
+    //   }
+    // ],
     ['祧', '兼祧'],
     ['名', '名字'],
     ['讳', '讳名'],

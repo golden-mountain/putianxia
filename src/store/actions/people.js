@@ -9,6 +9,8 @@ import {
   GET_CHILDREN_BY_ID,
   UPDATE_WEIXIN,
   UPDATE_PEOPLE,
+  GET_MY_MAP,
+  DELETE_PEOPLE,
   GET_WEIXIN_INFO,
   GET_USER_INFO_BY_ID
 } from '../types/people';
@@ -18,7 +20,9 @@ import {
   getChildren,
   updateMyWeixin,
   updatePeopleInfo,
-  getInfoById
+  getInfoById,
+  getMyRoots,
+  deletePeople
 } from '../../services/people';
 
 export const activePeople = createAction(
@@ -72,4 +76,10 @@ export const getUserInfoById = createAction(GET_USER_INFO_BY_ID, id =>
 export const getWeixinInfo = createAction(
   GET_WEIXIN_INFO,
   userinfo => userinfo
+);
+
+export const getMyAnccestors = createAction(GET_MY_MAP, id => getMyRoots(id));
+
+export const deleteMyPeople = createAction(DELETE_PEOPLE, id =>
+  deletePeople(id)
 );

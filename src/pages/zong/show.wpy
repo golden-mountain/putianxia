@@ -374,7 +374,7 @@ export default class Show extends wepy.page {
       if (role === '夫') {
         return {
           ...p,
-          role,
+          role: '*',
           name: p.名,
           avatar: '../../images/man.jpg'
         };
@@ -444,6 +444,8 @@ export default class Show extends wepy.page {
 
   onLoad() {
     this.loadData();
+    // this.reachBottom();
+    this.methods.getChildrenByParentId(this.currentId);
     this.loading = false;
     this.methods.showChildren.bind(this);
     this.methods.updateInfo.bind(this);

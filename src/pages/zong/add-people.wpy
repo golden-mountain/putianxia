@@ -87,6 +87,15 @@
                   <input class="weui-input" placeholder="狗蛋" @input="typing('讳')" value="{{info['讳']}}"/>
               </view>
           </view>
+
+          <view class="weui-cell weui-cell_input">
+              <view class="weui-cell__hd">
+                  <view class="weui-label">排行</view>
+              </view>
+              <view class="weui-cell__bd">
+                  <input class="weui-input" placeholder="1" @input="typing('排')" value="{{info['排']}}"/>
+              </view>
+          </view>
         </view>
 
         <view class="weui-cells__title">生殁信息</view>
