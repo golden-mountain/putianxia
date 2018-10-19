@@ -12,6 +12,7 @@ export const CREATE_PEOPLE = 'CREATE_PEOPLE';
 export const UPDATE_PEOPLE = 'UPDATE_PEOPLE';
 export const DELETE_PEOPLE = 'DELETE_PEOPLE';
 export const GET_MY_MAP = 'GET_MY_MAP';
+export const GET_MY_NODES = 'GET_MY_NODES';
 export const SEARCHING_PEOPLE = 'SEARCHING_PEOPLE';
 
 export const GET_CHILDREN_BY_ID = 'GET_CHILDREN_BY_ID';

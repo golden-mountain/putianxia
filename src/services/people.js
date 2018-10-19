@@ -153,10 +153,18 @@ export function getMyRoots(id) {
   return request.cypherPost(opts);
 }
 
+export function getMyCreatedNodes(id) {
+  // console.log(relationType, firstNode, relation, laterNode);
+  const opts = {
+    query: `MATCH (p)-[r]-(n) WHERE p.owner=${id} and id(n)=${id} return id(p) as id, p.verified, p.名, p.日, p.死, r.role`
+  };
+  return request.cypherPost(opts);
+}
+
 export function deletePeople(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
-    query: `MATCH  (p)  WHERE id(p)=${id} delete p`
+    query: `MATCH (p) WHERE id(p)=${id} OPTIONAL MATCH (p)-[r:RELATION]-()  delete p,r`
   };
   return request.cypherPost(opts);
 }

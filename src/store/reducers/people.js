@@ -13,7 +13,8 @@ import {
   GET_MY_MAP,
   DELETE_PEOPLE,
   GET_WEIXIN_INFO,
-  GET_USER_INFO_BY_ID
+  GET_USER_INFO_BY_ID,
+  GET_MY_NODES
 } from '../types/people';
 
 import {
@@ -166,6 +167,14 @@ export default handleActions(
         ...state,
         wx: action.payload,
         weixinUser: action.payload.pu
+      };
+    },
+    [GET_MY_NODES](state, action) {
+      // construct data like
+      if (!action.payload.data.data) return state;
+      return {
+        ...state,
+        myNodes: action.payload.data.data
       };
     }
   },

@@ -10,6 +10,7 @@ import {
   UPDATE_WEIXIN,
   UPDATE_PEOPLE,
   GET_MY_MAP,
+  GET_MY_NODES,
   DELETE_PEOPLE,
   GET_WEIXIN_INFO,
   GET_USER_INFO_BY_ID
@@ -22,7 +23,8 @@ import {
   updatePeopleInfo,
   getInfoById,
   getMyRoots,
-  deletePeople
+  deletePeople,
+  getMyCreatedNodes
 } from '../../services/people';
 
 export const activePeople = createAction(
@@ -79,6 +81,9 @@ export const getWeixinInfo = createAction(
 );
 
 export const getMyAnccestors = createAction(GET_MY_MAP, id => getMyRoots(id));
+export const getMyNodes = createAction(GET_MY_NODES, id =>
+  getMyCreatedNodes(id)
+);
 
 export const deleteMyPeople = createAction(DELETE_PEOPLE, id =>
   deletePeople(id)
