@@ -158,7 +158,7 @@ export default handleActions(
       };
     },
     [GET_WEIXIN_INFO](state, action) {
-      if (!action.payload.pu) {
+      if (!action.payload) {
         return state;
       }
       // console.log(action.payload, '<<< get weixin info');

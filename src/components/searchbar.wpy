@@ -1,14 +1,36 @@
 <style>
+.ptx-icon-search_in-box {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  padding: 7px 8px;
+  font-size: 0;
+}
+.ptx-icon-clear {
+  position: absolute;
+  top: 0;
+  right: 20px;
+  padding: 7px 8px;
+  font-size: 0;
+}
+.ptx-search-bar__box {
+  position: relative;
+  padding-left: 10px;
+  padding-right: 10px;
+  width: 100%;
+  box-sizing: border-box;
+  z-index: 1;
+}
 </style>
 
 <template>
   <view class="ptx-searchbox">
     <view class="weui-search-bar ptx-search-bar" >
       <view class="weui-search-bar__form">
-        <view class="weui-search-bar__box  ptx-input">
-          <icon class="weui-icon-search_in-box" type="search" size="14"></icon>
+        <view class="ptx-search-bar__box  ptx-input">
           <input type="text" class="weui-search-bar__input" placeholder="{{placeholder}}" value="{{searchedKeywords}}" bindconfirm="search" @input="inputChange" focus="{{inputShowed}}" confirm-type="搜索" />
-          <view class="weui-icon-clear" wx:if="{{keywords.length > 0}}" bindtap="clearInput">
+          <icon class="ptx-icon-search_in-box" type="search" size="14" @tap="search"></icon>
+          <view class="ptx-icon-clear" wx:if="{{keywords.length > 0}}" bindtap="clearInput">
             <icon type="clear" size="14" @tap="clearInput"></icon>
           </view>
         </view>

@@ -102,7 +102,7 @@
         </view>
       </view>
       <block wx:else>
-        <block wx:if="{{!wx.pu}}">
+        <block wx:if="{{!pu}}">
           <view class="page__hd">
             <view class="userinfo">
               <image class="userinfo-avatar" src="{{ wx.avatarUrl }}" background-size="cover"/>
@@ -113,7 +113,7 @@
           <view class="page__bd ptx-searchbar__area">
             <view class="weui-cells__title">寻找并关联自己</view>
             <searchbarInBody
-              placeholder="输入名字"
+              placeholder="父名>子名 或 名字A,名字B"
               btn="搜索"
             />
           </view>
@@ -124,8 +124,8 @@
         <view class="page__hd">
           <view class="page__hd ptx-search-bar-top">
             <searchbarAsHead
-              placeholder="良系>作平 或 作平,作苏"
               btn=""
+              placeholder="父名>子名 或 名字A,名字B"
 
             />
           </view>
@@ -136,12 +136,12 @@
             <view class="weui-panel__bd weui-flex ptx-user-profile">
               <view class="weui-flex__item ptx-avatar">
                 <image src="../../images/boy.jpg"/>
-                <view class="ptx-name">{{ wx.pu['名'] }} <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
+                <view class="ptx-name">{{ pu['名'] }} <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
               </view>
               <view class="weui-flex__item ptx-user-info">
                 <view class="title">我的资料</view>
-                <!-- <view>名：{{ wx.pu['名'] }}</view>
-                <view>字：{{ wx.pu['字'] }}</view>
+                <!-- <view>名：{{ pu['名'] }}</view>
+                <view>字：{{ pu['字'] }}</view>
                 <view>生：1948/3/1 (民国癸末大概十二年二月初四)</view>
                 <view class="descritpion">传：如果你无法简洁的表达你的想法，那只说明你还不够了解它。
       -- 阿尔伯特·爱因斯坦</view> -->
@@ -210,8 +210,8 @@ import { formatInfo } from '@/mixins/user';
 @connect(
   {
     wx(state) {
-      if (!state.people.wx) return {};
-      // console.log(state.people, 'current state people');
+      if (!state.people.wx) return null;
+      // console.log(state.people.wx, 'current state people');
       return state.people.wx;
     },
     info(state) {
@@ -221,7 +221,7 @@ import { formatInfo } from '@/mixins/user';
       return info;
     },
     pu(state) {
-      if (!state.people.wx || !state.people.wx.pu) return {};
+      if (!state.people.wx || !state.people.wx.pu) return null;
       return state.people.wx.pu;
     },
     roots(state) {
@@ -278,13 +278,13 @@ export default class Index extends wepy.page {
     wx.login({
       success: function(res) {
         if (res.code) {
-          console.log(res.code);
+          // console.log(res.code);
           wx.request({
             url: 'https://api.lizuoping.xyz/wx/sns/jscode2session/' + res.code,
             method: 'GET',
             header: { 'content-type': 'application/json' },
             success: function(openIdRes) {
-              console.info('登录成功返回的openId：', openIdRes);
+              // console.info('登录成功返回的openId：', openIdRes);
               if (
                 (openIdRes.data.openid !== null) &
                 (openIdRes.data.openid !== undefined)
@@ -299,13 +299,12 @@ export default class Index extends wepy.page {
                       try {
                         userInfo.pu = data.data.data[0][0].data;
                         userInfo.pu.id = data.data.data[0][1];
-                        console.log(userInfo, '..... returned data');
+                        // console.log(userInfo, '..... returned data');
                       } catch (e) {
-                        console.log(e);
+                        // console.log(e);
                       }
                       that.methods.getWeixinInfo(userInfo);
                     });
-
                     // console.log('>>>>', userInfo);
                   },
                   fail() {
