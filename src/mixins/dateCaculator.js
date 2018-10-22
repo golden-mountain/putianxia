@@ -385,6 +385,7 @@ function translateDate(date) {
 }
 
 function turnNewDateToOld(newDate) {
+  if (!newDate) return '';
   const date = new Date(newDate);
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -441,6 +442,7 @@ function turnNewDateToOld(newDate) {
 }
 
 function turnTimeToOld(time) {
+  if (!time) return '';
   let t = parseFloat(time.replace(':', '.'));
   if (t === 0) {
     return '子';

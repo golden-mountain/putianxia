@@ -533,6 +533,10 @@ export default class Index extends wepy.page {
       this._form.deadDateTime = died;
     } else {
       const { birthDay, birthTime, deadDay, deadTime } = this._form;
+      let tt1 = '';
+      let tt2 = '';
+      let bt = '';
+      let ddt = '';
       if (birthDay) {
         const t1 = turnNewDateToOld(birthDay);
         // console.log(t1, 'to old day >>');
@@ -542,6 +546,7 @@ export default class Index extends wepy.page {
           oldBirthMonth,
           oldBirthDate
         ] = t1;
+        tt1 = `${oldBirthYear}${oldBirthYearDetail}年${oldBirthMonth}月${oldBirthDate}日`;
 
         this._form.oldBirthYearIndex = this.oldYears.indexOf(oldBirthYear);
         this._form.oldBirthYearDetailIndex = this.oldDate.indexOf(
@@ -555,6 +560,7 @@ export default class Index extends wepy.page {
       if (deadDay) {
         const t2 = turnNewDateToOld(deadDay);
         const [oldDeadYear, oldDeadYearDetail, oldDeadMonth, oldDeadDate] = t2;
+        tt2 = `${oldDeadYear}${oldDeadYearDetail}年${oldDeadMonth}月${oldDeadDate}日`;
 
         this._form.oldDeadYearIndex = this.oldYears.indexOf(oldDeadYear);
         this._form.oldDeadYearDetailIndex = this.oldDate.indexOf(
@@ -565,19 +571,24 @@ export default class Index extends wepy.page {
       }
 
       if (birthTime) {
-        const bt = turnTimeToOld(birthTime);
+        bt = turnTimeToOld(birthTime);
         const oldBT = this.oldTime.indexOf(bt);
         // console.log('bt:', bt, 'oldbt', oldBT);
         this._form.oldBirthTimeIndex = oldBT;
+        bt += '时';
       }
 
       if (deadTime) {
-        const ddt = turnTimeToOld(deadTime);
+        ddt = turnTimeToOld(deadTime);
         const oldDDT = this.oldTime.indexOf(ddt);
         this._form.oldDeadTimeIndex = oldDDT;
+        ddt += '时';
       }
+
+      this._form.birthDateTime = `${tt1}${bt}`;
+      this._form.deadDateTime = `${tt2}${ddt}`;
     }
-    // console.log(this._form);
+    console.log(this._form);
   }
   methods = {
     chooseImage: function(e) {
@@ -660,6 +671,7 @@ export default class Index extends wepy.page {
 
       // console.log(savingData);
       savingData.owner = this.pu.id;
+      // return savingData;
       // savingData.relatedId = this._cacheForm.relatedPeople;
       const that = this;
       if (this.id) {
@@ -790,6 +802,8 @@ export default class Index extends wepy.page {
         const [deadday, deadtime] = formatDateTime(info.死);
         this._form.deadDay = deadday;
         this._form.deadTime = deadtime;
+      } else {
+        this.isOldDate = false;
       }
       // degree index
       if (info.学) {

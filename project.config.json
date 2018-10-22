@@ -1,15 +1,15 @@
 {
-	"description": "A WePY project",
-	"setting": {
-		"urlCheck": true,
-		"es6": false,
-		"postcss": false,
-		"minified": false,
-		"newFeature": true
-	},
-	"compileType": "miniprogram",
-	"appid": "wx6037ba5def03e7db",
-	"projectname": "%E8%B0%B1%E5%A4%A9%E4%B8%8B",
-	"miniprogramRoot": "./dist",
-	"condition": {}
+  "description": "A WePY project",
+  "setting": {
+    "urlCheck": true,
+    "es6": false,
+    "postcss": false,
+    "minified": false,
+    "newFeature": true
+  },
+  "compileType": "miniprogram",
+  "appid": "wx6037ba5def03e7db",
+  "projectname": "%E8%B0%B1%E5%A4%A9%E4%B8%8B",
+  "miniprogramRoot": "./dist",
+  "condition": {}
 }
