@@ -10,6 +10,11 @@
   text-align: center;
 }
 
+.ptx-editor {
+  float: right;
+  font-size: 26rpx;
+}
+
 .ptx-current {
   padding: 10rpx 32rpx;
 }
@@ -164,10 +169,9 @@
       </view>
 
       <view class="weui-panel">
-        <view class="weui-panel__hd">{{ current[0].name}}的基本资料</view>
+        <view class="weui-panel__hd">{{ currentPeopleMap['名']}}的基本资料 <text class="ptx-editor iconfont icon-brush" @tap="onProfileChange({{currentPeopleMap['id']}})">修改</text></view>
         <view class="weui-panel__bd ptx-current-userinfo">
           <view wx:for-items="{{currentPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id"><text>{{item[0]}}</text>{{item[1]}}</view>
-
         </view>
       </view>
 
@@ -301,6 +305,7 @@ export default class Show extends wepy.page {
     currentPeople: [],
     parents: [],
     current: [],
+    currentPeopleMap: {},
     // children: [],
     loading: false
   };
@@ -308,10 +313,15 @@ export default class Show extends wepy.page {
   computed = {};
 
   methods = {
+    onProfileChange(id) {
+      // console.log('profile changed', this.pu);
+      wx.navigateTo({ url: '/pages/zong/add-people?id=' + id });
+    },
     gotoUser(user) {
       console.log('goto user', user);
       // wx.navigateTo({ url: '/pages/wo/index' });
       this.currentPeople = formatInfo(user);
+      this.currentPeopleMap = user;
     },
     showChildren() {
       this.reachBottom();
@@ -435,6 +445,7 @@ export default class Show extends wepy.page {
     if (this.selectedPeopleDetail) {
       const { allItems, currentIndex } = this.selectedPeopleDetail;
       this.currentPeople = formatInfo(allItems[currentIndex]);
+      this.currentPeopleMap = allItems[currentIndex];
       this.currentIndex = currentIndex;
       this.currentId = allItems[currentIndex].id;
       // console.log(currentIndex, '<<<<< currentIndex', allItems);

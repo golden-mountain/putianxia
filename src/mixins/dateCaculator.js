@@ -1,6 +1,6 @@
 import { cn } from 'nzh';
 
-const gan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+const gan = ['', '甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
 const zhi = {
   子: 23,
   丑: 1,
@@ -17,6 +17,7 @@ const zhi = {
 };
 
 const generations = {
+  '': 0,
   洪武: 1368,
   建文: 1399,
   永乐: 1402,
@@ -49,6 +50,7 @@ const generations = {
 };
 
 const ganzhi = [
+  '',
   '甲子',
   '乙丑',
   '丙寅',
@@ -111,7 +113,21 @@ const ganzhi = [
   '癸亥'
 ];
 
-const months = ['正', '二', '三', '四', '五', '六', '七', '八', '九', '十', '十一', '十二'];
+const months = [
+  '正',
+  '二',
+  '三',
+  '四',
+  '五',
+  '六',
+  '七',
+  '八',
+  '九',
+  '十',
+  '十一',
+  '十二',
+  ''
+];
 
 const days = [
   '初一',
@@ -143,10 +159,12 @@ const days = [
   '二十七',
   '二十八',
   '二十九',
-  '三十'
+  '三十',
+  ''
 ];
 
 const years = [
+  '',
   '元',
   '二',
   '三',
@@ -260,44 +278,43 @@ function transChineseNumber(num) {
   return cn.decodeS(num.replace('初', '').replace('正', '一'));
 }
 
-function getIndex(date, items) {
-  let pos, nianHaoIndex;
+function getIndex(date, items, unit = '') {
+  let pos, strIndex;
+  // console.log(date, items);
   items.forEach((entry, index) => {
     pos = date.indexOf(entry[0]);
     if (pos > -1) {
-      nianHaoIndex = index;
+      strIndex = index;
       return true;
     }
   });
-  return nianHaoIndex;
+  return strIndex;
 }
 
 function getGenerationIndex(date) {
-  return getIndex(date, Object.entries(generations));
+  const year = date.trim().substr(0, 2);
+  return Object.keys(generations).indexOf(year);
 }
 
 function getYearIndex(date) {
-  return getIndex(date, ganzhi);
+  const year = date.trim().substr(2, 2);
+  return ganzhi.indexOf(year);
 }
 
 function getMonthIndex(date) {
-  return getIndex(date, months);
+  const units = date.split(/年|月|日|时/);
+  return months.indexOf(units[1]) || 12;
 }
 
 function getDayIndex(date) {
-  return getIndex(date, days);
+  const units = date.split(/年|月|日|时/);
+  return days.indexOf(units[2]) || 30;
 }
 
 function getTimeIndex(date) {
-  let pos, myIndex;
-  Object.entries(zhi).forEach((entry, index) => {
-    pos = date.indexOf(entry[0] + '时');
-    if (pos > -1) {
-      myIndex = index;
-      return true;
-    }
-  });
-  return myIndex;
+  const units = date.split(/年|月|日|时/);
+  // console.log(zhi[units[3]], '.....');
+  return zhi[units[3]] || 12;
 }
 
 function caculateYear(year) {
@@ -455,7 +472,7 @@ function turnTimeToOld(time) {
 function formatDateTime(date) {
   const d = new Date(date);
   return [
-    d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate(),
+    d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate(),
     d.getHours() + ':' + d.getUTCMinutes()
   ];
 }
