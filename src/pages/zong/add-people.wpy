@@ -662,7 +662,18 @@ export default class Index extends wepy.page {
       // savingData.relatedId = this._cacheForm.relatedPeople;
       const that = this;
       if (this.id) {
-        updatePeopleInfo(savingData, this.id);
+        updatePeopleInfo(savingData, this.id).then(() => {
+          wx.showToast({
+            title: '更新成功',
+            mask: true,
+            duration: 15000,
+            success: () => {
+              wx.navigateBack({
+                delta: 1
+              });
+            }
+          });
+        });
       } else {
         savingData.verfied = 0;
         if (this._cacheForm.relationType) {
@@ -675,7 +686,7 @@ export default class Index extends wepy.page {
         }
         updatePeopleInfo(savingData).then(() => {
           wx.showModal({
-            title: '继续创建下一个？',
+            title: '创建成功, 继续创建下一个？',
             content: `选择确认继续创建，取消后返回前一页`,
             confirmText: '确认',
             cancelText: '算了',

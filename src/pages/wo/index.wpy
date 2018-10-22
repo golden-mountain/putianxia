@@ -232,11 +232,11 @@ import { relations, getAavatar } from '@/mixins/constant';
     roots(state) {
       if (!state.people.myRoots) return [];
       // console.log(state.people, 'current state people');
-      return state.people.myRoots.reverse();
+      return state.people.myRoots;
     },
     nodes(state) {
       if (!state.people.myNodes) return [];
-      console.log(state.people.myNodes, 'current state people');
+      // console.log(state.people.myNodes, 'current state people');
       state.people.myNodes.forEach(n => {
         if (n[5]) {
           n[6] = '../../images/' + getAavatar(n[5]) + '.jpg';
