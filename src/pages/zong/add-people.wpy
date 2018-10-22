@@ -587,7 +587,7 @@ export default class Index extends wepy.page {
       this._form.birthDateTime = `${tt1}${bt}`;
       this._form.deadDateTime = `${tt2}${ddt}`;
     }
-    console.log(this._form);
+    // console.log(this._form);
   }
   methods = {
     chooseImage: function(e) {
