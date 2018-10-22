@@ -127,10 +127,8 @@
             <view class="weui-flex__item " >
               <text class="font_26 ptx-link">第{{ currentLevel }}世 </text>
             </view>
-            <view class="weui-flex__item ptx-location" bindtap="updateInfo">
-
-              <text wx:if="{{!weixinUser}}" class="iconfont icon-mine" style="font-size:14px;">这个是我</text>
-              <text wx:else class="iconfont icon-mine" style="font-size:14px;">重新关联我</text>
+            <view class="weui-flex__item ptx-location" bindtap="updateInfo" wx:if="{{!weixinUser}}">
+              <text class="iconfont icon-mine" style="font-size:14px;">这个是我</text>
             </view>
           </view>
         </view>
@@ -323,7 +321,7 @@ export default class Show extends wepy.page {
       const that = this;
       wx.showModal({
         title: '关联我自己',
-        content: `这个是你自己吗, 关联成功后所有的操作数据与这个族人相关!`,
+        content: `这个是你自己吗,一旦确认不能更改!`,
         confirmText: '确认关联',
         cancelText: '取消',
         success: function(res) {
@@ -342,7 +340,7 @@ export default class Show extends wepy.page {
     // var that = this; // 设置菜单中的转发按钮触发转发事件时的转发内容
     var shareObj = {
       title: '祖谱信息分享-【谱天下】', // 默认是小程序的名称(可以写slogan等)
-      path: '/pages/wo/index', // 默认是当前页面，必须是以‘/’开头的完整路径
+      path: '/', // 默认是当前页面，必须是以‘/’开头的完整路径
       imgUrl: '', // 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
       success: function(res) {
         // 转发成功之后的回调

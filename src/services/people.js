@@ -73,16 +73,13 @@ export function getInfoByWxId(wxID) {
 
 export function updateMyWeixin(id, wx) {
   // console.log('id:', id, 'wx:', wx);
-  const clearMybind = {
-    query: `MATCH (o) WHERE o.wx='${wx}'  SET o.wx='';`
+  const opts = {
+    // query: ` MATCH (o) WHERE o is not null and o.wx='${wx}' MATCH (n:Person:李)-->(p:Person:李) WHERE id(n)=${id} SET o.wx='', n.wx='${wx}' RETURN n,p;`
+    query: `MATCH (n:Person:李)-->(p:Person:李) WHERE id(n)=${id} SET n.wx='${wx}' RETURN n;`
   };
-  return request.cypherPost(clearMybind).then(() => {
-    const opts = {
-      query: ` MATCH (n:Person:李)-->(p:Person:李) WHERE id(n)=${id} SET n.wx='${wx}' RETURN n,p;`
-      // query: `MATCH (n:Person:李)-->(p:Person:李) WHERE id(n)=${id} SET n.wx='${wx}' RETURN n;`
-    };
-    return request.cypherPost(opts);
-  });
+  // console.log(opts);
+
+  return request.cypherPost(opts);
 }
 
 export function updatePeopleInfo(info, id = 0) {

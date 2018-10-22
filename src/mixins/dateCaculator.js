@@ -471,14 +471,6 @@ function turnTimeToOld(time) {
   return oldTime;
 }
 
-function formatDateTime(date) {
-  const d = new Date(date);
-  return [
-    d.getFullYear() + '/' + d.getMonth() + '/' + d.getDate(),
-    d.getHours() + ':' + d.getUTCMinutes()
-  ];
-}
-
 export default {
   gan,
   zhi,
@@ -501,6 +493,5 @@ export default {
   getYearIndex,
   getMonthIndex,
   getDayIndex,
-  getTimeIndex,
-  formatDateTime
+  getTimeIndex
 };
