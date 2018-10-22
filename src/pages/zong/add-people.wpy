@@ -385,7 +385,8 @@ const {
   getYearIndex,
   getMonthIndex,
   getDayIndex,
-  getTimeIndex
+  getTimeIndex,
+  formatDateTime
 } = dateCaculator;
 
 @connect(
@@ -677,9 +678,8 @@ export default class Index extends wepy.page {
       } else {
         savingData.verfied = 0;
         if (this._cacheForm.relationType) {
-          savingData.relationType = this.relations[
-            this._cacheForm.relationType
-          ];
+          const type = this._cacheForm.relationType;
+          savingData.relationType = this.relations[type];
         }
         if (this.selectedSearchPeople) {
           savingData.selectedSearchPeople = this.selectedSearchPeople;
@@ -781,13 +781,13 @@ export default class Index extends wepy.page {
       }
       // new timeindex
       if (info.日) {
-        const [birthday, birthtime] = info.日.split(' ');
+        const [birthday, birthtime] = formatDateTime(info.日);
         this._form.birthDay = birthday;
         this._form.birthTime = birthtime;
       }
 
       if (info.死) {
-        const [deadday, deadtime] = info.死.split(' ');
+        const [deadday, deadtime] = formatDateTime(info.死);
         this._form.deadDay = deadday;
         this._form.deadTime = deadtime;
       }
