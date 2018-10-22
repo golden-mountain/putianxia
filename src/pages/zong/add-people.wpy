@@ -20,7 +20,7 @@
                   <view class="weui-label">亲人</view>
               </view>
               <view class="weui-cell__bd">
-                  <input class="weui-input" placeholder="请输入亲人姓名" value="{{_form.relatedPeople}}" bindchange="changeKeywords"/>
+                  <input class="weui-input" placeholder="请输入亲人姓名" value="{{_cacheForm.relatedPeople}}" bindchange="changeKeywords"/>
               </view>
               <view class="weui-cell__ft">
                   <view class="weui-vcode-btn" @tap="selectRelationPeople">查询</view>
@@ -32,8 +32,8 @@
                   <view class="weui-label">关系</view>
               </view>
               <view class="weui-cell__bd">
-                <picker bindchange="tmpTyping('relationType')" value="{{_form.relationType}}}" range="{{relations}}">
-                  <view class="weui-select weui-select_in-select-after">{{relations[_form.relationType]}}</view>
+                <picker bindchange="cacheTyping('relationType')" value="{{_cacheForm.relationType}}}" range="{{relations}}">
+                  <view class="weui-select weui-select_in-select-after">{{relations[_cacheForm.relationType]}}</view>
                 </picker>
               </view>
             </view>
@@ -41,7 +41,7 @@
         </block>
 
         <block wx:if="{{selectedSearchPeople || id}}">
-        <view class="weui-cells__title">{{_form.relatedPeople||'我'}}{{relations[_form.relationType]}}的基本资料</view>
+        <view class="weui-cells__title">{{_cacheForm.relatedPeople||'我'}}{{relations[_cacheForm.relationType]}}的基本资料</view>
         <view class="weui-cells weui-cells_after-title">
           <view class="weui-cell weui-cell_input">
               <view class="weui-cell__hd">
@@ -357,13 +357,18 @@
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
 // import Panel from '@/components/panel'; // alias example
+import { updatePeopleInfo } from '@/services/people';
+
 import {
   getUserInfoById,
   updatePeople,
   searchPeople,
-  searchingPeople
+  searchingPeople,
+  getWeixinInfo,
+  getMyNodes
 } from '@/store/actions/people';
 import dateCaculator from '@/mixins/dateCaculator';
+import { relations, genders, degrees } from '@/mixins/constant';
 // console.log(dateCaculator);
 const {
   zhi,
@@ -423,7 +428,9 @@ const {
     getUserInfoById,
     updatePeople,
     searchingPeople,
-    searchPeople
+    searchPeople,
+    getWeixinInfo,
+    getMyNodes
   }
 )
 export default class Index extends wepy.page {
@@ -438,9 +445,11 @@ export default class Index extends wepy.page {
     id: null,
     focus: true,
     now: '',
-    _form: {
+    _cacheForm: {
       relatedPeople: '',
-      relationType: '',
+      relationType: ''
+    },
+    _form: {
       birthDay: '',
       birthTime: '',
       deadDay: '',
@@ -453,25 +462,9 @@ export default class Index extends wepy.page {
     formData: {},
     files: [],
     isOldDate: true,
-    genders: ['男', '女'],
-    relations: ['儿子', '女儿', '父亲', '妻子', '丈夫'],
-    degrees: [
-      '无学历',
-      '小学',
-      '初中',
-      '高中',
-      '大专',
-      '本科',
-      '研究生',
-      '博士生',
-      '博士后',
-      '监生(太学)',
-      '童生',
-      '秀才',
-      '举人',
-      '贡士',
-      '进士'
-    ],
+    genders,
+    relations: Object.values(relations),
+    degrees,
     oldYears: Object.keys(generations),
     oldMonths: months,
     oldDays: days,
@@ -617,9 +610,9 @@ export default class Index extends wepy.page {
       this.placeIndex = e.detail.value;
     },
     selectRelationPeople: function() {
-      if (this._form.relatedPeople) {
+      if (this._cacheForm.relatedPeople) {
         this.methods.searchingPeople();
-        this.methods.searchPeople([this._form.relatedPeople]);
+        this.methods.searchPeople([this._cacheForm.relatedPeople]);
         wx.showToast({
           title: '努力搜索中...',
           icon: 'loading',
@@ -629,7 +622,7 @@ export default class Index extends wepy.page {
       }
     },
     changeKeywords: function(e) {
-      this._form.relatedPeople = e.detail.value;
+      this._cacheForm.relatedPeople = e.detail.value;
       this.$apply();
     },
     typing(type, e) {
@@ -642,7 +635,9 @@ export default class Index extends wepy.page {
       // console.log(type);
       this.transDate();
     },
-
+    cacheTyping(type, e) {
+      this._cacheForm[type] = e.detail.value;
+    },
     save() {
       // console.log('saving...', this._form, this.formData, this.info);
       const savingData = { ...this.info, ...this.formData };
@@ -664,26 +659,38 @@ export default class Index extends wepy.page {
 
       // console.log(savingData);
       savingData.owner = this.pu.id;
-      savingData.relatedId = this._form.relatedPeople;
-
+      // savingData.relatedId = this._cacheForm.relatedPeople;
+      const that = this;
       if (this.id) {
-        this.methods.updatePeople(savingData, this.id);
-        this.formData = {};
-        this._form = {};
-        wx.navigateBack({
-          delta: 1
-        });
+        updatePeopleInfo(savingData, this.id);
       } else {
         savingData.verfied = 0;
-        if (this._form.relationType) {
-          savingData.relationType = this.relations[this._form.relationType];
+        if (this._cacheForm.relationType) {
+          savingData.relationType = this.relations[
+            this._cacheForm.relationType
+          ];
         }
         if (this.selectedSearchPeople) {
           savingData.selectedSearchPeople = this.selectedSearchPeople;
         }
-        this.methods.updatePeople(savingData);
-        this.formData = {};
-        this._form = {};
+        updatePeopleInfo(savingData).then(() => {
+          wx.showModal({
+            title: '继续创建下一个？',
+            content: `选择确认继续创建，取消后返回前一页`,
+            confirmText: '确认',
+            cancelText: '算了',
+            success: res => {
+              that.formData = {};
+              that._form = {};
+              if (res.cancel) {
+                // that.methods.getMyNodes(that.pu.id);
+                wx.navigateBack({
+                  delta: 1
+                });
+              }
+            }
+          });
+        });
       }
     },
     cancel() {
@@ -718,7 +725,7 @@ export default class Index extends wepy.page {
             if (!res.cancel) {
               // console.log(itemList[res.tapIndex]);
               that.selectedSearchPeople = idList[res.tapIndex];
-              that._form.relatedPeople = itemList[res.tapIndex];
+              that._cacheForm.relatedPeople = itemList[res.tapIndex];
               that.$apply();
             }
           }

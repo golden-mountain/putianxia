@@ -80,6 +80,11 @@
   font-size: @ptxFont26;
   color: @weuiTextColorGray;
 }
+
+.ptx-text {
+  font-size: @ptxFont26;
+  text-align: center;
+}
 </style>
 
 
@@ -163,21 +168,26 @@
 
           <view class="weui-panel weui-panel_access">
               <view class="weui-panel__hd weui-flex"><view class="weui-flex__item">我添加的族人</view> <view class="weui-flex__item ptx-create-btn" @tap="create">添加</view></view>
-              <view class="weui-panel__bd">
-                <navigator url="" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" wx:for-items="{{nodes}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+              <view class="weui-panel__bd" wx:if="{{nodes.length}}">
+                <navigator url="{{'/pages/zong/add-people?id=' + item[0]}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" wx:for-items="{{nodes}}" wx:for-index="index" wx:for-item="item" wx:key="id">
                     <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                        <image class="weui-media-box__thumb" src="../../images/man.jpg" />
+                        <image class="weui-media-box__thumb" src="{{item[6]}}" />
                     </view>
                     <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                        <view class="weui-media-box__title">[{{item[5]}}][{{item[2]}}</view>
+                        <view class="weui-media-box__title">[{{relations[item[5]]}}] {{item[2]}}</view>
                         <view class="weui-media-box__desc">{{item[3] || item[4] || '生殁失考'}} </view>
                     </view>
                     <view class="weui-media-box__bd ">
-                        <view class="ptx-delete-btn">删除</view>
+                        <view class="ptx-delete-btn" catchtap="deletePeople({{item[0]}}, {{item[2]}})">删除</view>
                         <!-- <view class="ptx-delete-btn">修改</view> -->
                     </view>
                 </navigator>
               </view>
+            <view class="weui-panel__bd" wx:else>
+              <view class="weui-media-box">
+                <view class="ptx-text">没有新加的族人, 现在<text @tap="create">[添加]</text></view>
+              </view>
+            </view>
           </view>
 
 
@@ -198,8 +208,9 @@ import {
   getMyAnccestors,
   getMyNodes
 } from '@/store/actions/people';
-import { getInfoByWxId } from '@/services/people';
+import { getInfoByWxId, deletePeople } from '@/services/people';
 import { formatInfo } from '@/mixins/user';
+import { relations, getAavatar } from '@/mixins/constant';
 
 @connect(
   {
@@ -225,7 +236,14 @@ import { formatInfo } from '@/mixins/user';
     },
     nodes(state) {
       if (!state.people.myNodes) return [];
-      // console.log(state.people.myNodes, 'current state people');
+      console.log(state.people.myNodes, 'current state people');
+      state.people.myNodes.forEach(n => {
+        if (n[5]) {
+          n[6] = '../../images/' + getAavatar(n[5]) + '.jpg';
+        } else {
+          n[6] = '../../images/man.jpg';
+        }
+      });
       return state.people.myNodes;
     }
   },
@@ -246,7 +264,9 @@ export default class Index extends wepy.page {
 
   mixins = [];
 
-  data = {};
+  data = {
+    relations
+  };
 
   computed = {};
 
@@ -261,6 +281,22 @@ export default class Index extends wepy.page {
     },
     create() {
       wx.navigateTo({ url: '/pages/zong/add-people' });
+    },
+    deletePeople(id, name, e) {
+      const that = this;
+      wx.showModal({
+        title: '确认删除' + name,
+        content: `删除${name}后不可恢复， 确认吗？`,
+        confirmText: '确认',
+        cancelText: '算了',
+        success: res => {
+          if (res.confirm) {
+            deletePeople(id).then(() => {
+              that.methods.getMyNodes(that.pu.id);
+            });
+          }
+        }
+      });
     }
   };
 
@@ -330,9 +366,17 @@ export default class Index extends wepy.page {
     });
   };
 
+  onShow() {
+    this.getInfo();
+
+    if (this.pu && this.pu.id) {
+      this.methods.getMyAnccestors(this.pu.id);
+      this.methods.getMyNodes(this.pu.id);
+    }
+  }
+
   onLoad() {
     this.methods.getUserInfo.bind(this);
-    this.getInfo();
   }
 }
 </script>

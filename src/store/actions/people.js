@@ -85,6 +85,7 @@ export const getMyNodes = createAction(GET_MY_NODES, id =>
   getMyCreatedNodes(id)
 );
 
-export const deleteMyPeople = createAction(DELETE_PEOPLE, id =>
-  deletePeople(id)
-);
+export const deleteMyPeople = createAction(DELETE_PEOPLE, (id, ownerId) => {
+  deletePeople(id);
+  return getMyCreatedNodes(ownerId);
+});

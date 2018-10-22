@@ -104,15 +104,13 @@ export default handleActions(
       };
     },
     [DELETE_PEOPLE](state, action) {
-      return state;
-      // const data = action.payload.data.data;
-      // // construct data like
-      // if (!data.length) return state;
-      // // console.log(data[0][0].data, '<<< update weixin');
-      // return {
-      //   ...state,
-      //   weixinUser: data[0][0].data
-      // };
+      console.log(action, '<<<delete people');
+      // construct data like
+      if (!action.payload.data.data) return state;
+      return {
+        ...state,
+        myNodes: action.payload.data.data
+      };
     },
     [GET_MY_MAP](state, action) {
       const myRoots = action.payload.data.data;

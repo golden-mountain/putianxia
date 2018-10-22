@@ -156,7 +156,7 @@ export function getMyRoots(id) {
 export function getMyCreatedNodes(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
-    query: `MATCH (p)-[r]-(n) WHERE p.owner=${id} and id(n)=${id} return id(p) as id, p.verified, p.名, p.日, p.死, r.role`
+    query: `MATCH (p)-[r]-(n) WHERE p.owner='${id}' and id(n)=${id} return id(p) as id, p.verified, p.名, p.日, p.死, r.role`
   };
   return request.cypherPost(opts);
 }

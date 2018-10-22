@@ -187,7 +187,7 @@
 
     <view class="weui-loadmore">
         <view wx:if="{{this.loading}}" class="weui-loading"></view>
-        <view class="weui-loadmore__tips ptx-load-more" @tap="showChildren">上下滑动加载</view>
+        <view class="weui-loadmore__tips ptx-load-more" @tap="showChildren">{{selectedPeopleDetail.allItems.length-1 === currentIndex ? '我是有底限的~': '上下滑动加载' }}</view>
     </view>
   </view>
 </template>
