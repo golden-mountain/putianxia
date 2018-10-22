@@ -447,7 +447,7 @@ export default class Index extends wepy.page {
     now: '',
     _cacheForm: {
       relatedPeople: '',
-      relationType: ''
+      relationType: 0
     },
     _form: {
       birthDay: '',
@@ -734,25 +734,26 @@ export default class Index extends wepy.page {
       if (!newValue) {
         // console.log(`loaded old => new: ${oldValue} -> ${newValue}`);
         wx.hideToast();
-      }
-    },
-    searchedPeople(newValue, oldValue) {
-      // console.log(newValue, oldValue);
-      const that = this;
-      const itemList = that.searchedPeople.map(v => v.name);
-      const idList = that.searchedPeople.map(v => v.id);
-      if (itemList.length) {
-        wx.showActionSheet({
-          itemList,
-          success: function(res) {
-            if (!res.cancel) {
-              // console.log(itemList[res.tapIndex]);
-              that.selectedSearchPeople = idList[res.tapIndex];
-              that._cacheForm.relatedPeople = itemList[res.tapIndex];
-              that.$apply();
+
+        // },
+        // searchedPeople(newValue, oldValue) {
+        // console.log(newValue, oldValue);
+        const that = this;
+        const itemList = that.searchedPeople.map(v => v.name);
+        const idList = that.searchedPeople.map(v => v.id);
+        if (itemList.length) {
+          wx.showActionSheet({
+            itemList,
+            success: function(res) {
+              if (!res.cancel) {
+                // console.log(itemList[res.tapIndex]);
+                that.selectedSearchPeople = idList[res.tapIndex];
+                that._cacheForm.relatedPeople = itemList[res.tapIndex];
+                that.$apply();
+              }
             }
-          }
-        });
+          });
+        }
       }
     },
     info(newValue, oldValue) {
