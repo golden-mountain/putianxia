@@ -5,8 +5,8 @@ const header = {
 };
 
 export default {
-  apiHost: 'https://api.lizuoping.xyz',
-  // apiHost: "https://www.putianxia.ren/api",
+  // apiHost: 'https://api.lizuoping.xyz',
+  apiHost: 'https://www.putianxia.ren/api',
   request({ method, url, query, params }) {
     url = url || '/db/data/cypher';
     return wepy.request({
