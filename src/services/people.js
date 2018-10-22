@@ -15,8 +15,7 @@ export function searchByNames(originNames) {
   let queries = [];
   originNames.forEach(name => {
     let newName = name.replace(' ', '');
-    let queryString = '',
-      parentName = '';
+    let queryString = '', parentName = '';
     if (newName.indexOf('>') > -1) {
       let newNames = newName.split('>');
       if (newNames.length >= 2) {
@@ -141,7 +140,7 @@ export function updatePeopleInfo(info, id = 0) {
       query: `MATCH (p:Person) WHERE id(p)=${selectedSearchPeople} CREATE (n:Person:李) SET ${updates} CREATE (${firstNode})-[:RELATION{role:'${relation}'}]->(${laterNode}) return n,p`
     };
   }
-  console.log(opts);
+  // console.log(opts);
   return request.cypherPost(opts);
 }
 
@@ -156,7 +155,7 @@ export function getMyRoots(id) {
 export function getMyCreatedNodes(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
-    query: `MATCH (p)-[r]-(n) WHERE p.owner='${id}' and id(n)=${id} return id(p) as id, p.verified, p.名, p.日, p.死, r.role`
+    query: `MATCH (p) WHERE p.owner='${id}'  return id(p) as id, p.verified, p.名, p.日, p.死`
   };
   return request.cypherPost(opts);
 }

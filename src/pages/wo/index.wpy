@@ -171,10 +171,10 @@
               <view class="weui-panel__bd" wx:if="{{nodes.length}}">
                 <navigator url="{{'/pages/zong/add-people?id=' + item[0]}}" class="weui-media-box weui-media-box_appmsg" hover-class="weui-cell_active" wx:for-items="{{nodes}}" wx:for-index="index" wx:for-item="item" wx:key="id">
                     <view class="weui-media-box__hd weui-media-box__hd_in-appmsg">
-                        <image class="weui-media-box__thumb" src="{{item[6]}}" />
+                        <image class="weui-media-box__thumb" src="{{item[5]}}" />
                     </view>
                     <view class="weui-media-box__bd weui-media-box__bd_in-appmsg">
-                        <view class="weui-media-box__title">[{{relations[item[5]]}}] {{item[2]}}</view>
+                        <view class="weui-media-box__title">{{item[2]}}</view>
                         <view class="weui-media-box__desc">{{item[3] || item[4] || '生殁失考'}} </view>
                     </view>
                     <view class="weui-media-box__bd ">
@@ -210,7 +210,7 @@ import {
 } from '@/store/actions/people';
 import { getInfoByWxId, deletePeople } from '@/services/people';
 import { formatInfo } from '@/mixins/user';
-import { relations, getAavatar } from '@/mixins/constant';
+import { relations } from '@/mixins/constant';
 
 @connect(
   {
@@ -238,11 +238,7 @@ import { relations, getAavatar } from '@/mixins/constant';
       if (!state.people.myNodes) return [];
       // console.log(state.people.myNodes, 'current state people');
       state.people.myNodes.forEach(n => {
-        if (n[5]) {
-          n[6] = '../../images/' + getAavatar(n[5]) + '.jpg';
-        } else {
-          n[6] = '../../images/man.jpg';
-        }
+        n[5] = '../../images/man.jpg';
       });
       return state.people.myNodes;
     }

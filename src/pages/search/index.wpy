@@ -16,7 +16,7 @@
   <view class="page">
     <view class="page__hd">
       <searchbar
-        placeholder="良系>作平 或 作平,作苏"
+        placeholder="父名>子名 或 名字A,名字B"
         btn=""
       />
     </view>
