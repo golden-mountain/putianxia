@@ -1,6 +1,6 @@
 import { cn } from 'nzh';
 
-const gan = ['', '甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+const gan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
 const zhi = {
   子: 23,
   丑: 1,
@@ -17,7 +17,6 @@ const zhi = {
 };
 
 const generations = {
-  '': 0,
   洪武: 1368,
   建文: 1399,
   永乐: 1402,
@@ -50,7 +49,6 @@ const generations = {
 };
 
 const ganzhi = [
-  '',
   '甲子',
   '乙丑',
   '丙寅',
@@ -125,8 +123,7 @@ const months = [
   '九',
   '十',
   '十一',
-  '十二',
-  ''
+  '十二'
 ];
 
 const days = [
@@ -159,12 +156,10 @@ const days = [
   '二十七',
   '二十八',
   '二十九',
-  '三十',
-  ''
+  '三十'
 ];
 
 const years = [
-  '',
   '元',
   '二',
   '三',
@@ -267,7 +262,8 @@ const years = [
 ];
 
 function cacGanZhi(year) {
-  let g = year % 10 - 3, z = year % 12 - 3;
+  let g = (year % 10) - 3,
+    z = (year % 12) - 3;
   g = g > 0 ? g : g + 10;
   z = z > 0 ? z : z + 12;
 
@@ -318,7 +314,11 @@ function getTimeIndex(date) {
 }
 
 function caculateYear(year) {
-  let yearStart = 0, yearName = '', originIndex = 0, pos = 0, nianHao = '';
+  let yearStart = 0,
+    yearName = '',
+    originIndex = 0,
+    pos = 0,
+    nianHao = '';
   Object.entries(generations).forEach(entry => {
     pos = year.indexOf(entry[0]);
     if (pos > -1) {
@@ -393,7 +393,8 @@ function turnNewDateToOld(newDate) {
   // console.log(year, month, day, valuePairs);
 
   // oldYear = 同治
-  let oldYear = '', oldYearValue = 0;
+  let oldYear = '',
+    oldYearValue = 0;
   valuePairs.forEach((pa, index) => {
     const [key, value] = pa;
     if (year >= value) {
@@ -416,7 +417,7 @@ function turnNewDateToOld(newDate) {
   });
 
   // oldYearSpace = ‘元’
-  let yearIndex = year % 60 - 4;
+  let yearIndex = (year % 60) - 4;
   if (yearIndex < 0) {
     yearIndex = 60 + yearIndex;
   }

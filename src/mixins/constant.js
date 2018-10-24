@@ -2,7 +2,7 @@ export const genders = ['男', '女'];
 export const relations = {
   son: '儿子',
   daughter: '女儿',
-  father: '父亲',
+  // father: '父亲',
   wife: '妻子',
   hasband: '丈夫'
 };

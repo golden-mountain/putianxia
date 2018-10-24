@@ -15,7 +15,8 @@ export function searchByNames(originNames) {
   let queries = [];
   originNames.forEach(name => {
     let newName = name.replace(' ', '');
-    let queryString = '', parentName = '';
+    let queryString = '',
+      parentName = '';
     if (newName.indexOf('>') > -1) {
       let newNames = newName.split('>');
       if (newNames.length >= 2) {
@@ -150,6 +151,14 @@ export function getMyRoots(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
     query: `MATCH  (p)-[:RELATION*0..{role:'son'}]->(n)  WHERE id(p)=${id} return n.名, id(n) as id`
+  };
+  return request.cypherPost(opts);
+}
+
+export function getMyChildren(id) {
+  // console.log(relationType, firstNode, relation, laterNode);
+  const opts = {
+    query: `MATCH (son:Person)-[sr:RELATION*0..{role:'son'}]->(parent:Person) WHERE ID(parent)=${id} RETURN ID(son) as sonId, son.名`
   };
   return request.cypherPost(opts);
 }
