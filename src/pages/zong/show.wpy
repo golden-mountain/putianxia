@@ -1,110 +1,114 @@
-
-
 <style lang="less">
-@import '../../styles/variables/color.less';
-.ptx-user-group {
-  padding: 20rpx;
-}
+  @import '../../styles/variables/color.less';
 
-.ptx-user {
-  text-align: center;
-}
-
-.ptx-editor {
-  float: right;
-  font-size: 26rpx;
-}
-
-.ptx-current {
-  padding: 10rpx 32rpx;
-}
-
-.ptx-current-hasband {
-  text-align: center;
-  .user-avatar {
-    width: 250rpx;
-    height: 250rpx;
+  .ptx-user-group {
+    padding: 20rpx;
   }
-}
 
-.ptx-current-wife {
-  text-align: center;
+  .ptx-user {
+    text-align: center;
+  }
 
-  .userinfo {
+  .ptx-editor {
+    float: right;
     font-size: 26rpx;
   }
-}
 
-.ptx-current-userinfo {
-  font-size: 26rpx;
-  padding: 20rpx 32rpx;
-  view {
-    text {
-      background: @weuiLineColorLight;
-      width: 100rpx;
-      margin-right: 32rpx;
-      font-weight: bolder;
+  .ptx-current {
+    padding: 10rpx 32rpx;
+  }
+
+  .ptx-current-hasband {
+    text-align: center;
+
+    .user-avatar {
+      width: 250rpx;
+      height: 250rpx;
     }
   }
-}
 
-.ptx-progress {
-  flex: 0.5;
-  padding-top: 32rpx;
-}
+  .ptx-current-wife {
+    text-align: center;
 
-.ptx-location {
-  text-align: right;
-  color: @weuiTextColorGray;
-  .iconfont {
-    color: @weuiColorPrimary;
+    .userinfo {
+      font-size: 26rpx;
+    }
   }
-}
 
-.ptx-actions {
-  .icon-like {
-    color: @weuiColorWarn;
+  .ptx-current-userinfo {
+    font-size: 26rpx;
+    padding: 20rpx 32rpx;
+
+    view {
+      text {
+        background: @weuiLineColorLight;
+        width: 100rpx;
+        margin-right: 32rpx;
+        font-weight: bolder;
+      }
+    }
   }
-}
 
-.ptx-load-more {
-  color: @weuiLinkColorDefault;
-}
-
-.ptx-link {
-  color: @weuiLinkColorDefault;
-  cursor: pointer;
-  &:hover,
-  &:active {
-    color: @weuiColorPrimary;
+  .ptx-progress {
+    flex: 0.5;
+    padding-top: 32rpx;
   }
-}
 
-.userinfo {
-  font-size: 32rpx;
-}
+  .ptx-location {
+    text-align: right;
+    color: @weuiTextColorGray;
 
-@keyframes zoomuser {
-  from {
-    width: 10rpx;
-    height: 10rpx;
+    .iconfont {
+      color: @weuiColorPrimary;
+    }
   }
-  to {
+
+  .ptx-actions {
+    .icon-like {
+      color: @weuiColorWarn;
+    }
+  }
+
+  .ptx-load-more {
+    color: @weuiLinkColorDefault;
+  }
+
+  .ptx-link {
+    color: @weuiLinkColorDefault;
+    cursor: pointer;
+
+    &:hover,
+    &:active {
+      color: @weuiColorPrimary;
+    }
+  }
+
+  .userinfo {
+    font-size: 32rpx;
+  }
+
+  @keyframes zoomuser {
+    from {
+      width: 10rpx;
+      height: 10rpx;
+    }
+
+    to {
+      width: 150rpx;
+      height: 150rpx;
+    }
+  }
+
+  .refresh-user {
+    animation: 800ms zoomuser 1;
+    animation-fill-mode: forwards;
+  }
+
+  .user-avatar {
     width: 150rpx;
     height: 150rpx;
+    border-radius: 50%;
   }
-}
-
-.refresh-user {
-  animation: 800ms zoomuser 1;
-  animation-fill-mode: forwards;
-}
-
-.user-avatar {
-  width: 150rpx;
-  height: 150rpx;
-  border-radius: 50%;
-}
 </style>
 
 
@@ -114,11 +118,14 @@
     <view class="page__hd">
       <view class="weui-flex ptx-user-group" wx:if="{{parents}}">
         <view class="weui-flex__item ptx-user">
-          <image @tap="gotoUser({{ parents[0] }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}" background-size="cover"/>
+          <image @tap="gotoUser({{ parents[0] }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ parents[0].avatar }}"
+            background-size="cover" />
           <view class="userinfo">({{parents[0].role}}){{ parents[0].name}}</view>
         </view>
-        <view class="weui-flex__item ptx-current-wife" wx:for-items="{{parents[1]}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-          <image @tap="gotoUser({{ item }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
+        <view class="weui-flex__item ptx-current-wife" wx:for-items="{{parents[1]}}" wx:for-index="index" wx:for-item="item"
+          wx:key="id">
+          <image @tap="gotoUser({{ item }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}"
+            background-size="cover" />
           <view class="userinfo">({{item.role}}){{ item.name}}</view>
         </view>
       </view>
@@ -129,57 +136,61 @@
       <view class="weui-panel weui-panel_access  ptx-current">
         <view class="weui-panel__bd">
           <view class="weui-flex ptx-actions">
-            <view class="weui-flex__item " >
+            <view class="weui-flex__item ">
               <text class="font_26 ptx-link">第{{ currentLevel }}世 </text>
             </view>
-            <view class="weui-flex__item ptx-location" bindtap="updateInfo" >
+            <view class="weui-flex__item ptx-location" bindtap="updateInfo">
               <text wx:if="{{!weixinUser}}" class="iconfont icon-mine" style="font-size:14px;">这个是我</text>
-              <text wx:else class="iconfont icon-mine" style="font-size:14px;">重新关联我</text>            </view>
+              <text wx:else class="iconfont icon-mine" style="font-size:14px;">重新关联我</text> </view>
           </view>
         </view>
 
         <view class="weui-panel__bd">
           <view class="weui-flex ptx-me">
             <view class="weui-flex__item ptx-current-hasband">
-              <image @tap="gotoUser({{ current[0] }})" class="user-avatar" src="{{ current[0].avatar }}" background-size="cover"/>
+              <image @tap="gotoUser({{ current[0] }})" class="user-avatar" src="{{ current[0].avatar }}"
+                background-size="cover" />
               <view class="userinfo">({{current[0].role}}){{ current[0].name}} </view>
             </view>
-            <view class="weui-flex__item ptx-current-wife" wx:for-items="{{current[1]}}" wx:for-index="index" wx:for-item="item" wx:key="id">
-              <image @tap="gotoUser({{ item }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}" background-size="cover"/>
+            <view class="weui-flex__item ptx-current-wife" wx:for-items="{{current[1]}}" wx:for-index="index"
+              wx:for-item="item" wx:key="id">
+              <image @tap="gotoUser({{ item }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ item.avatar }}"
+                background-size="cover" />
               <view class="userinfo">({{item.role}}){{ item.name}}</view>
             </view>
           </view>
 
-          </view>
-          <view class="weui-panel__ft">
-            <view class="weui-flex">
-              <view class="weui-flex__item ptx-progress">
-                <view class="weui-progress">
-                  <view class="weui-progress__bar">
-                      <!-- <progress percent="30" stroke-width="5" /> -->
-                  </view>
+        </view>
+        <view class="weui-panel__ft">
+          <view class="weui-flex">
+            <view class="weui-flex__item ptx-progress">
+              <view class="weui-progress">
+                <view class="weui-progress__bar">
+                  <!-- <progress percent="30" stroke-width="5" /> -->
                 </view>
               </view>
-              <view class="weui-flex__item ptx-location">
-                <!-- <text class="font_26">北京市海淀区西二旗铭科苑 <text class="iconfont icon-coordinates_fill" /></text> -->
-              </view>
-
             </view>
+            <view class="weui-flex__item ptx-location">
+              <!-- <text class="font_26">北京市海淀区西二旗铭科苑 <text class="iconfont icon-coordinates_fill" /></text> -->
+            </view>
+
           </view>
+        </view>
       </view>
 
       <view class="weui-panel">
-        <view class="weui-panel__hd">{{ currentPeopleMap['名']}}的基本资料 <text class="ptx-editor iconfont icon-brush" @tap="onProfileChange({{currentPeopleMap['id']}})">修改</text></view>
+        <view class="weui-panel__hd">{{ current[0]['名']}}的基本资料 </view>
         <view class="weui-panel__bd ptx-current-userinfo">
           <view wx:for-items="{{currentPeople}}" wx:for-index="index" wx:for-item="item" wx:key="id"><text>{{item[0]}}</text>{{item[1]}}</view>
         </view>
       </view>
 
       <view class="page__ft" wx:if="{{children}}">
-        <block wx:for-items="{{children}}"  wx:key="any">
+        <block wx:for-items="{{children}}" wx:key="any">
           <view class="weui-flex ptx-user-group">
-            <view class="weui-flex__item ptx-user" wx:for-items="{{item}}" wx:for-item="child"  wx:key="childkey">
-              <image @tap="gotoUser({{ child }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ child.avatar }}" background-size="cover"/>
+            <view class="weui-flex__item ptx-user" wx:for-items="{{item}}" wx:for-item="child" wx:key="childkey">
+              <image @tap="gotoUser({{ child }})" class="user-avatar {{loading ? '' : 'refresh-user'}}" src="{{ child.avatar }}"
+                background-size="cover" />
               <view class="userinfo">({{child.role}}{{child.num}}){{ child.name}}</view>
             </view>
           </view>
@@ -190,306 +201,220 @@
 
 
     <view class="weui-loadmore">
-        <view wx:if="{{this.loading}}" class="weui-loading"></view>
-        <view class="weui-loadmore__tips ptx-load-more" @tap="showChildren">{{selectedPeopleDetail.allItems.length-1 === currentIndex ? '我是有底限的~': '上下滑动加载' }}</view>
+      <view wx:if="{{this.loading}}" class="weui-loading"></view>
+      <view class="weui-loadmore__tips ptx-load-more" @tap="showChildren">{{selectedPeopleDetail.allItems.length-1 ===
+        currentIndex ? '我是有底限的~': '上下滑动加载' }}</view>
     </view>
   </view>
 </template>
 
 <script>
-import wepy from 'wepy';
-import { connect } from 'wepy-redux';
-// import Panel from '@/components/panel'; // alias example
-// import SearchBar from '@/components/searchbar'; // alias example
-import {
-  updateCurrentPeopleIndex,
-  getChildrenByParentId,
-  updateWeixinInfo
-} from '@/store/actions/people';
+  import wepy from 'wepy';
+  import { connect } from 'wepy-redux';
+  // import Panel from '@/components/panel'; // alias example
+  // import SearchBar from '@/components/searchbar'; // alias example
+  // import {
+  //   updateCurrentPeopleIndex,
+  //   getChildrenByParentId,
+  //   updateWeixinInfo
+  // } from '@/store/actions/people';
+  import { getCurrentInfo } from '@/services/people';
 
-import { formatInfo } from '@/mixins/user';
-
-@connect(
-  {
-    selectedPeopleDetail(state) {
-      return state.people.selectedPeopleDetail;
-    },
+  import { formatInfo } from '@/mixins/user';
+  @connect({
     wx(state) {
       return state.people.wx;
-    },
-    weixinUser(state) {
-      // console.log(state.people.weixinUser, '........');
-      return state.people.weixinUser;
-    },
-    children(state) {
-      if (state.people.children) {
-        const children = state.people.children;
-        let groupChildren = [];
-        let boys = [];
-        let girls = [];
-        children.forEach((v, i) => {
-          if (v.role === 'son') {
-            boys.push({
-              ...v,
-              role: '儿',
-              name: v.名,
-              avatar: '../../images/man.jpg'
-            });
-          } else {
-            girls.push({
-              ...v,
-              role: '女',
-              name: v.名,
-              avatar: '../../images/lady.jpg'
-            });
-          }
-          // console.log(groupChildren);
-        });
-        /* const cnNumbers = [
-          '一',
-          '二',
-          '三',
-          '四',
-          '五',
-          '六',
-          '七',
-          '八',
-          '九',
-          '十',
-          '十一',
-          '十二'
-        ]; */
-        boys = boys.reverse().map((v, i) => {
-          v.num = v.排 || '';
-          return v;
-        });
-        girls = girls.map((v, i) => {
-          v.num = v.排 || '';
-          return v;
-        });
-
-        groupChildren = boys.concat(girls);
-
-        let newResults = [];
-        const groups = Math.ceil(groupChildren.length / 3);
-        for (let i = 0; i < groups; i++) {
-          newResults.push(groupChildren.slice(i * 3, (i + 1) * 3));
-        }
-        // console.log(newResults);
-        return newResults;
-      } else {
-        return false;
-      }
     }
-  },
-  {
-    updateCurrentPeopleIndex,
-    getChildrenByParentId,
-    updateWeixinInfo
-  }
-)
-export default class Show extends wepy.page {
-  config = {
-    navigationBarTitleText: '个人资料 - 谱天下',
-    enablePullDownRefresh: true,
-    onReachBottomDistance: 0
-  };
-  components = {};
+  })
+  export default class Show extends wepy.page {
+    config = {
+      navigationBarTitleText: '个人资料 - 谱天下',
+      enablePullDownRefresh: true,
+      onReachBottomDistance: 0
+    };
+    components = {};
 
-  mixins = [];
+    mixins = [];
 
-  data = {
-    currentId: 0,
-    currentLevel: 0,
-    currentIndex: 0,
-    currentPeople: [],
-    parents: [],
-    current: [],
-    currentPeopleMap: {},
-    // children: [],
-    loading: false
-  };
+    data = {
+      currentId: 0,
+      currentLevel: 0,
+      currentIndex: 0,
+      currentPeople: [],
+      parents: [],
+      current: [],
+      currentPeopleMap: {},
+      allInfo: [],
+      children: [],
+      loading: false,
+      idStack: []
+    };
 
-  computed = {};
-
-  methods = {
-    onProfileChange(id) {
-      // console.log('profile changed', this.pu);
-      wx.navigateTo({ url: '/pages/zong/add-people?id=' + id });
-    },
-    gotoUser(user) {
-      console.log('goto user', user);
-      // wx.navigateTo({ url: '/pages/wo/index' });
-      this.currentPeople = formatInfo(user);
-      this.currentPeopleMap = user;
-    },
-    showChildren() {
-      this.reachBottom();
-    },
-    updateInfo() {
-      // console.log(this.wx);
-      const that = this;
-      wx.showModal({
-        title: '关联我自己',
-        content: `这个是你自己吗,关联成功后所有的操作数据与这个族人相关!`,
-        confirmText: '确认关联',
-        cancelText: '取消',
-        success: function(res) {
-          // console.log(res);
-          if (res.confirm) {
-            that.methods.updateWeixinInfo(that.currentId, that.wx.openId);
-          }
+    watch = {
+      currentId: (newValue, oldValue) => {
+        if (this.currentId >= 0) {
+          this.refreshData();
         }
-      });
-    }
-  };
-
-  events = {};
-
-  onShareAppMessage(options) {
-    // var that = this; // 设置菜单中的转发按钮触发转发事件时的转发内容
-    var shareObj = {
-      title: '【谱天下】开始我们的寻根之旅', // 默认是小程序的名称(可以写slogan等)
-      path: '/pages/wo/index', // 默认是当前页面，必须是以‘/’开头的完整路径
-      imgUrl: '', // 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
-      success: function(res) {
-        // 转发成功之后的回调
-        if (res.errMsg === 'shareAppMessage:ok') {
-        }
-      },
-      fail: function(res) {
-        // 转发失败之后的回调
-        if (res.errMsg === 'shareAppMessage:fail cancel') {
-          // 用户取消转发
-        } else if (res.errMsg === 'shareAppMessage:fail') {
-          // 转发失败，其中 detail message 为详细失败信息
-        }
-      }
-    }; // 来自页面内的按钮的转发
-    /* if (options.from === 'button') {
-      var eData = options.target.dataset;
-      console.log(eData.name); // shareBtn // 此处可以修改 shareObj 中的内容
-      shareObj.path = '/pages/btnname/btnname?btn_name=' + eData.name;
-    } // 返回shareObj */
-    return shareObj;
-  }
-
-  onPullDownRefresh() {
-    // console.log('reached to top');
-    if (this.currentIndex > 0) {
-      this.currentIndex--;
-      // console.log('father:', this.currentIndex);
-      this.methods.updateCurrentPeopleIndex(this.currentIndex);
-      this.loadData();
-    }
-    wx.stopPullDownRefresh();
-    this.loading = false;
-    this.methods.getChildrenByParentId(this.currentId);
-  }
-
-  onReachBottom() {
-    this.reachBottom();
-  }
-
-  reachBottom() {
-    const index = this.currentIndex + 1;
-    // console.log('reached to bottom');
-
-    if (this.selectedPeopleDetail.allItems[index]) {
-      // console.log('reaced', index);
-      this.currentIndex = index;
-      this.methods.updateCurrentPeopleIndex(index);
-
-      // this.$apply();
-      this.loadData();
-    }
-    this.loading = false;
-    this.methods.getChildrenByParentId(this.currentId);
-  }
-
-  loadData() {
-    const formatShow = (p, role = '夫') => {
-      if (role === '夫') {
-        return {
-          ...p,
-          role: '*',
-          name: p.名,
-          avatar: '../../images/man.jpg'
-        };
-      } else if (role === '妻' || role === '母') {
-        if (p.妻) {
-          // console.log(p.妻);
-          return p.妻.map(v => ({
-            ...v,
-            role,
-            name: v.名,
-            avatar: '../../images/lady.jpg'
-          }));
-        }
-      } else {
-        // TODO: GET children from api
-        // if ( role === '女') {
-
-        // } else {
-
-        // }
-        return {
-          ...p,
-          role,
-          name: p.名,
-          avatar: '../../images/man.jpg'
-        };
       }
     };
 
-    if (this.selectedPeopleDetail) {
-      const { allItems, currentIndex } = this.selectedPeopleDetail;
-      this.currentPeople = formatInfo(allItems[currentIndex]);
-      this.currentPeopleMap = allItems[currentIndex];
-      this.currentIndex = currentIndex;
-      this.currentId = allItems[currentIndex].id;
-      // console.log(currentIndex, '<<<<< currentIndex', allItems);
-
-      this.currentLevel = allItems[currentIndex].level;
-      this.current = [
-        formatShow(allItems[currentIndex], '夫'),
-        formatShow(allItems[currentIndex], '妻')
-      ];
-
-      // get children
-      // console.log(this.current);
-      // if (allItems[currentIndex + 1]) {
-      //   this.children = [
-      //     formatShow(allItems[currentIndex + 1], '子'),
-      //     formatShow(allItems[currentIndex + 1], '女')
-      //   ];
-      //   // console.log('new children', currentIndex + 1, this.children);
-      // } else {
-      //   this.children = false;
-      // }
-
-      // get parent
-      if (currentIndex > 0) {
-        // console.log('new parent', currentIndex - 1);
-        this.parents = [
-          formatShow(allItems[currentIndex - 1], '父'),
-          formatShow(allItems[currentIndex - 1], '母')
-        ];
-      } else {
-        this.parents = null;
+    methods = {
+      onProfileChange(id) {
+        // console.log('profile changed', this.pu);
+        wx.navigateTo({ url: '/pages/zong/add-people?id=' + id });
+      },
+      gotoUser(user) {
+        this.currentId = user.id;
+        this.idStack = [user.id];
+      },
+      updateInfo() {
+        // console.log(this.wx);
+        const that = this;
+        wx.showModal({
+          title: '关联我自己',
+          content: `这个是你自己吗,关联成功后所有的操作数据与这个族人相关!`,
+          confirmText: '确认关联',
+          cancelText: '取消',
+          success: function (res) {
+            // console.log(res);
+            if (res.confirm) {
+              that.methods.updateWeixinInfo(that.currentId, that.wx.openId);
+            }
+          }
+        });
       }
+    };
+
+    events = {};
+
+    onShareAppMessage(options) {
+      // var that = this; // 设置菜单中的转发按钮触发转发事件时的转发内容
+      var shareObj = {
+        title: '【谱天下】开始我们的寻根之旅', // 默认是小程序的名称(可以写slogan等)
+        path: '/pages/zong/show?id=' + this.currentId, // 默认是当前页面，必须是以‘/’开头的完整路径
+        imgUrl: '', // 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
+        success: function (res) {
+          // 转发成功之后的回调
+          if (res.errMsg === 'shareAppMessage:ok') {
+          }
+        },
+        fail: function (res) {
+          // 转发失败之后的回调
+          if (res.errMsg === 'shareAppMessage:fail cancel') {
+            // 用户取消转发
+          } else if (res.errMsg === 'shareAppMessage:fail') {
+            // 转发失败，其中 detail message 为详细失败信息
+          }
+        }
+      }; // 来自页面内的按钮的转发
+      /* if (options.from === 'button') {
+          var eData = options.target.dataset;
+          console.log(eData.name); // shareBtn // 此处可以修改 shareObj 中的内容
+          shareObj.path = '/pages/btnname/btnname?btn_name=' + eData.name;
+        } // 返回shareObj */
+      return shareObj;
+    }
+
+    onPullDownRefresh() {
+      this.idStack.push(this.currentId);
+      this.currentId = this.parents[0].id;
+    }
+
+    onReachBottom() {
+      this.currentId = this.idStack.length && this.idStack.pop();
+    }
+
+    refreshData() {
+      const that = this;
+      const formatShow = (p, role) => {
+        if (role === '妻' || role === '女' || role === '母') {
+          return {
+            ...p,
+            role,
+            name: p.名,
+            avatar: '../../images/lady.jpg'
+          };
+        } else {
+          return {
+            ...p,
+            role,
+            name: p.名,
+            avatar: '../../images/man.jpg'
+          };
+        }
+      };
+      wx.showToast({
+        title: '努力加载中...',
+        icon: 'loading',
+        mask: true,
+        duration: 1000000
+      });
+      getCurrentInfo(this.currentId).then(res => {
+        if (!res || !res.data) return false;
+        // console.log(res);
+        that.allInfo = res.data.data;
+        let children = [[], []];
+        let father = null;
+        let mother = [];
+        let me = [];
+        let myWife = [];
+        that.allInfo.forEach(v => {
+          const [current, currentId, related, relatedId, wife, wifeId, r] = v;
+          current.id = currentId;
+          related.id = relatedId;
+          wife.id = wifeId;
+          if (
+            r.data.role === 'daughter' ||
+            (r.data.role === 'son' && r.start.lastIndexOf(currentId) === -1)
+          ) {
+            if (r.data.role === 'daughter') {
+              children[1].push(formatShow(related, '女'));
+            } else {
+              children[0].push(formatShow(related, '儿'));
+            }
+          }
+
+          if (r.data.role === 'son' && r.start.lastIndexOf(currentId) > -1) {
+            if (relatedId === wifeId) {
+              father = formatShow(related, '父');
+            } else {
+              mother.push(formatShow(wife, '母'));
+            }
+          }
+
+          me = formatShow(current, '*');
+          if (r.data.role === 'wife') {
+            myWife.push(formatShow(wife, '妻'));
+          }
+        });
+        if (father) {
+          that.parents = [father, mother];
+        } else {
+          that.parents = [{
+            名: '没有更多了'
+          }]
+        }
+        that.current = [me, myWife];
+        that.currentPeople = formatInfo(me);
+        that.children = children;
+        // console.log(that.parents);
+        // console.log(me, myWife);
+        // console.log(children);
+        that.$apply();
+        wx.hideToast();
+      })
+    }
+
+    onLoad(query) {
+      // this.refreshData();
+      // query.id = 178;
+      if (query.id) {
+        this.currentId = query.id;
+      } else {
+        this.currentId = this.wx.pu.id || 178;
+      }
+      this.idStack.push(query.id);
+      this.refreshData();
     }
   }
-
-  onLoad() {
-    this.loadData();
-    // this.reachBottom();
-    this.methods.getChildrenByParentId(this.currentId);
-    this.loading = false;
-    this.methods.showChildren.bind(this);
-    this.methods.updateInfo.bind(this);
-    this.methods.gotoUser.bind(this);
-    // console.log(this.wx, '<<<<<<<<<wx');
-  }
-}
 </script>

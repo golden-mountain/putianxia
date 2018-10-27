@@ -201,8 +201,8 @@ export default class Index extends wepy.page {
       if (people2) loadPeople(people2[2], 'people2', 'id2');
     }
 
-    query.id1 = 180;
-    query.id2 = 160;
+    // query.id1 = 180;
+    // query.id2 = 160;
     // if directly shared by id
     if (query.id1) {
       loadPeople(query.id1, 'people1', 'id1');

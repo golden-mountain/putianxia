@@ -59,6 +59,34 @@ export function getInfoById(id) {
   return request.cypherPost(opts);
 }
 
+export function getCoupleInfoById(id) {
+  const opts = {
+    query: `match (wife)-[:RELATION{role: 'wife'}]->(current)  where id(current)=${id} or id(wife)=${id} return current, wife`
+  };
+  return request.cypherPost(opts);
+}
+
+export function getParentsById(id) {
+  const opts = {
+    query: `match (current)-[:RELATION{role: 'son'}]->(father)<-[:RELATION{role: 'wife'}]->(mather) where id(current)=${id} return father, mather`
+  };
+  return request.cypherPost(opts);
+}
+
+// for show my parents, myself info
+export function getCurrentInfo(id) {
+  const opts = {
+    query: `match (current)-[r:RELATION]-(related)<-[:RELATION*0..1{role:'wife'}]-(mother)
+    where id(current)=${id}
+    return
+      properties(current), id(current) as currentId,
+      properties(related), id(related) as relationId,
+      properties(mother),  id(mother) as motherId,
+      r`
+  };
+  return request.cypherPost(opts);
+}
+
 export function getInfoByWxId(wxID) {
   const opts = {
     query: `MATCH (n:Person) WHERE n.wx='${wxID}' RETURN n, id(n) as id`
