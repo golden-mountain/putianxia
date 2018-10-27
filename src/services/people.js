@@ -15,8 +15,7 @@ export function searchByNames(originNames) {
   let queries = [];
   originNames.forEach(name => {
     let newName = name.replace(' ', '');
-    let queryString = '',
-      parentName = '';
+    let queryString = '', parentName = '';
     if (newName.indexOf('>') > -1) {
       let newNames = newName.split('>');
       if (newNames.length >= 2) {
@@ -30,20 +29,16 @@ export function searchByNames(originNames) {
       newName = newName.substr(1);
     }
 
-    queryString = `(son.名 CONTAINS '${newName}' OR son.字 CONTAINS '${newName}' OR son.号 CONTAINS '${newName}' OR son.又 CONTAINS '${newName}' )`;
+    queryString = `(son.名 contains '${newName}' or son.字 contains '${newName}' or son.号 contains '${newName}' or son.又 contains '${newName}' )`;
     if (parentName) {
-      queryString = `(${queryString} AND (parent.名 CONTAINS '${parentName}' OR parent.字 CONTAINS '${parentName}' OR parent.号 CONTAINS '${parentName}' OR parent.又 CONTAINS '${parentName}'))`;
+      queryString = `(${queryString} AND (parent.名 contains '${parentName}' or parent.字 contains '${parentName}' or parent.号 contains '${parentName}' OR parent.又 CONTAINS '${parentName}'))`;
     }
 
     queries.push(queryString);
     return newName;
   });
   const opts = {
-    query: `MATCH (son:Person)-[sr:RELATION*0..]->(parent:Person)
-              WHERE ${queries.join(' OR ')}
-            OPTIONAL MATCH (wife:Person)-[wr:RELATION]->(parent)
-              WHERE wr.role IN ['wife']
-            RETURN distinct son, parent, sr, wife, wr`
+    query: `match (son:Person:李)-[:RELATION{role: 'son'}]->(parent) where ${queries.join(' or ')} return id(parent) as parentId, parent.名, id(son) as sonId, son.名`
   };
   // console.log(opts);
 
@@ -150,7 +145,7 @@ export function updatePeopleInfo(info, id = 0) {
 export function getMyRoots(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
-    query: `MATCH  (p)-[:RELATION*0..{role:'son'}]->(n)  WHERE id(p)=${id} return n.名, id(n) as id`
+    query: `MATCH  (p)-[:RELATION*0..{role:'son'}]->(n)  WHERE id(p)=${id} return n.名, id(n) as id, n.字, n.又, n.号, n.学, n.日, n.死`
   };
   return request.cypherPost(opts);
 }

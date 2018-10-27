@@ -1,7 +1,7 @@
 import { cn } from 'nzh';
 
-const gan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
-const zhi = {
+export const gan = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+export const zhi = {
   子: 23,
   丑: 1,
   寅: 3,
@@ -16,7 +16,7 @@ const zhi = {
   亥: 21
 };
 
-const generations = {
+export const generations = {
   洪武: 1368,
   建文: 1399,
   永乐: 1402,
@@ -48,7 +48,7 @@ const generations = {
   共和: 1949
 };
 
-const ganzhi = [
+export const ganzhi = [
   '甲子',
   '乙丑',
   '丙寅',
@@ -111,7 +111,7 @@ const ganzhi = [
   '癸亥'
 ];
 
-const months = [
+export const months = [
   '正',
   '二',
   '三',
@@ -126,7 +126,7 @@ const months = [
   '十二'
 ];
 
-const days = [
+export const days = [
   '初一',
   '初二',
   '初三',
@@ -159,7 +159,7 @@ const days = [
   '三十'
 ];
 
-const years = [
+export const years = [
   '元',
   '二',
   '三',
@@ -261,20 +261,19 @@ const years = [
   '九十九'
 ];
 
-function cacGanZhi(year) {
-  let g = (year % 10) - 3,
-    z = (year % 12) - 3;
+export function cacGanZhi(year) {
+  let g = year % 10 - 3, z = year % 12 - 3;
   g = g > 0 ? g : g + 10;
   z = z > 0 ? z : z + 12;
 
   return gan[gan - 1] + zhi[zhi - 1];
 }
 
-function transChineseNumber(num) {
+export function transChineseNumber(num) {
   return cn.decodeS(num.replace('初', '').replace('正', '一'));
 }
 
-function getIndex(date, items, unit = '') {
+export function getIndex(date, items, unit = '') {
   let pos, strIndex;
   // console.log(date, items);
   items.forEach((entry, index) => {
@@ -287,38 +286,34 @@ function getIndex(date, items, unit = '') {
   return strIndex;
 }
 
-function getGenerationIndex(date) {
+export function getGenerationIndex(date) {
   const year = date.trim().substr(0, 2);
   return Object.keys(generations).indexOf(year);
 }
 
-function getYearIndex(date) {
+export function getYearIndex(date) {
   const year = date.trim().substr(2, 2);
   return ganzhi.indexOf(year);
 }
 
-function getMonthIndex(date) {
+export function getMonthIndex(date) {
   const units = date.split(/年|月|日|时/);
   return months.indexOf(units[1]) || 12;
 }
 
-function getDayIndex(date) {
+export function getDayIndex(date) {
   const units = date.split(/年|月|日|时/);
   return days.indexOf(units[2]) || 30;
 }
 
-function getTimeIndex(date) {
+export function getTimeIndex(date) {
   const units = date.split(/年|月|日|时/);
   // console.log(zhi[units[3]], '.....');
   return zhi[units[3]] || 12;
 }
 
-function caculateYear(year) {
-  let yearStart = 0,
-    yearName = '',
-    originIndex = 0,
-    pos = 0,
-    nianHao = '';
+export function caculateYear(year) {
+  let yearStart = 0, yearName = '', originIndex = 0, pos = 0, nianHao = '';
   Object.entries(generations).forEach(entry => {
     pos = year.indexOf(entry[0]);
     if (pos > -1) {
@@ -350,24 +345,24 @@ function caculateYear(year) {
   }
 }
 
-function cacMonth(date) {
+export function cacMonth(date) {
   const month = date.slice(date.indexOf('年') + 1, date.indexOf('月'));
 
   return transChineseNumber(month);
 }
 
-function cacDay(date) {
+export function cacDay(date) {
   const day = date.slice(date.indexOf('月') + 1, date.indexOf('日'));
 
   return transChineseNumber(day);
 }
 
-function cacHour(date) {
+export function cacHour(date) {
   const hour = date.slice(date.indexOf('日') + 1, date.indexOf('时'));
   return zhi[hour] + ':00' || '0:00';
 }
 
-function translateDateTime(date) {
+export function translateDateTime(date) {
   return (
     caculateYear(date) +
     '/' +
@@ -379,11 +374,11 @@ function translateDateTime(date) {
   );
 }
 
-function translateDate(date) {
+export function translateDate(date) {
   return caculateYear(date) + '/' + cacMonth(date) + '/' + cacDay(date);
 }
 
-function turnNewDateToOld(newDate) {
+export function turnNewDateToOld(newDate) {
   if (!newDate) return '';
   const date = new Date(newDate);
   const year = date.getFullYear();
@@ -393,8 +388,7 @@ function turnNewDateToOld(newDate) {
   // console.log(year, month, day, valuePairs);
 
   // oldYear = 同治
-  let oldYear = '',
-    oldYearValue = 0;
+  let oldYear = '', oldYearValue = 0;
   valuePairs.forEach((pa, index) => {
     const [key, value] = pa;
     if (year >= value) {
@@ -417,7 +411,7 @@ function turnNewDateToOld(newDate) {
   });
 
   // oldYearSpace = ‘元’
-  let yearIndex = (year % 60) - 4;
+  let yearIndex = year % 60 - 4;
   if (yearIndex < 0) {
     yearIndex = 60 + yearIndex;
   }
@@ -440,7 +434,7 @@ function turnNewDateToOld(newDate) {
   return [oldYear, oldYearSpace, oldMonth, oldDay];
 }
 
-function turnTimeToOld(time) {
+export function turnTimeToOld(time) {
   if (!time) return '';
   let t = parseFloat(time.replace(':', '.'));
   if (t === 0) {
@@ -470,7 +464,7 @@ function turnTimeToOld(time) {
   return oldTime;
 }
 
-function formatDateTime(date) {
+export function formatDateTime(date) {
   const d = new Date(date);
   return [
     d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate(),

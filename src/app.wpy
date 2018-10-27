@@ -16,9 +16,11 @@ setStore(store);
 export default class extends wepy.app {
   config = {
     pages: [
+      'pages/search/show',
+
       // 'pages/zong/add-people',
       'pages/wo/index',
-      'pages/search/show',
+      // 'pages/search/show',
       'pages/zong/index',
       'pages/zong/show',
       'pages/pu/index',

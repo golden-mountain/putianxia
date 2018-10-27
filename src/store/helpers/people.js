@@ -8,7 +8,7 @@ export function formatSearchedResult(data) {
       const v = data[i];
       if (v[4] && v[4].end === n[1].self && v[3].data) {
         const finded = n[1].data.妻.find(q => {
-          return q.名 === v[3].data.名;
+          return q[0] === v[3].data[0];
         });
         if (!finded) {
           v[3].data.id = v[3].metadata.id;
@@ -66,7 +66,7 @@ export function formatSearchedResult(data) {
     const [son, father] = group;
     let groupName;
     if (father) {
-      groupName = `${father.名} > ${son.名}`;
+      groupName = `${father[0]} > ${son.名}`;
     } else {
       groupName = `${son.名}`;
     }
@@ -86,13 +86,13 @@ export function formatSearchedResult(data) {
  *     names: '作平，作苏',
  *     contents: '两代前你们共祖父', '你们是亲兄妹', '李作平', '良係次子, 1982年生,xxxx年殁, 大学生, 现在北京'
  * }
+ * n.名, id(n) as id, n.字, n.又, n.号, n.学, n.日, n.死
  */
 export function formatSelectedPeople(selectedPeople) {
   const [people1, people2] = selectedPeople;
-  let names = '',
-    info = '';
+  let names = '', info = '';
   if (people2) {
-    names = `${people1.名},${people2.名}`;
+    names = `${people1[0]},${people2[0]}`;
     let upLevel = people1.level;
     if (upLevel === 1) {
       info = '兄弟妹关系';
@@ -104,19 +104,19 @@ export function formatSelectedPeople(selectedPeople) {
       info = `往上数${upLevel}代,你们共一个祖父`;
     }
   } else {
-    names = `${people1.名}`;
-    if (people1.字) {
-      names += ` (字${people1.字})`;
+    names = `${people1[0]}`;
+    if (people1[2]) {
+      names += ` (字${people1[2]})`;
     }
-    if (people1.生) {
-      info = `生于${people1.生}`;
+    if (people1[6]) {
+      info = `生于${people1[6]}`;
     }
-    if (people1.殁) {
-      info += ` 殁于${people1.殁}`;
+    if (people1[7]) {
+      info += ` 殁于${people1[7]}`;
     }
-    if (people1.祧) {
-      info += ` 兼祧${people1.祧}`;
-    }
+    // if (people1.祧) {
+    //   info += ` 兼祧${people1.祧}`;
+    // }
     return { info, names };
   }
 }

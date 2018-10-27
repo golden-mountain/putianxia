@@ -1,43 +1,81 @@
 <style type="less">
-.page__bd_spacing__a {
+@import '../styles/variables/color.less';
+.ptx-tree-item {
+  font-size: 14px;
+  .weui-flex__item {
+    padding: 10px;
+
+    &:first-child {
+      border-right: 1px solid @weuiTextColorTips;
+    }
+  }
+  &.ptx-gen-active {
+    background-color: @weuiColorPrimary;
+
+    .weui-flex__item {
+      color: @weuiBgColorDefault;
+    }
+  }
+}
+.ptx-gen-num {
+  color: @weuiTextColorGray;
+  flex: 0.3;
+  text-align: right;
+}
+.ptx-name {
+  flex: 1;
+}
+.ptx-group {
+  flex: 1.5;
+  color: @weuiLinkColorDefault;
+}
+.ptx-icons {
+  flex: 0.5;
 }
 </style>
 <template>
   <view class="page__bd page__bd_spacing" style="{{style}}">
-    <repeat for="{{treeItems}}" key="index" index="idx" item="item">
-      <treeItem :item="item" :treeItems="treeItems" />
-    </repeat>
+    <block wx:for-items="{{treeItems}}" wx:for-index="index" wx:for-item="item" wx:key="id">
+      <view class="weui-flex ptx-tree-item {{ selectedPeople[1] == item[1] ? 'ptx-gen-active' : ''}} " @tap="activePeople({{[item]}})">
+        <view class="weui-flex__item ptx-gen-num"><view class="">{{index+1}}</view></view>
+        <view class="weui-flex__item ptx-name"><view class="placeholder">{{item[0]}}</view></view>
+        <!-- <view class="weui-flex__item ptx-group"><view class="placeholder">{{item.group}}</view></view> -->
+        <view class="weui-flex__item ptx-icons" capture-catch:tap="gotoPeople({{item[1]}})"><text class="iconfont icon-browse" /></view>
+      </view>
+    </block>
   </view>
 </template>
 <script>
 import wepy from 'wepy';
-import TreeItem from '@/components/tree-item'; // alias example
+import { connect } from 'wepy-redux';
 
+@connect({
+  selectedPeople(state) {
+    if (state.people.selectedPeople) {
+      return state.people.selectedPeople[0];
+    }
+  }
+})
 export default class Tree extends wepy.component {
   props = {
     style: {},
     treeItems: {}
-    // active: {
-    //   type: Number,
-    //   value: 0,
-    //   twoWay: true
-    // }
   };
 
   data = {};
-  // watch = {
-  //   active(newValue, oldValue) {
-  //     console.log(`num value: ${oldValue} -> ${newValue}`);
-  //   }
-  // };
-  components = {
-    treeItem: TreeItem
-  };
+
   methods = {
-    tap() {}
+    gotoPeople(allItems) {
+      const currentIndex = allItems.findIndex(item => {
+        return item.名 === this.item.名;
+      });
+      this.methods.showPeopleDetail({ allItems, currentIndex });
+      wx.navigateTo({ url: '/pages/zong/show' });
+    }
   };
   onLoad() {
-    // console.log(this.treeItems);
+    console.log(this.treeItems);
+    console.log(this.selectedPeople);
   }
 }
 </script>

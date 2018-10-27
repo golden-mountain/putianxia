@@ -50,7 +50,7 @@ export default handleActions(
       return {
         ...state,
         selectedPeople: action.payload,
-        formatInfo: formatSelectedPeople(action.payload)
+        formatInfo: '..........' // formatSelectedPeople(action.payload)
       };
     },
     [UPDATE_CURRENT_PEOPLE_INDEX](state, action) {
@@ -73,13 +73,13 @@ export default handleActions(
     [SEARCH_PEOPLE](state, action) {
       // construct data like
       if (!action.payload.data.data) return state;
-      const obj = formatSearchedResult(action.payload.data.data);
-      console.log('obj:', obj, 'searched people', action.payload.data.data);
+      // const obj = formatSearchedResult(action.payload.data.data);
+      // console.log('searched people', action.payload.data.data);
       return {
         ...state,
         searching: false,
         compareingPeople: [],
-        searchedPeople: obj,
+        searchedPeople: action.payload.data.data,
         children: []
       };
     },

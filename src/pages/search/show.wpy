@@ -1,6 +1,45 @@
 <style lang="less">
+@import '../../styles/variables/color.less';
+
 .ptx-search-bar {
   padding: 10px;
+}
+.ptx-tree-item {
+  font-size: 14px;
+  .weui-flex__item {
+    padding: 10px;
+
+    &:first-child {
+      border-right: 1px solid @weuiTextColorTips;
+    }
+  }
+  &.ptx-gen-active {
+    background-color: @weuiColorPrimary;
+
+    .weui-flex__item {
+      color: @weuiBgColorDefault;
+    }
+  }
+}
+.ptx-gen-num {
+  color: @weuiTextColorGray;
+  flex: 0.3;
+  text-align: right;
+  line-height: 2.5em;
+}
+.ptx-name {
+  flex: 1;
+  line-height: 2.5em;
+}
+.ptx-group {
+  flex: 1.5;
+  color: @weuiLinkColorDefault;
+}
+.ptx-icons {
+  flex: 0.5;
+}
+.ptx-icon {
+  float: right;
 }
 </style>
 
@@ -36,10 +75,22 @@
           <view class="weui-panel__bd">
             <view class="weui-flex">
               <view class="weui-flex__item" >
-                <familyTree1 :treeItems.sync="people1" />
+                <block wx:for-items="{{people1}}" wx:for-index="index" wx:for-item="item" wx:key="id1">
+                  <view class="weui-flex ptx-tree-item  {{ current[1] == item[1] ? 'ptx-gen-active' : ''}} " @tap="selectPeople({{item}})">
+                    <view class="weui-flex__item ptx-gen-num"><view class="">{{index+1}}</view></view>
+                    <view class="weui-flex__item ptx-name"><view class="placeholder">{{item[0]}}</view></view>
+                    <view class="weui-flex__item ptx-icons" capture-catch:tap="redirect({{item}})"><text class="ptx-icon iconfont icon-browse" /></view>
+                  </view>
+                </block>
               </view>
-              <view class="weui-flex__item" wx:if="{{ people2 }}" >
-                <familyTree2 :treeItems.sync="people2" style="background: #eee;"/>
+              <view class="weui-flex__item" wx:if="{{people2}}" >
+                <block wx:for-items="{{people2}}" wx:for-index="index" wx:for-item="item" wx:key="id2">
+                  <view class="weui-flex ptx-tree-item {{ current[1] == item[1] ? 'ptx-gen-active' : ''}} " @tap="selectPeople({{item}})">
+                    <view class="weui-flex__item ptx-gen-num"><view class="">{{index+1}}</view></view>
+                    <view class="weui-flex__item ptx-name"><view class="placeholder">{{item[0]}}</view></view>
+                    <view class="weui-flex__item ptx-icons" capture-catch:tap="redirect({{item}})"><text class="ptx-icon iconfont icon-browse" /></view>
+                  </view>
+                </block>
               </view>
             </view>
           </view>
@@ -53,61 +104,22 @@
 <script>
 import wepy from 'wepy';
 import { connect } from 'wepy-redux';
-// import Panel from '@/components/panel'; // alias example
 import SearchBar from '@/components/searchbar'; // alias example
-import Tree from '@/components/tree'; // alias example
+import { getMyRoots } from '@/services/people';
+import { compareRelation } from '@/mixins/user';
+import { formatDateTime } from '@/mixins/dateCaculator';
 
-import { activePeople } from '@/store/actions/people';
-// import { formatSelectedPeople } from '@/store/helpers/people';
-
-@connect(
-  {
-    people1(state) {
-      if (state.people.compareingPeople) {
-        const values = Object.values(state.people.compareingPeople);
-        // console.log('values', values);
-        if (values.length) {
-          return values[0][1];
-        } else {
-          return false;
-        }
-      }
-    },
-    people2(state) {
-      if (state.people.compareingPeople.length > 1) {
-        const values = Object.values(state.people.compareingPeople);
-
-        if (values[1].length > 1) {
-          return values[1][1];
-        } else {
-          return false;
-        }
-      } else {
-        return false;
-      }
-    },
-    searching(state) {
-      return state.people.searching;
-    },
-    info(state) {
-      // console.log(state.people.selectedPeople);
-      return state.people.formatInfo;
-    }
-  },
-  {
-    activePeople
-    // searchPeople
+@connect({
+  compareingPeople(state) {
+    return state.people.compareingPeople;
   }
-)
+})
 export default class Index extends wepy.page {
   config = {
     navigationBarTitleText: '查看 - 谱天下'
-    // enablePullDownRefresh: true
   };
   components = {
-    searchbar: SearchBar,
-    familyTree1: Tree,
-    familyTree2: Tree
+    searchbar: SearchBar
   };
 
   mixins = [];
@@ -115,30 +127,37 @@ export default class Index extends wepy.page {
   data = {
     focus: true,
     icon60: '../../images/man.jpg',
-    showSelecteInfo: {}
+    id1: 0,
+    id2: 0,
+    people1: [],
+    people2: null,
+    current: [],
+    info: {}
   };
 
   computed = {};
 
-  methods = {};
-
-  events = {};
-
-  watch = {
-    searching(newValue, oldValue) {
-      if (newValue) {
-        wx.showLoading({ title: '加载中' });
-      } else {
-        wx.hideLoading();
-      }
+  methods = {
+    selectPeople(item) {
+      this.current = item;
+      if (item[6]) item[6] = formatDateTime(item[6]).join(' ');
+      if (item[7]) item[7] = formatDateTime(item[7]).join(' ');
+      this.info = compareRelation(item);
+    },
+    redirect(item) {
+      wx.navigateTo({ url: '/pages/zong/show?id=' + item[1] });
     }
   };
 
+  events = {};
+
   onShareAppMessage(options) {
-    // var that = this; // 设置菜单中的转发按钮触发转发事件时的转发内容
+    let queryStrs = [];
+    if (this.id1) queryStrs.push('id1=' + this.id1);
+    if (this.id2) queryStrs.push('id2=' + this.id2);
     var shareObj = {
       title: '【谱天下】开始我们的寻根之旅', // 默认是小程序的名称(可以写slogan等)
-      path: '/pages/wo/index', // 默认是当前页面，必须是以‘/’开头的完整路径
+      path: '/pages/search/show?' + queryStrs.join('&'), // 默认是当前页面，必须是以‘/’开头的完整路径
       imgUrl: '', // 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
       success: function(res) {
         // 转发成功之后的回调
@@ -162,21 +181,35 @@ export default class Index extends wepy.page {
     return shareObj;
   }
 
-  onLoad() {
-    if (this.people1 && this.people2) {
-      for (var i in this.people1) {
-        if (this.people2[i].名 !== this.people1[i].名) {
-          if (i) {
-            this.methods.activePeople([
-              this.people1[i - 1],
-              this.people2[i - 1]
-            ]);
-          }
-          break;
-        }
-      }
-    } else if (this.people1) {
-      this.methods.activePeople([this.people1[this.people1.length - 1]]);
+  onLoad(query) {
+    const that = this;
+    function loadPeople(id, dataKey, idName) {
+      getMyRoots(id).then(res => {
+        if (!res || !res.data) return [];
+        that.current = res.data.data[0];
+        that[dataKey] = res.data.data.reverse();
+        // console.log(that.people1, ' people 1 res');
+        that.$apply();
+      });
+      that[idName] = id;
+    }
+
+    if (this.compareingPeople) {
+      const [people1, people2] = this.compareingPeople;
+      // console.log(people1, 'people1', people2, 'people2');
+      loadPeople(people1[2], 'people1', 'id1');
+      if (people2) loadPeople(people2[2], 'people2', 'id2');
+    }
+
+    query.id1 = 180;
+    query.id2 = 160;
+    // if directly shared by id
+    if (query.id1) {
+      loadPeople(query.id1, 'people1', 'id1');
+    }
+
+    if (query.id2) {
+      loadPeople(query.id2, 'people2', 'id2');
     }
   }
 }

@@ -75,15 +75,15 @@ import {
     searchedPeople(state) {
       // console.log(state.people);
       if (state.people.searchedPeople) {
-        const entries = Object.entries(state.people.searchedPeople);
+        const entries = state.people.searchedPeople;
         const newEntries = entries.map(v => {
           let checked = false;
           if (state.people.compareingPeople) {
             checked = state.people.compareingPeople.find(item => {
-              return item[0] === v[0];
+              return item[2] === v[2];
             });
           }
-          return { name: v[0], checked, origin: v };
+          return { name: `${v[1]}>${v[3]}`, checked, origin: v };
         });
         return newEntries;
       } else {
@@ -143,7 +143,7 @@ export default class Index extends wepy.page {
     },
     choose(item) {
       const finded = this.choices.find(v => {
-        return v[0] === item[0];
+        return v[2] === item[2];
       });
       // console.log('this.choies', this.choices);
       // console.log('not find and length < 2', finded);
