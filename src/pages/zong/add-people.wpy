@@ -665,8 +665,8 @@ export default class Index extends wepy.page {
           savingData.日 = `${this._form.birthDay} ${this._form.birthTime}`;
         }
       } else {
-        savingData.生 = '';
-        savingData.日 = '';
+        savingData.生 = null;
+        savingData.日 = null;
       }
 
       if (this.needDeadDay) {
@@ -675,8 +675,8 @@ export default class Index extends wepy.page {
           savingData.死 = `${this._form.deadDay} ${this._form.deadTime}`;
         }
       } else {
-        savingData.殁 = '';
-        savingData.死 = '';
+        savingData.殁 = null;
+        savingData.死 = null;
       }
 
       savingData.owner = this.pu.id;
@@ -698,15 +698,21 @@ export default class Index extends wepy.page {
         });
       } else {
         savingData.verfied = 0;
-        if (this._cacheForm.relationType) {
-          const type = this._cacheForm.relationType;
-          savingData.relationType = this.relations[type];
-        }
+        // if (this._cacheForm.relationType) {
+        const type = this._cacheForm.relationType;
+        const relationObj = {};
+        Object.entries(relations).forEach(v => {
+          const [key, value] = v;
+          relationObj[value] = key;
+        });
+        savingData.relationType = relationObj[this.relations[type]];
+        // }
 
         const index = this._cacheForm.relatedPeople;
         savingData.selectedSearchPeople = this.myRelatedFull[index][0];
 
         // console.log(savingData);
+        // return false;
         const that = this;
 
         updatePeopleInfo(savingData).then(() => {

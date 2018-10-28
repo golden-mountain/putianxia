@@ -1,5 +1,4 @@
 import request from '../configs/request';
-
 export function getSamples() {
   const opts = {
     query: 'MATCH (n)  RETURN n LIMIT 6'
@@ -108,7 +107,6 @@ export function updateMyWeixin(id, wx) {
 }
 
 export function updatePeopleInfo(info, id = 0) {
-  // console.log('id:', id, 'info:', info);
   const { relationType, selectedSearchPeople } = info;
   if (relationType) {
     delete info.relationType;
@@ -119,7 +117,11 @@ export function updatePeopleInfo(info, id = 0) {
 
   let segs = Object.entries(info).map(entry => {
     let [key, value] = entry;
-    return `n.${key}='${value}'`;
+    if (typeof value === 'string') {
+      return `${key}:'${value}'`;
+    } else {
+      return `${key}:${value}`;
+    }
   });
   // console.log(segs);
   const updates = segs.join(',');
@@ -129,41 +131,9 @@ export function updatePeopleInfo(info, id = 0) {
       query: `MATCH (n) WHERE id(n)=${id} SET ${updates} RETURN n;`
     };
   } else {
-    // ['父亲', '儿子', '女儿', '妻子', '丈夫']
-    // only support relations are: son, wife, daughter
-    let firstNode = '';
-    let laterNode = '';
-    let relation = '';
-    switch (relationType) {
-      case '父亲':
-        firstNode = 'p';
-        relation = 'son';
-        laterNode = 'n';
-        break;
-      case '儿子':
-        firstNode = 'n';
-        relation = 'son';
-        laterNode = 'p';
-        break;
-      case '女儿':
-        firstNode = 'n';
-        relation = 'daughter';
-        laterNode = 'p';
-        break;
-      case '妻子':
-        firstNode = 'n';
-        relation = 'wife';
-        laterNode = 'p';
-        break;
-      case '丈夫':
-        firstNode = 'p';
-        relation = 'wife';
-        laterNode = 'n';
-        break;
-    }
-    // console.log(relationType, firstNode, relation, laterNode);
     opts = {
-      query: `MATCH (p:Person) WHERE id(p)=${selectedSearchPeople} CREATE (n:Person:李) SET ${updates} CREATE (${firstNode})-[:RELATION{role:'${relation}'}]->(${laterNode}) return n,p`
+      query: `MATCH (p:Person) WHERE id(p)=${selectedSearchPeople}
+              CREATE (n:Person:李{${updates}})-[:RELATION{role:'${relationType}'}]->(p) return n,p`
     };
   }
   // console.log(opts);
@@ -189,7 +159,7 @@ export function getMyChildren(id) {
 export function getMyCreatedNodes(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
-    query: `MATCH (p) WHERE p.owner='${id}'  return id(p) as id, p.verified, p.名, p.日, p.死`
+    query: `MATCH (p) WHERE p.owner=${id}  return id(p) as id, p.verified, p.名, p.日, p.死`
   };
   return request.cypherPost(opts);
 }
