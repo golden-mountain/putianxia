@@ -155,8 +155,9 @@ export default class Index extends wepy.page {
     let queryStrs = [];
     if (this.id1) queryStrs.push('id1=' + this.id1);
     if (this.id2) queryStrs.push('id2=' + this.id2);
+    // console.log(this.current);
     var shareObj = {
-      title: '【谱天下】开始我们的寻根之旅', // 默认是小程序的名称(可以写slogan等)
+      title: `【谱天下】查看${this.current[0]}的世系图`, // 默认是小程序的名称(可以写slogan等)
       path: '/pages/search/show?' + queryStrs.join('&'), // 默认是当前页面，必须是以‘/’开头的完整路径
       imgUrl: '', // 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
       success: function(res) {
