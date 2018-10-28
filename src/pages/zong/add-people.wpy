@@ -458,7 +458,7 @@ export default class Index extends wepy.page {
     selectedSearchPeople: null,
     formData: {},
     files: [],
-    isOldDate: true,
+    isOldDate: false,
     needBirthday: true,
     needDeadDay: false,
     genders,

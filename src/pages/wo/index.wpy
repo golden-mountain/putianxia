@@ -140,7 +140,7 @@
           <view class="weui-panel weui-panel_access">
             <view class="weui-panel__bd weui-flex ptx-user-profile">
               <view class="weui-flex__item ptx-avatar">
-                <image src="../../images/boy.jpg"/>
+                <image src="{{ wx.avatarUrl }}"/>
                 <view class="ptx-name">{{ pu['名'] }} <text class="iconfont icon-brush" @tap="onProfileChange">修改</text></view>
               </view>
               <view class="weui-flex__item ptx-user-info">

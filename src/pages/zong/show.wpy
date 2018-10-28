@@ -137,10 +137,10 @@
         <view class="weui-panel__bd">
           <view class="weui-flex ptx-actions">
             <view class="weui-flex__item ">
-              <text class="font_26 ptx-link">第{{ currentLevel }}世 </text>
+              <text class="font_26 ptx-link">第{{ current[0]['level'] || 0 }}世 </text>
             </view>
             <view class="weui-flex__item ptx-location" bindtap="updateInfo">
-              <text wx:if="{{!weixinUser}}" class="iconfont icon-mine" style="font-size:14px;">这个是我</text>
+              <text wx:if="{{!wx}}" class="iconfont icon-mine" style="font-size:14px;">这个是我</text>
               <text wx:else class="iconfont icon-mine" style="font-size:14px;">重新关联我</text> </view>
           </view>
         </view>
@@ -214,18 +214,17 @@
   // import Panel from '@/components/panel'; // alias example
   // import SearchBar from '@/components/searchbar'; // alias example
   // import {
-  //   updateCurrentPeopleIndex,
-  //   getChildrenByParentId,
   //   updateWeixinInfo
   // } from '@/store/actions/people';
-  import { getCurrentInfo } from '@/services/people';
+  import { getCurrentInfo, updateMyWeixin } from '@/services/people';
 
   import { formatInfo } from '@/mixins/user';
   @connect({
     wx(state) {
       return state.people.wx;
     }
-  })
+  }
+  )
   export default class Show extends wepy.page {
     config = {
       navigationBarTitleText: '个人资料 - 谱天下',
@@ -241,11 +240,11 @@
       currentLevel: 0,
       currentIndex: 0,
       currentPeople: [],
-      parents: [],
-      current: [],
+      parents: null,
+      current: null,
       currentPeopleMap: {},
       allInfo: [],
-      children: [],
+      children: null,
       loading: false,
       idStack: []
     };
@@ -278,7 +277,15 @@
           success: function (res) {
             // console.log(res);
             if (res.confirm) {
-              that.methods.updateWeixinInfo(that.currentId, that.wx.openId);
+              updateMyWeixin(that.currentId, that.wx.openId).then((res) => {
+                if (res) {
+                  wx.showToast({
+                    title: '关联成功',
+                    mask: true,
+                    duration: 1000
+                  });
+                }
+              });
             }
           }
         });
@@ -290,7 +297,7 @@
     onShareAppMessage(options) {
       // var that = this; // 设置菜单中的转发按钮触发转发事件时的转发内容
       var shareObj = {
-        title: '【谱天下】开始我们的寻根之旅', // 默认是小程序的名称(可以写slogan等)
+        title: `【谱天下】${this.current[0].name}的族谱信息`, // 默认是小程序的名称(可以写slogan等)
         path: '/pages/zong/show?id=' + this.currentId, // 默认是当前页面，必须是以‘/’开头的完整路径
         imgUrl: '', // 自定义图片路径，可以是本地文件路径、代码包文件路径或者网络图片路径，支持PNG及JPG，不传入 imageUrl 则使用默认截图。显示图片长宽比是 5:4
         success: function (res) {
@@ -307,24 +314,28 @@
           }
         }
       }; // 来自页面内的按钮的转发
-      /* if (options.from === 'button') {
-          var eData = options.target.dataset;
-          console.log(eData.name); // shareBtn // 此处可以修改 shareObj 中的内容
-          shareObj.path = '/pages/btnname/btnname?btn_name=' + eData.name;
-        } // 返回shareObj */
       return shareObj;
     }
 
     onPullDownRefresh() {
       this.idStack.push(this.currentId);
       this.currentId = this.parents[0].id;
+      console.log(this.currentId, 'up...');
     }
 
     onReachBottom() {
-      this.currentId = this.idStack.length && this.idStack.pop();
+      if (this.idStack.length) {
+        this.currentId = this.idStack.pop();
+      } else {
+        this.currentId = -1;
+      }
+      console.log(this.currentId, 'down...');
     }
 
     refreshData() {
+      if (this.currentId <= 0) {
+        return false;
+      }
       const that = this;
       const formatShow = (p, role) => {
         if (role === '妻' || role === '女' || role === '母') {
@@ -351,31 +362,28 @@
       });
       getCurrentInfo(this.currentId).then(res => {
         if (!res || !res.data) return false;
-        // console.log(res);
         that.allInfo = res.data.data;
-        let children = [[], []];
+        let children = [];
         let father = null;
         let mother = [];
         let me = [];
         let myWife = [];
         that.allInfo.forEach(v => {
-          const [current, currentId, related, relatedId, wife, wifeId, r] = v;
+          const [current, currentId, related, wife, r] = v;
           current.id = currentId;
-          related.id = relatedId;
-          wife.id = wifeId;
           if (
             r.data.role === 'daughter' ||
-            (r.data.role === 'son' && r.start.lastIndexOf(currentId) === -1)
+            (r.data.role === 'son' && r.start.lastIndexOf(current.id) === -1)
           ) {
             if (r.data.role === 'daughter') {
-              children[1].push(formatShow(related, '女'));
+              children.push(formatShow(related, '女'));
             } else {
-              children[0].push(formatShow(related, '儿'));
+              children.push(formatShow(related, '儿'));
             }
           }
 
-          if (r.data.role === 'son' && r.start.lastIndexOf(currentId) > -1) {
-            if (relatedId === wifeId) {
+          if (r.data.role === 'son' && r.start.lastIndexOf(current.id) > -1) {
+            if (related.id === wife.id) {
               father = formatShow(related, '父');
             } else {
               mother.push(formatShow(wife, '母'));
@@ -384,7 +392,7 @@
 
           me = formatShow(current, '*');
           if (r.data.role === 'wife') {
-            myWife.push(formatShow(wife, '妻'));
+            myWife.push(formatShow(wife, '偶'));
           }
         });
         if (father) {
@@ -396,7 +404,11 @@
         }
         that.current = [me, myWife];
         that.currentPeople = formatInfo(me);
-        that.children = children;
+        let result = [];
+        for (var i = 0, len = children.length; i < len; i += 3) {
+          result.push(children.slice(i, i + 3));
+        }
+        that.children = result;
         // console.log(that.parents);
         // console.log(me, myWife);
         // console.log(children);

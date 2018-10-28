@@ -71,17 +71,50 @@ export function getParentsById(id) {
   };
   return request.cypherPost(opts);
 }
-
+[
+  '排',
+  '排行',
+  v => {
+    return v || '长';
+  }
+], // [
+//   'level',
+//   '世代',
+//   v => {
+//     return `第${v}代`;
+//   }
+// ],
+['祧', '兼祧'], ['名', '名字'], ['讳', '讳名'], ['字', '字号'], ['号', '名号'], [
+  '生',
+  '生日',
+  v => {
+    if (info.日) {
+      return `${v}(${dateFormat(info.日)})`;
+    } else {
+      return v;
+    }
+  }
+], [
+  '殁',
+  '过世',
+  v => {
+    if (info.死) {
+      return `${v}(${dateFormat(info.死)})`;
+    } else {
+      return v;
+    }
+  }
+], ['坟', '坟地'], ['学', '学历'], ['事', '事迹'];
 // for show my parents, myself info
 export function getCurrentInfo(id) {
   const opts = {
     query: `match (current)-[r:RELATION]-(related)<-[:RELATION*0..1{role:'wife'}]-(mother)
     where id(current)=${id}
     return
-      properties(current), id(current) as currentId,
-      properties(related), id(related) as relationId,
-      properties(mother),  id(mother) as motherId,
-      r`
+    properties(current), id(current) as currentId,
+    {名:related.名,  id: id(related)},
+    {名:mother.名,  id: id(mother)},
+    r`
   };
   return request.cypherPost(opts);
 }
@@ -118,9 +151,9 @@ export function updatePeopleInfo(info, id = 0) {
   let segs = Object.entries(info).map(entry => {
     let [key, value] = entry;
     if (typeof value === 'string') {
-      return `${key}:'${value}'`;
+      return `n.${key}='${value}'`;
     } else {
-      return `${key}:${value}`;
+      return `n.${key}=${value}`;
     }
   });
   // console.log(segs);
@@ -131,9 +164,14 @@ export function updatePeopleInfo(info, id = 0) {
       query: `MATCH (n) WHERE id(n)=${id} SET ${updates} RETURN n;`
     };
   } else {
+    // opts = {
+    //   query: `MATCH (p:Person) WHERE id(p)=${selectedSearchPeople}
+    //           CREATE (n:Person:李{${updates}})-[:RELATION{role:'${relationType}'}]->(p) return n,p`
+    // };
     opts = {
       query: `MATCH (p:Person) WHERE id(p)=${selectedSearchPeople}
-              CREATE (n:Person:李{${updates}})-[:RELATION{role:'${relationType}'}]->(p) return n,p`
+              CREATE (n:Person:李) SET ${updates}
+              CREATE (n)-[:RELATION{role:'${relationType}'}]->(p) return n,p`
     };
   }
   // console.log(opts);
