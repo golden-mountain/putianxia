@@ -37,7 +37,7 @@ export function searchByNames(originNames) {
     return newName;
   });
   const opts = {
-    query: `match (son:Person:李)-[:RELATION{role: 'son'}]->(parent) where ${queries.join(' or ')} return id(parent) as parentId, parent.名, id(son) as sonId, son.名`
+    query: `match (son:Person:李)-[:RELATION]->(parent) where ${queries.join(' or ')} return id(parent) as parentId, parent.名, id(son) as sonId, son.名`
   };
   // console.log(opts);
 
@@ -77,10 +77,7 @@ export function getParentsById(id) {
   v => {
     return v || '长';
   }
-], //   'level', // [
-//   '世代',
-//   v => {
-//     return `第${v}代`;
+], //     return `第${v}代`; //   v => { //   '世代', //   'level', // [
 //   }
 // ],
 ['祧', '兼祧'], ['名', '名字'], ['讳', '讳名'], ['字', '字号'], ['号', '名号'], [
@@ -180,7 +177,7 @@ export function updatePeopleInfo(info, id = 0) {
 export function getMyRoots(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
-    query: `MATCH  (p)-[:RELATION*0..{role:'son'}]->(n)  WHERE id(p)=${id} return n.名, id(n) as id, n.字, n.又, n.号, n.学, n.日, n.死`
+    query: `MATCH  (p)-[:RELATION*0..]->(n)  WHERE id(p)=${id} return n.名, id(n) as id, n.字, n.又, n.号, n.学, n.日, n.死`
   };
   return request.cypherPost(opts);
 }
@@ -188,7 +185,7 @@ export function getMyRoots(id) {
 export function getMyChildren(id) {
   // console.log(relationType, firstNode, relation, laterNode);
   const opts = {
-    query: `MATCH (son:Person)-[sr:RELATION*0..{role:'son'}]->(parent:Person) WHERE ID(parent)=${id} RETURN ID(son) as sonId, son.名`
+    query: `MATCH (son:Person)-[sr:RELATION*0..]->(parent:Person) WHERE ID(parent)=${id} RETURN ID(son) as sonId, son.名`
   };
   return request.cypherPost(opts);
 }
