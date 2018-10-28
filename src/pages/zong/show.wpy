@@ -314,13 +314,14 @@
           }
         }
       }; // 来自页面内的按钮的转发
+      // console.log(shareObj);
       return shareObj;
     }
 
     onPullDownRefresh() {
       this.idStack.push(this.currentId);
       this.currentId = this.parents[0].id;
-      console.log(this.currentId, 'up...');
+      // console.log(this.currentId, 'up...');
     }
 
     onReachBottom() {
@@ -329,7 +330,7 @@
       } else {
         this.currentId = -1;
       }
-      console.log(this.currentId, 'down...');
+      // console.log(this.currentId, 'down...');
     }
 
     refreshData() {
@@ -343,6 +344,7 @@
             ...p,
             role,
             name: p.名,
+            num: p.排 || '',
             avatar: '../../images/lady.jpg'
           };
         } else {
@@ -350,6 +352,7 @@
             ...p,
             role,
             name: p.名,
+            num: p.排 || '',
             avatar: '../../images/man.jpg'
           };
         }
@@ -372,17 +375,20 @@
           const [current, currentId, related, wife, r] = v;
           current.id = currentId;
           if (
-            r.data.role === 'daughter' ||
-            (r.data.role === 'son' && r.start.lastIndexOf(current.id) === -1)
+            (r.data.role === 'daughter' ||
+              r.data.role === 'son') && r.start.lastIndexOf(current.id) === -1
           ) {
             if (r.data.role === 'daughter') {
               children.push(formatShow(related, '女'));
             } else {
-              children.push(formatShow(related, '儿'));
+              const result = children.find((v) => related.id === v.id);
+              if (!result) {
+                children.push(formatShow(related, '儿'));
+              }
             }
           }
 
-          if (r.data.role === 'son' && r.start.lastIndexOf(current.id) > -1) {
+          if ((r.data.role === 'son' || r.data.role === 'daughter') && r.start.lastIndexOf(current.id) > -1) {
             if (related.id === wife.id) {
               father = formatShow(related, '父');
             } else {
@@ -413,6 +419,7 @@
         // console.log(me, myWife);
         // console.log(children);
         that.$apply();
+        wx.stopPullDownRefresh();
         wx.hideToast();
       })
     }

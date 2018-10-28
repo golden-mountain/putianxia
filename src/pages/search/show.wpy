@@ -179,6 +179,8 @@ export default class Index extends wepy.page {
       console.log(eData.name); // shareBtn // 此处可以修改 shareObj 中的内容
       shareObj.path = '/pages/btnname/btnname?btn_name=' + eData.name;
     } // 返回shareObj */
+    // console.log(shareObj);
+
     return shareObj;
   }
 

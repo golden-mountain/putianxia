@@ -77,8 +77,7 @@ export function getParentsById(id) {
   v => {
     return v || '长';
   }
-], // [
-//   'level',
+], //   'level', // [
 //   '世代',
 //   v => {
 //     return `第${v}代`;
@@ -112,7 +111,7 @@ export function getCurrentInfo(id) {
     where id(current)=${id}
     return
     properties(current), id(current) as currentId,
-    {名:related.名,  id: id(related)},
+    {名:related.名,  id: id(related), 排: related.排},
     {名:mother.名,  id: id(mother)},
     r`
   };
